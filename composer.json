@@ -1,0 +1,37 @@
+{
+    "name": "lucinda/framework/stdout",
+    "type": "library",
+    "description": "Engine used by Lucinda Framework for STDOUT flow",
+    "keywords": ["mvc","stdout"],
+    "homepage": "http://www.lucinda-framework.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lucian Popescu",
+            "email": "lucian.gabriel.popescu@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "lucinda/http-caching": "~1.0",
+        "lucinda/logging": "~1.0",
+        "lucinda/nosql-data-access": "~1.0",
+        "lucinda/oauth2-client": "~1.0",
+        "lucinda/security": "~1.0",
+        "lucinda/mvc": "~1.0",
+        "lucinda/sql-data-access": "~1.0",
+        "lucinda/view-language": "~1.0",
+        "lucinda/internationalization": "~1.0"
+    },
+    "require-dev": {
+        "lucinda/http-caching": "~1.0",
+        "lucinda/logging": "~1.0",
+        "lucinda/nosql-data-access": "~1.0",
+        "lucinda/oauth2-client": "~1.0",
+        "lucinda/security": "~1.0",
+        "lucinda/mvc": "~1.0",
+        "lucinda/sql-data-access": "~1.0",
+        "lucinda/view-language": "~1.0",
+        "lucinda/internationalization": "~1.0"
+    }
+}
