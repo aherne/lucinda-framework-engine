@@ -3,12 +3,12 @@ require_once("DAOLocator.php");
 require_once("SecurityPacket.php");
 
 class Authorization {
-    public function __construct(SimpleXMLElement $xml, Request $request) {
-        $wrapper = $this->getWrapper($xml, $request);
-        $this->authorize($wrapper, $request);
+    public function __construct(SimpleXMLElement $xml, $page, $contextPath, $userID) {
+        $wrapper = $this->getWrapper($xml, $page, $userID);
+        $this->authorize($wrapper, $contextPath);
     }
     
-    private function getWrapper(SimpleXMLElement $xmlRoot, Request $request) {
+    private function getWrapper(SimpleXMLElement $xmlRoot, $page, $userID) {
         $xml = $xmlRoot->security->authorization;
         if(empty($xml)) {
             throw new ApplicationException("Entry missing in configuration.xml: security.authentication");
@@ -19,20 +19,20 @@ class Authorization {
             require_once("authorization/XMLAuthorizationWrapper.php");
             $wrapper = new XMLAuthorizationWrapper(
                 $xmlRoot,
-                $request->getValidator()->getPage(),
-                $request->getAttribute("user_id"));
+                $page,
+                $userID);
         }
         if($xml->by_dao) {
             require_once("authorization/DAOAuthorizationWrapper.php");
             $wrapper = new DAOAuthorizationWrapper(
                 $xmlRoot,
-                $request->getValidator()->getPage(),
-                $request->getAttribute("user_id"));
+                $page,
+                $userID);
         }
         return $wrapper;
     }
     
-    private function authorize(AuthorizationWrapper $wrapper, Request $request) {
+    private function authorize(AuthorizationWrapper $wrapper, $contextPath) {
         if($wrapper) {
             if($wrapper->getResult()->getStatus() == AuthorizationResultStatus::OK) {
                 // authorization was successful
@@ -40,7 +40,7 @@ class Authorization {
             } else {
                 // authorization failed
                 $transport = new SecurityPacket();
-                $transport->setCallback($request->getURI()->getContextPath()."/".$wrapper->getResult()->getCallbackURI());
+                $transport->setCallback($contextPath."/".$wrapper->getResult()->getCallbackURI());
                 $transport->setStatus($wrapper->getResult()->getStatus());
                 throw $transport;
             }

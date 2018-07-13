@@ -1,4 +1,6 @@
 <?php
+require_once("AbstractLoggerWrapper.php");
+require_once(dirname(__DIR__)."/ClassLoader.php");
 /**
  * Locates and instances loggers based on XML content.
  */
@@ -8,46 +10,41 @@ class LoggingWrapper {
 	/**
 	 * Reads XML tag loggers.{environment}, finds and saves loggers found.
 	 *
-	 * @param SimpleXMLElement $xml XML tag reference object.
+     * @param SimpleXMLElement $xml XML containing logger settings.
+     * @param string $developmentEnvironment Development environment server is running into (eg: local, dev, live)
+     * @throws ApplicationException If XML is invalid.
+     * @throws ServletException If pointed file doesn't exist or is invalid
 	 */
-	public function __construct(SimpleXMLElement $xml) {
-		$this->setLoggers($xml);
+	public function __construct(SimpleXMLElement $xml, $developmentEnvironment) {
+	    $loggersPath = (string) $xml->application->paths->loggers;
+        if(!$loggersPath) throw new ApplicationException("Entry missing in configuration.xml: application.paths.loggers");
+		$this->setLoggers($loggersPath, $xml->loggers->{$developmentEnvironment});
 	}
 	
 	/**
 	 * Reads XML tag for loggers and saves them for later use.
-	 * 
-	 * @param SimpleXMLElement $xml
+	 *
+     * @param string $loggersPath Path to logger classes.
+	 * @param SimpleXMLElement $xml XML containing individual logger settings.
+     * @throws ApplicationException If XML is invalid.
+     * @throws ServletException If pointed file doesn't exist or is invalid
 	 */
-	private function setLoggers(SimpleXMLElement $xml) {
-	    $customFolder = (string) $xml["custom_path"];
+	private function setLoggers($loggersPath, SimpleXMLElement $xml) {
 	    $xmlLoggers = (array) $xml;
 	    foreach($xmlLoggers["logger"] as $xmlProperties) {
-	        $className = (string) $xmlProperties["class"];
-            $loggerWrapper = null;
-	        switch($className) {
-	            case "SysLoggerWrapper":
-                case "FileLoggerWrapper":
-                    require_once("loggers/".$className.".php");
-                    $loggerWrapper = new $className($xmlProperties);
-	                break;
-	            default:
-	                if(!$customFolder) {
-	                    throw new ApplicationException("Attribute not set in XML loggers.(environment).logger: folder!");
-                    }
-                    if(!file_exists($customFolder."/".$className.".php")) {
-                        throw new ServletException("Custom logger not found!");
-                    }
-                    require_once($customFolder."/".$className.".php");
-	                if(!class_exists($className)) {
-	                    throw new ServletException("Logger class not found!");
-                    }
-                    $loggerWrapper = new $className($xmlProperties);
-	                if(!$loggerWrapper instanceof AbstractLoggerWrapper) {
-	                    throw new ServletException("Logger must be instance of AbstractLoggerWrapper!");
-                    }
-	                break;
-	        }
+	        // detects class name
+            $className = (string) $xmlProperties["class"];
+
+            // loads class
+            new ClassLoader($loggersPath, $className);
+
+            // creates and checks object
+            $loggerWrapper = new $className($xmlProperties);
+            if(!$loggerWrapper instanceof AbstractLoggerWrapper) {
+                throw new ServletException("Logger must be instance of AbstractLoggerWrapper!");
+            }
+
+            // sets object
             $this->loggers[] = $loggerWrapper->getLogger();
 	    }
 	}

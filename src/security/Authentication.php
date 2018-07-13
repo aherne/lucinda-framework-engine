@@ -3,12 +3,14 @@ require_once("DAOLocator.php");
 require_once("SecurityPacket.php");
 
 class Authentication {
-    public function __construct(SimpleXMLElement $xml, Request $request, $persistenceDrivers) {
-        $wrapper = $this->getWrapper($xml, $request, $persistenceDrivers);
-        $this->authenticate($wrapper, $request, $persistenceDrivers);
+    private $oauth2Drivers = array();
+
+    public function __construct(SimpleXMLElement $xml, $page, $contextPath, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers) {
+        $wrapper = $this->getWrapper($xml, $page, $csrfTokenDetector, $persistenceDrivers);
+        $this->authenticate($wrapper, $contextPath, $persistenceDrivers);
     }
     
-    private function getWrapper(SimpleXMLElement $xmlRoot, Request $request, $persistenceDrivers) {
+    private function getWrapper(SimpleXMLElement $xmlRoot, $page, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers) {
         $xml = $xmlRoot->security->authentication;
         if(empty($xml)) {
             throw new ApplicationException("Entry missing in configuration.xml: security.authentication");
@@ -20,32 +22,32 @@ class Authentication {
                 require_once("authentication/DAOAuthenticationWrapper.php");
                 $wrapper = new DAOAuthenticationWrapper(
                     $xmlRoot,
-                    $request->getValidator()->getPage(),
+                    $page,
                     $persistenceDrivers,
-                    $request->getAttribute("csrf"));               
+                    $csrfTokenDetector);
             } else {
                 require_once("authentication/XMLAuthenticationWrapper.php");
                 $wrapper = new XMLAuthenticationWrapper(
                     $xmlRoot,
-                    $request->getValidator()->getPage(),
+                    $page,
                     $persistenceDrivers,
-                    $request->getAttribute("csrf"));
+                    $csrfTokenDetector);
             }
         }
         if($xml->oauth2) {
             require_once("authentication/Oauth2AuthenticationWrapper.php");
             $wrapper = new Oauth2AuthenticationWrapper(
                 $xmlRoot,
-                $request->getValidator()->getPage(),
+                $page,
                 $persistenceDrivers,
-                $request->getAttribute("csrf"));
+                $csrfTokenDetector);
             // saves oauth2 drivers to be used later on
-            $request->setAttribute("oauth2",$wrapper->getDrivers());
+            $this->oauth2Drivers = $wrapper->getDrivers();
         }
         return $wrapper;
     }
     
-    private function authenticate(AuthenticationWrapper $wrapper, Request $request, $persistenceDrivers) {
+    private function authenticate(AuthenticationWrapper $wrapper, $contextPath, $persistenceDrivers) {
         if($wrapper) {
             if(!$wrapper->getResult()) {
                 // no authentication was requested
@@ -53,7 +55,7 @@ class Authentication {
             } else {
                 // authentication was requested
                 $transport = new SecurityPacket();
-                $transport->setCallback($wrapper->getResult()->getStatus()==AuthenticationResultStatus::DEFERRED?$wrapper->getResult()->getCallbackURI():$request->getURI()->getContextPath()."/".$wrapper->getResult()->getCallbackURI());
+                $transport->setCallback($wrapper->getResult()->getStatus()==AuthenticationResultStatus::DEFERRED?$wrapper->getResult()->getCallbackURI():$contextPath."/".$wrapper->getResult()->getCallbackURI());
                 $transport->setStatus($wrapper->getResult()->getStatus());
                 $transport->setAccessToken($wrapper->getResult()->getUserID(), $persistenceDrivers);
                 throw $transport;
@@ -61,5 +63,9 @@ class Authentication {
         } else {
             throw new ApplicationException("No authentication driver found in configuration.xml: security.authentication");
         }
+    }
+
+    public function getOAuth2Drivers() {
+        return $this->oauth2Drivers;
     }
 }

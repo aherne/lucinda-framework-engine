@@ -5,6 +5,12 @@ set_include_path(dirname(dirname(__DIR__)));
 // create test environment
 $xml = '
 <xml>
+<application>
+    <paths>
+        <loggers>loggers</loggers>
+    </paths>
+
+</application>
     <loggers>
         <local custom_path = "loggers">
             <logger class="FileLoggerWrapper" path="test" format="%d %m"/>
@@ -17,7 +23,7 @@ $xml = '
 
 $xml = simplexml_load_string($xml);
 
-$lw = new LoggingWrapper($xml->loggers->local);
+$lw = new LoggingWrapper($xml, "local");
 echo __LINE__.": ".($lw->getLoggers()[0] instanceof FileLogger?"Y":"N")."\n";
 echo __LINE__.": ".($lw->getLoggers()[1] instanceof SysLogger?"Y":"N")."\n";
 echo __LINE__.": ".($lw->getLoggers()[2] instanceof MyLogger?"Y":"N")."\n";

@@ -1,6 +1,4 @@
 <?php
-require_once("AbstractLoggerWrapper.php");
-
 /**
  * Detects and constructs instance of FileLogger based on XML content.
  */

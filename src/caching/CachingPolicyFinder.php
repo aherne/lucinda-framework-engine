@@ -1,5 +1,6 @@
 <?php
 require_once("CachingPolicy.php");
+require_once(dirname(__DIR__)."/ClassLoader.php");
 
 /**
  * Encapsulates detection of caching policy from a relevant XML line.
@@ -68,6 +69,8 @@ class CachingPolicyFinder {
 	 * @param Application $application
 	 * @param Request $request
 	 * @return CacheableDriver|NULL
+     * @throws ApplicationException If XML is invalid
+     * @throws ServletException If pointed file doesn't exist or is invalid
 	 */
 	private function getCacheableDriver(SimpleXMLElement $xml, Application $application, Request $request) {
 		$driverClass = (string) $xml["class"];
@@ -77,12 +80,13 @@ class CachingPolicyFinder {
 		    if(!$cacheablesFolder) throw new ApplicationException("Entry missing in configuration.xml: application.paths.cacheables");
 		    
 		    // loads and validates class
-			$path = $cacheablesFolder."/".$driverClass.".php";
-			if(!file_exists($path)) throw new ServletException("File not found: ".$path);
-			require_once($path);
-			if(!class_exists($driverClass)) throw new ServletException("Class not found: ".$driverClass);
-			
+            new ClassLoader($cacheablesFolder, $driverClass);
+
 			// sets driver
+            $object = new $driverClass($application, $request);
+            if(!$object instanceof CacheableDriver) {
+                throw new ServletException("Class must be instance of CacheableDriver!");
+            }
 			return new $driverClass($application, $request);
 		}		
 		return null;
