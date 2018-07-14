@@ -35,9 +35,11 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 		$this->xml = $xml->security->authentication->oauth2;
 		$this->setDrivers();
 		
-		// create dao object
-		$locator = new DAOLocator($xml);
-		$daoObject = $locator->locate($xml->security->authentication->oauth2, "dao", "Oauth2AuthenticationDAO");
+		// loads and instances DAO object
+		$className = (string) $xml->security->authentication->oauth2["dao"];
+		load_class((string) $xml->application->paths->dao, $className);
+		$daoObject = new $className();
+		if(!($daoObject instanceof Oauth2AuthenticationDAO)) throw new ServletException("Class must be instance of Oauth2AuthenticationDAO!");
 		
 		// setup class properties
 		$this->authentication = new Oauth2Authentication($daoObject, $persistenceDrivers);
@@ -100,7 +102,6 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 			// get 
 			$result = $this->authentication->login($loginDriver, $accessTokenResponse->getAccessToken(), $createIfNotExists);
 			$this->setResult($result, $targetFailurePage, $targetSuccessPage);
-			var_dump($this->result);
 		} else {
 			// get scopes
 			$scopes = (string) $element["scopes"];

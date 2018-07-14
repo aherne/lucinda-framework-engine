@@ -19,21 +19,31 @@ class DAOAuthorizationWrapper extends AuthorizationWrapper {
 	 */
 	public function __construct(SimpleXMLElement $xml, $currentPage, $userID) {
 		// create dao object
-		$locator = new DAOLocator($xml);
-		$xml = $xml->security->authorization->by_dao;
+		$xmlTag = $xml->security->authorization->by_dao;
 		
-		$loggedInCallback = (string) $xml["logged_in_callback"];
+		// detects logged in callback to use if authorization fails
+		$loggedInCallback = (string) $xmlTag["logged_in_callback"];
 		if(!$loggedInCallback) $loggedInCallback = self::DEFAULT_LOGGED_IN_PAGE;
 		
-		$loggedOutCallback = (string) $xml["logged_out_callback"];
+		// detects logged out callback to use if authorization fails
+		$loggedOutCallback = (string) $xmlTag["logged_out_callback"];
 		if(!$loggedOutCallback) $loggedOutCallback = self::DEFAULT_LOGGED_OUT_PAGE;
 		
-		$pageDAO = $locator->locate($xml, "page_dao", "PageAuthorizationDAO");
+		// loads and instances page DAO object
+		$className = (string) $xmlTag["page_dao"];
+		load_class((string) $xml->application->paths->dao, $className);
+		$pageDAO = new $className();
+		if(!($pageDAO instanceof PageAuthorizationDAO)) throw new ServletException("Class must be instance of PageAuthorizationDAO!");
 		$pageDAO->setID($currentPage);
 		
-		$userDAO = $locator->locate($xml, "user_dao", "UserAuthorizationDAO");
-		$userDAO->setID($userID);
+		// loads and instances user DAO object
+		$className = (string) $xmlTag["user_dao"];
+		load_class((string) $xml->application->paths->dao, $className);
+		$userDAO = new $className();
+		if(!($userDAO instanceof UserAuthorizationDAO)) throw new ServletException("Class must be instance of UserAuthorizationDAO!");
+		$userDAO->setID($currentPage);
 		
+		// performs authorization
 		$authorization = new DAOAuthorization($loggedInCallback, $loggedOutCallback);
 		$this->setResult($authorization->authorize($pageDAO, $userDAO, $_SERVER["REQUEST_METHOD"]));
 	}

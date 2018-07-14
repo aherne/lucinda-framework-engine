@@ -36,7 +36,7 @@ class LoggingWrapper {
             $className = (string) $xmlProperties["class"];
 
             // loads class
-            new ClassLoader($loggersPath, $className);
+            load_class($loggersPath, $className);
 
             // creates and checks object
             $loggerWrapper = new $className($xmlProperties);

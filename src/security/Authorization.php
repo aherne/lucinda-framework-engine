@@ -1,5 +1,5 @@
 <?php
-require_once("DAOLocator.php");
+require_once(dirname(__DIR__)."/ClassLoader.php");
 require_once("SecurityPacket.php");
 
 /**

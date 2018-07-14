@@ -22,9 +22,13 @@ class DAOAuthenticationWrapper extends AuthenticationWrapper {
 	 * @throws SQLStatementException If query to database server fails.
 	 */
 	public function __construct(SimpleXMLElement $xml, $currentPage, $persistenceDrivers, CsrfTokenDetector $csrf) {
-		// set driver
-		$locator = new DAOLocator($xml);
-		$daoObject = $locator->locate($xml->security->authentication->form, "dao", "UserAuthenticationDAO");
+		// loads and instances DAO object
+	    $className = (string) $xml->security->authentication->form["dao"];
+	    load_class((string) $xml->application->paths->dao, $className);
+		$daoObject = new $className();
+		if(!($daoObject instanceof UserAuthenticationDAO)) throw new ServletException("Class must be instance of UserAuthenticationDAO!");
+
+		// starts dao-based form authentication
 		$this->driver = new DAOAuthentication($daoObject, $persistenceDrivers);
 
 		// setup class properties

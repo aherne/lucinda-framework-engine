@@ -80,7 +80,7 @@ class CachingPolicyFinder {
 		    if(!$cacheablesFolder) throw new ApplicationException("Entry missing in configuration.xml: application.paths.cacheables");
 		    
 		    // loads and validates class
-            new ClassLoader($cacheablesFolder, $driverClass);
+            load_class($cacheablesFolder, $driverClass);
 
 			// sets driver
             $object = new $driverClass($application, $request);
