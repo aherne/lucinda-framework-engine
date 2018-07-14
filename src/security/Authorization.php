@@ -2,16 +2,37 @@
 require_once("DAOLocator.php");
 require_once("SecurityPacket.php");
 
+/**
+ * Performs request authorization based on mechanism chosen by developmer in XML (eg: from database)
+ */
 class Authorization {
+    /**
+     * Runs authorization logic.
+     *
+     * @param SimpleXMLElement $xml XML holding information relevant to authorization (above all via security.authorization tag)
+     * @param string $page Route requested by client
+     * @param string $contextPath Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @param integer|string $userID Unique logged in user identifier (generally a number) or null (if user performing request isn't authenticated)
+     * @throws ApplicationException If XML is invalid
+     * @throws SecurityPacket If authorization encounters a situation where execution cannot continue and redirection is required
+     */
     public function __construct(SimpleXMLElement $xml, $page, $contextPath, $userID) {
         $wrapper = $this->getWrapper($xml, $page, $userID);
         $this->authorize($wrapper, $contextPath);
     }
-    
+    /**
+     * Gets driver that performs authorization from security.authorization XML tag.
+     *
+     * @param SimpleXMLElement $xmlRoot XML holding information relevant to authorization (above all via security.authorization tag)
+     * @param string $page Route requested by client
+     * @param mixed $userID Unique logged in user identifier (generally a number) or null (if user performing request isn't authenticated)
+     * @throws ApplicationException If XML is invalid
+     * @return AuthorizationWrapper
+     */
     private function getWrapper(SimpleXMLElement $xmlRoot, $page, $userID) {
         $xml = $xmlRoot->security->authorization;
         if(empty($xml)) {
-            throw new ApplicationException("Entry missing in configuration.xml: security.authentication");
+            throw new ApplicationException("Entry missing in configuration.xml: security.authorization");
         }
         
         $wrapper = null;
@@ -29,23 +50,27 @@ class Authorization {
                 $page,
                 $userID);
         }
+        if(!$wrapper) throw new ApplicationException("No authorization method chosen!");
         return $wrapper;
     }
     
+    /**
+     * Calls authorization driver detected to perform user authorization to requested route.
+     *
+     * @param AuthenticationWrapper $wrapper Driver that performs authentication (eg: via form & database).
+     * @param string $contextPath Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @throws SecurityPacket If authorization encounters a situation where execution cannot continue and redirection is required
+     */
     private function authorize(AuthorizationWrapper $wrapper, $contextPath) {
-        if($wrapper) {
-            if($wrapper->getResult()->getStatus() == AuthorizationResultStatus::OK) {
-                // authorization was successful
-                return;
-            } else {
-                // authorization failed
-                $transport = new SecurityPacket();
-                $transport->setCallback($contextPath."/".$wrapper->getResult()->getCallbackURI());
-                $transport->setStatus($wrapper->getResult()->getStatus());
-                throw $transport;
-            }
+        if($wrapper->getResult()->getStatus() == AuthorizationResultStatus::OK) {
+            // authorization was successful
+            return;
         } else {
-            throw new ApplicationException("No authorization driver found in configuration.xml: security.authentication");
+            // authorization failed
+            $transport = new SecurityPacket();
+            $transport->setCallback($contextPath."/".$wrapper->getResult()->getCallbackURI());
+            $transport->setStatus($wrapper->getResult()->getStatus());
+            throw $transport;
         }
     }
 }

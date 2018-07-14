@@ -1,6 +1,6 @@
 <?php
 /**
- * Holds information about authentication/authorization outcomes to be latter rendered (generally as a redirection).
+ * Holds information about authentication/authorization outcomes incompatible with continuing execution (requiring a redirection).
  */
 class SecurityPacket extends Exception {
 	private $callback;
