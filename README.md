@@ -1,3 +1,5 @@
-# Lucinda Framework: STDOUT Engine
+# Lucinda Framework: Engine
 
-Engine behind Lucinda Framework's standard output stream (managed by Servlets API), able to bind information in configuration.xml to APIs used by framework. 
+Engine behind Lucinda Framework's able to bind information in configuration.xml to APIs used by framework.
+
+TODO: use Lucinda\Framework namespace 
