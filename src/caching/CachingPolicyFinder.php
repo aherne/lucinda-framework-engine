@@ -12,9 +12,10 @@ class CachingPolicyFinder {
 	 * @param SimpleXMLElement $xml Tag that's holding policies.
 	 * @param Application $application 
 	 * @param Request $request
+	 * @param Response $response
 	 */
-	public function __construct(SimpleXMLElement $xml, Application $application, Request $request) {
-	    $this->setPolicy($xml, $application, $request);
+	public function __construct(SimpleXMLElement $xml, Application $application, Request $request, Response $response) {
+	    $this->setPolicy($xml, $application, $request, $response);
 	}
 	
 	/**
@@ -23,12 +24,13 @@ class CachingPolicyFinder {
 	 * @param SimpleXMLElement $xml Tag that's holding policies.
 	 * @param Application $application
 	 * @param Request $request
+	 * @param Response $response
 	 */
-	private function setPolicy(SimpleXMLElement $xml, Application $application, Request $request) {
+	private function setPolicy(SimpleXMLElement $xml, Application $application, Request $request, Response $response) {
 	    $this->policy = new CachingPolicy();
 	    $this->policy->setCachingDisabled($this->getNoCache($xml));
 	    $this->policy->setExpirationPeriod($this->getExpirationPeriod($xml));
-	    $cacheableDriver = $this->getCacheableDriver($xml, $application, $request);
+	    $cacheableDriver = $this->getCacheableDriver($xml, $application, $request, $response);
 	    if($cacheableDriver!==null) {
 	        $this->policy->setCacheableDriver($cacheableDriver);
 	    }
@@ -68,11 +70,12 @@ class CachingPolicyFinder {
      * @param SimpleXMLElement $xml Tag that's holding policies.
 	 * @param Application $application
 	 * @param Request $request
+	 * @param Response $response
 	 * @return CacheableDriver|NULL
      * @throws ApplicationException If XML is invalid
      * @throws ServletException If pointed file doesn't exist or is invalid
 	 */
-	private function getCacheableDriver(SimpleXMLElement $xml, Application $application, Request $request) {
+	private function getCacheableDriver(SimpleXMLElement $xml, Application $application, Request $request, Response $response) {
 		$driverClass = (string) $xml["class"];
 		if($driverClass) {
 		    // get cacheables folder
@@ -83,11 +86,11 @@ class CachingPolicyFinder {
             load_class($cacheablesFolder, $driverClass);
 
 			// sets driver
-            $object = new $driverClass($application, $request);
+            $object = new $driverClass($application, $request, $response);
             if(!$object instanceof CacheableDriver) {
                 throw new ServletException("Class must be instance of CacheableDriver!");
             }
-			return new $driverClass($application, $request);
+            return $object;
 		}		
 		return null;
 	}

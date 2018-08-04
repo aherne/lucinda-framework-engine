@@ -23,7 +23,7 @@ abstract class CacheableDriver implements Cacheable {
 	 */
 	protected $last_modified_time;
 	
-	public function __construct(Application $application, Request $request) {
+	public function __construct(Application $application, Request $request, Response $response) {
 		$this->application = $application;
 		$this->request = $request;
 		$this->setTime();
