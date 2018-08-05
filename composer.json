@@ -1,7 +1,7 @@
 {
-    "name": "lucinda/framework/stdout",
+    "name": "lucinda/framework-engine",
     "type": "library",
-    "description": "Engine used by Lucinda Framework for STDOUT flow",
+    "description": "Engine used behind Lucinda Framework",
     "keywords": ["mvc","stdout"],
     "homepage": "http://www.lucinda-framework.com",
     "license": "MIT",

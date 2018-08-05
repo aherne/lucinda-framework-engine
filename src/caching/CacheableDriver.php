@@ -12,6 +12,10 @@ abstract class CacheableDriver implements Cacheable {
 	 * @var Request
 	 */
 	protected $request;
+	/**
+	 * @var Response
+	 */
+	protected $response;
 	
 	/**
 	 * @var string
@@ -26,6 +30,8 @@ abstract class CacheableDriver implements Cacheable {
 	public function __construct(Application $application, Request $request, Response $response) {
 		$this->application = $application;
 		$this->request = $request;
+		$this->response = $response;
+		
 		$this->setTime();
 		$this->setEtag();
 	}

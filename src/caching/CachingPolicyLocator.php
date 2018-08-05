@@ -5,7 +5,7 @@ require_once("CachingPolicyFinder.php");
  * Locates CachingPolicy in XML based on contents of http_caching tag. Binds route-based settings (if any) with
  * global caching settings into a CachingPolicy object.
  */
-class CachingPolicyBinder {
+class CachingPolicyLocator {
     private $policy;
 
     /**
