@@ -1,12 +1,28 @@
 <?php
 require_once("CachingPolicyLocator");
 
+/**
+ * Binds HTTP Caching API with MVC STDOUT API (aka Servlets API) in order to perform cache validation to a HTTP GET request and produce a response accordingly
+ */
 class CachingBinder {
+    /**
+     * @param Application $application
+     * @param Request $request
+     * @param Response $response
+     */
     public function __construct(Application $application, Request $request, Response $response) {
         $policy = $this->getPolicy($application, $request, $response);
         $this->validate($policy, $response);
     }
     
+    /**
+     * Gets caching policy that will be used for cache validation
+     * 
+     * @param Application $application
+     * @param Request $request
+     * @param Response $response
+     * @return CachingPolicy
+     */
     private function getPolicy(Application $application, Request $request, Response $response) {
         // detects caching_policy
         $cpb = new CachingPolicyLocator($application, $request, $response);
@@ -19,6 +35,12 @@ class CachingBinder {
         return $policy;
     }
     
+    /**
+     * Performs cache validation and modifies response accordingly
+     * 
+     * @param CachingPolicy $policy
+     * @param Response $response
+     */
     private function validate(CachingPolicy $policy, Response $response) {
         if(!$policy->getCachingDisabled() && $policy->getCacheableDriver()) {
             $cacheRequest = new CacheRequest();

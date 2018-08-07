@@ -6,22 +6,26 @@ require_once("Authentication.php");
 require_once("Authorization.php");
 
 /**
- * Bootstraps web security operations on a routed request by matching contents of security tag @ XML with integrated Security API or OAuth2 Client API
+ * Binds HTTP Security API & OAuth2 Client API with MVC STDOUT API (aka Servlets API) in order to apply web security operations 
+ * (eg: authentication and authorization) on a routed request
  */
-class SecurityFilter {
+class SecurityBinder {
     private $persistenceDrivers = array();
     private $oauth2Drivers = array();
     private $userID;
     private $csrfToken;
 
     /**
-     * Performs web security operations
-     *      * 
-     * @param SimpleXMLElement $xml XML holding information relevant to web security (above all via security tag content)
-     * @param string $page Route requested by client
-     * @param string $contextPath Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @param Application $application
+     * @param Request $request
      */
-    public function __construct(SimpleXMLElement $xml, $page, $contextPath) {
+    public function __construct(Application $application, Request $request) {
+        // detects relevant data
+        $xml = $application->getXML();
+        $page = $request->getValidator()->getPage();
+        $contextPath = $request->getURI()->getContextPath();
+        
+        // applies web security on request
         $this->setPersistenceDrivers($xml);
         $this->setUserID();
         $this->setCsrfToken($xml);
