@@ -32,7 +32,7 @@ class ViewLanguageWrapper {
         $extension = (string) $xml->application->templates_extension;
         
         // gets view file
-        if(strpos($viewFile, $viewsFolder)===0) {
+        if($viewsFolder && strpos($viewFile, $viewsFolder)===0) {
             $viewFile = substr($viewFile, strlen($viewsFolder)+1);
         }
         
