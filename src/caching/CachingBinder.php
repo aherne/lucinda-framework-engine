@@ -1,5 +1,5 @@
 <?php
-require_once("CachingPolicyLocator");
+require_once("CachingPolicyLocator.php");
 
 /**
  * Binds HTTP Caching API with MVC STDOUT API (aka Servlets API) in order to perform cache validation to a HTTP GET request and produce a response accordingly
@@ -49,29 +49,38 @@ class CachingBinder {
                 $httpStatusCode = $validator->validate($policy->getCacheableDriver());
                 if($httpStatusCode==304) {
                     $response->setStatus(304);
-                    $response->getOutputStream()->clear();
+                    $response->getOutputStream()->clear();      
                 } else if($httpStatusCode==412) {
                     $response->setStatus(412);
                     $response->getOutputStream()->clear();
-                } else {
-                    $cacheable = $policy->getCacheableDriver();
-                    
-                    $cacheResponse = new CacheResponse();
-                    if($cacheable->getEtag()) {
-                        $cacheResponse->setEtag($cacheable->getEtag());
-                    }
-                    if($cacheable->getTime()) {
-                        $cacheResponse->setLastModified($cacheable->getTime());
-                    }
-                    if($policy->getExpirationPeriod()) {
-                        $cacheResponse->setMaxAge($policy->getExpirationPeriod());
-                    }
-                    $headers = $cacheResponse->getHeaders();
-                    foreach($headers as $name=>$value) {
-                        $response->headers()->set($name, $value);
-                    }
                 }
+                $this->appendHeaders($policy, $response);
             }
+        }
+    }
+    
+    /**
+     * Append caching headers to response.
+     * 
+     * @param CachingPolicy $policy
+     * @param Response $response
+     */
+    private function appendHeaders(CachingPolicy $policy, Response $response) {
+        $cacheable = $policy->getCacheableDriver();
+        
+        $cacheResponse = new CacheResponse();
+        if($cacheable->getEtag()) {
+            $cacheResponse->setEtag($cacheable->getEtag());
+        }
+        if($cacheable->getTime()) {
+            $cacheResponse->setLastModified($cacheable->getTime());
+        }
+        if($policy->getExpirationPeriod()) {
+            $cacheResponse->setMaxAge($policy->getExpirationPeriod());
+        }
+        $headers = $cacheResponse->getHeaders();
+        foreach($headers as $name=>$value) {
+            $response->headers()->set($name, $value);
         }
     }
 }

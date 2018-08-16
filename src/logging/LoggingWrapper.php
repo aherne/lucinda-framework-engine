@@ -31,6 +31,11 @@ class LoggingWrapper {
 	 */
 	private function setLoggers($loggersPath, SimpleXMLElement $xml) {
 	    $xmlLoggers = (array) $xml;
+	    if(empty($xmlLoggers["logger"])) {
+	        return;
+	    } else if(!is_array($xmlLoggers["logger"])){
+	        $xmlLoggers["logger"] = array(0=>$xmlLoggers["logger"]);
+	    }
 	    foreach($xmlLoggers["logger"] as $xmlProperties) {
 	        // detects class name
             $className = (string) $xmlProperties["class"];

@@ -12,7 +12,7 @@ class NoSQLDataSourceBinder
      */
     public function __construct(Application $application) {
         $environment = $application->getAttribute("environment");
-        $xml = $application->getXML()->servers->sql->$environment;
+        $xml = $application->getXML()->servers->nosql->$environment;
         if(!empty($xml)) {
             if(!$xml->server) throw new ApplicationException("Server not set for environment!");
             $xml = (array) $xml;

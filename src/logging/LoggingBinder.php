@@ -12,16 +12,9 @@ class LoggingBinder
     /**
      * @param Application $application
      */
-    public function __construct(Application $application) {
-        //validates XML
-        $developmentEnvironment = $application->getAttribute("environment");
-        $xml = $application->getXML()->loggers;
-        if(empty($xml) || empty($xml->$developmentEnvironment)) {
-            return;
-        }
-        
+    public function __construct(Application $application) {        
         // finds loggers and return a global wrapper
-        $finder = new LoggingWrapper($xml->$developmentEnvironment);
+        $finder = new LoggingWrapper($application->getXML(), $application->getAttribute("environment"));
         $loggers = $finder->getLoggers();
         if(!empty($loggers)) {
             $this->logger = new MultiLogger($loggers);
