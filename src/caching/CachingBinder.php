@@ -49,13 +49,13 @@ class CachingBinder {
                 $httpStatusCode = $validator->validate($policy->getCacheableDriver());
                 if($httpStatusCode==304) {
                     $response->setStatus(304);
-                    $response->getOutputStream()->clear();      
+                    $response->getOutputStream()->clear();
                 } else if($httpStatusCode==412) {
                     $response->setStatus(412);
                     $response->getOutputStream()->clear();
                 }
-                $this->appendHeaders($policy, $response);
             }
+            $this->appendHeaders($policy, $response);
         }
     }
     
