@@ -41,7 +41,7 @@ class DAOAuthorizationWrapper extends AuthorizationWrapper {
 		load_class((string) $xml->application->paths->dao, $className);
 		$userDAO = new $className();
 		if(!($userDAO instanceof UserAuthorizationDAO)) throw new ServletException("Class must be instance of UserAuthorizationDAO!");
-		$userDAO->setID($currentPage);
+		$userDAO->setID($userID);
 		
 		// performs authorization
 		$authorization = new DAOAuthorization($loggedInCallback, $loggedOutCallback);
