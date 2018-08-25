@@ -7,8 +7,6 @@ require_once("SettingsDetector.php");
  */
 class LocalizationBinder
 {
-    const PARAMETER_NAME = "locale";
-    
     /**
      * @param Application $application
      * @param Request $request
@@ -22,20 +20,25 @@ class LocalizationBinder
         // identifies locale
         $localeDetector = new LocaleDetector($xml, $request);
         
-        // identifies charset
-        $charset = $application->getFormatInfo($application->getDefaultExtension())->getCharacterEncoding();
-        
         // compiles settings
-        $detector = new SettingsDetector($charset, $xml, $localeDetector);
+        $detector = new SettingsDetector($xml, $localeDetector);
         $settings = $detector->getSettings();
-        
-        // sets internationalization settings (throws LocaleException)
-        new Lucinda\Internationalization\Reader($settings);
+        $locale = $settings->getPreferredLocale();
+        if(!file_exists($settings->getFolder().DIRECTORY_SEPARATOR.$settings->getPreferredLocale())) {
+            // if input locale is not supported, use default
+            if(!file_exists($settings->getFolder().DIRECTORY_SEPARATOR.$settings->getDefaultLocale())) {
+                throw new ApplicationException("Translations not set for default locale: ".$settings->getDefaultLocale());
+            }
+            $locale = $settings->getDefaultLocale();
+        }
         
         // saves locale in session
         if($localeDetector->getDetectionMethod() == "session") {
-            $request->getSession()->set(self::PARAMETER_NAME, $settings->getLocale());
+            $request->getSession()->set(LocaleDetector::PARAMETER_NAME, $locale);
         }
+        
+        // sets reader instance
+        Lucinda\Internationalization\Reader::setInstance($settings, ($locale==$settings->getDefaultLocale()));
     }
 }
 
