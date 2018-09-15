@@ -16,5 +16,6 @@ $xml = '
     </application>
 </xml>
 ';
-$compiler = new Lucinda\Framework\ViewLanguageWrapper(simplexml_load_string($xml), "index", "local");
+$xmlObject = simplexml_load_string($xml);
+$compiler = new Lucinda\Framework\ViewLanguageWrapper($xmlObject->application, "index", "local");
 echo __LINE__.": ".(file_get_contents("compilations/index.html")=='My name is <strong>Lucian Popescu</strong>!'?"Y":"N");

@@ -1,7 +1,7 @@
 <xml>
     <application>
         <default_page>index</default_page>
-        <default_extension>html</default_extension>
+        <default_format>html</default_format>
         <auto_routing>0</auto_routing>
         
         <paths>
@@ -13,7 +13,7 @@
         <route url="index" controller="IndexController" view="index"/>
     </routes>
     <formats>
-        <format extension="html" content_type="text/html" charset="UTF-8"/>
+        <format name="html" content_type="text/html" charset="UTF-8"/>
     </formats>
     
     <http_caching expiration="100" no_cache="0" class="TestCacheable">

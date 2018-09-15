@@ -1,5 +1,7 @@
 <?php
 namespace Lucinda\Framework;
+
+require_once("vendor/lucinda/internationalization/src/Reader.php");
 require_once("LocaleDetector.php");
 require_once("SettingsDetector.php");
 

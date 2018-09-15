@@ -1,5 +1,7 @@
 <?php
 namespace Lucinda\Framework;
+
+require_once("vendor/lucinda/security/src/persistence_drivers/SynchronizerTokenPersistenceDriver.php");
 require_once("PersistenceDriverWrapper.php");
 require_once("IPDetector.php");
 

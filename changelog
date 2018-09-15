@@ -1,2 +1,9 @@
 replaced application.paths.loggers with loggers[path]
 replaced application.paths.dao with security[dao_path]
+
+BUG 
+
+servlets: Request. Put this on top:
+
+require_once("attributes/MutableAttributesFactory.php");
+require_once("attributes/ImmutableAttributesFactory.php");

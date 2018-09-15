@@ -1,5 +1,7 @@
 <?php
 namespace Lucinda\Framework;
+
+require_once("vendor/lucinda/view-language/loader.php");
 require_once("ViewLanguageWrapper.php");
 require_once(dirname(__DIR__)."/Json.php");
 

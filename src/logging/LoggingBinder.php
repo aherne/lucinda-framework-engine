@@ -1,5 +1,7 @@
 <?php
 namespace Lucinda\Framework;
+
+require_once("vendor/lucinda/logging/loader.php");
 require_once("LoggingWrapper.php");
 require_once("MultiLogger.php");
 

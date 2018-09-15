@@ -1,5 +1,6 @@
 <?php
 namespace Lucinda\Framework;
+
 require_once("PersistenceDriversDetector.php");
 require_once("UserIdDetector.php");
 require_once("CsrfTokenDetector.php");

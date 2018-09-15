@@ -1,5 +1,7 @@
 <?php
 namespace Lucinda\Framework;
+
+require_once("vendor/lucinda/nosql-data-access/loader.php");
 require_once("NoSQLDataSourceDetection.php");
 
 /**

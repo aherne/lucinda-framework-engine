@@ -1,11 +1,12 @@
 <?php
+set_include_path(dirname(dirname(__DIR__)));
 require_once(str_replace("/test/","/src/",__FILE__));
-require_once(dirname(dirname(__DIR__))."/vendor/lucinda/security/loader.php");
 require_once(dirname(dirname(__DIR__))."/src/security/CsrfTokenDetector.php");
 require_once(dirname(dirname(__DIR__))."/src/security/PersistenceDriversDetector.php");
 require_once(dirname(dirname(__DIR__))."/src/security/SecurityPacket.php");
 
 $xml = simplexml_load_file("configuration.xml");
+$xml = $xml->security;
 
 $csrf = new Lucinda\Framework\CsrfTokenDetector($xml);
 

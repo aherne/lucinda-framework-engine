@@ -1,5 +1,7 @@
 <?php
 namespace Lucinda\Framework;
+
+require_once("vendor/lucinda/http-caching/loader.php");
 require_once("CachingPolicyLocator.php");
 
 /**

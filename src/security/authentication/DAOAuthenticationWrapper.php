@@ -1,5 +1,8 @@
 <?php
 namespace Lucinda\Framework;
+
+require_once("vendor/lucinda/security/src/authentication/DAOAuthentication.php");
+require_once("vendor/lucinda/security/src/token/TokenException.php");
 require_once("AuthenticationWrapper.php");
 require_once("FormRequestValidator.php");
 

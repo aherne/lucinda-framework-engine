@@ -1,5 +1,7 @@
 <?php
 namespace Lucinda\Framework;
+
+require_once("vendor/lucinda/sql-data-access/loader.php");
 require_once("SQLDataSourceDetection.php");
 
 /**

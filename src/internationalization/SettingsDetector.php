@@ -32,7 +32,7 @@ class SettingsDetector {
     /**
      * Gets compiled Internationalization API Settings object
      *
-     * @return \\Lucinda\Internationalization\Settings
+     * @return \Lucinda\Internationalization\Settings
      */
     public function getSettings() {
         return $this->settings;

@@ -14,6 +14,5 @@ $_SERVER = array (
     'REQUEST_URI' => '/index'
 );
 
-require_once(dirname(__DIR__)."/vendor/lucinda/mvc/src/AttributesFactory.php");
 require_once(dirname(__DIR__)."/vendor/lucinda/mvc/src/Request.php");
-require_once(dirname(__DIR__)."/vendor/lucinda/mvc/src/implemented/PageValidator.php");
+require_once(dirname(__DIR__)."/vendor/lucinda/mvc/src/request/PageValidator.php");

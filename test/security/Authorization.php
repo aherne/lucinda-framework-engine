@@ -1,11 +1,12 @@
 <?php
+set_include_path(dirname(dirname(__DIR__)));
+require_once("vendor/lucinda/mvc/src/exceptions/XMLException.php");
 require_once(str_replace("/test/","/src/",__FILE__));
-require_once(dirname(dirname(__DIR__))."/vendor/lucinda/security/loader.php");
-require_once(dirname(dirname(__DIR__))."/src/security/SecurityPacket.php");
 
 $_SERVER["REQUEST_METHOD"] = "GET";
 
 $xml = simplexml_load_file("configuration.xml");
+$xml = $xml->security;
 
 // authorization success
 new Lucinda\Framework\Authorization($xml, "index", "/", 1);

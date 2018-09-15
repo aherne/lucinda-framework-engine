@@ -1,5 +1,8 @@
 <?php
 namespace Lucinda\Framework;
+
+require_once("vendor/lucinda/security/src/authentication/AuthenticationResultStatus.php");
+require_once("vendor/lucinda/security/src/authorization/AuthorizationResultStatus.php");
 /**
  * Holds information about authentication/authorization outcomes incompatible with continuing execution (requiring a redirection).
  */

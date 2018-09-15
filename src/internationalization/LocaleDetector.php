@@ -60,7 +60,7 @@ class LocaleDetector {
         $this->detectedLocale = $this->defaultLocale;
         switch($this->detectionMethod) {
             case "header":
-                $header = $request->getHeader("Accept-Language");
+                $header = $request->headers()->get("Accept-Language");
                 if($header) {
                     $locale = substr($header, 0, strpos($header, ","));
                     $slashPosition = strpos($locale, "-");

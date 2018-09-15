@@ -1,11 +1,8 @@
 <xml>
     <application>
         <default_page>index</default_page>
-        <default_extension>html</default_extension>
+        <default_format>html</default_format>
         <auto_routing>0</auto_routing>
-        <paths>
-        	<dao>dao</dao>
-        </paths>
     </application>
     <routes>
         <route url="login"/>
@@ -15,9 +12,9 @@
         <route url="missing"/>
     </routes>
     <formats>
-        <format extension="html" content_type="text/html" charset="UTF-8"/>
+        <format name="html" content_type="text/html" charset="UTF-8"/>
     </formats>
-    <security>
+    <security dao_path="dao">
         <csrf secret="asdf"/>
         <persistence>
             <synchronizer_token secret="rrwe"/>

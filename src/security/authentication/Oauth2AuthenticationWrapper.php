@@ -1,6 +1,9 @@
 <?php
 namespace Lucinda\Framework;
+
 require_once("vendor/lucinda/oauth2-client/loader.php");
+require_once("vendor/lucinda/security/src/authentication/Oauth2Authentication.php");
+require_once("vendor/lucinda/security/src/token/TokenException.php");
 require_once("AuthenticationWrapper.php");
 
 /**
