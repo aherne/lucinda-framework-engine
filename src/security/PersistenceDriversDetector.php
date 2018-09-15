@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 /**
  * Detects mechanisms for authenticated state persistence set in security.persistence XML tag.
  */
@@ -6,19 +7,19 @@ class PersistenceDriversDetector {
     private $persistenceDrivers;
     
     /**
-     * @param SimpleXMLElement $xml XML that contains security.persistence tag.
+     * @param \SimpleXMLElement $xml XML that contains security.persistence tag.
      */
-    public function __construct(SimpleXMLElement $xml) {
+    public function __construct(\SimpleXMLElement $xml) {
         $this->setPersistenceDrivers($xml);
     }
     
     /**
      * Detects persistence drivers based on XML
      * 
-     * @param SimpleXMLElement $xml XML that contains security.persistence tag.
+     * @param \SimpleXMLElement $xml XML that contains security.persistence tag.
      */
-    private function setPersistenceDrivers(SimpleXMLElement $xml) {
-        $xml = $xml->security->persistence;
+    private function setPersistenceDrivers(\SimpleXMLElement $xml) {
+        $xml = $xml->persistence;
         if(empty($xml)) return; // it is allowed for elements to not persist
         
         if($xml->session) {
@@ -49,7 +50,7 @@ class PersistenceDriversDetector {
     /**
      * Gets detected drivers for authenticated state persistence.
      * 
-     * @return PersistenceDriver[]
+     * @return \Lucinda\WebSecurity\PersistenceDriver[]
      */
     public function getPersistenceDrivers() {
         return $this->persistenceDrivers;

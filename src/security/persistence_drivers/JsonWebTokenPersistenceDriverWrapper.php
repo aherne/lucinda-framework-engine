@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("PersistenceDriverWrapper.php");
 
 /**
@@ -13,9 +14,9 @@ class JsonWebTokenPersistenceDriverWrapper extends PersistenceDriverWrapper {
 	 * {@inheritDoc}
 	 * @see PersistenceDriverWrapper::setDriver()
 	 */
-	protected function setDriver(SimpleXMLElement $xml) {
+	protected function setDriver(\SimpleXMLElement $xml) {
 		$secret = (string) $xml["secret"];
-		if(!$secret) throw new ApplicationException("'secret' key of security.persistence.json_web_token tag is mandatory!");
+		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("'secret' key of security.persistence.json_web_token tag is mandatory!");
 		
 		$expirationTime = (integer) $xml["expiration"];
 		if(!$expirationTime) $expirationTime = self::DEFAULT_EXPIRATION_TIME;
@@ -23,6 +24,6 @@ class JsonWebTokenPersistenceDriverWrapper extends PersistenceDriverWrapper {
 		$regenerationTime = (integer) $xml["regeneration"];
 		if(!$regenerationTime) $regenerationTime = self::DEFAULT_REGENERATION_TIME;
 		
-		$this->driver = new JsonWebTokenPersistenceDriver($secret, $expirationTime, $regenerationTime);
+		$this->driver = new \Lucinda\WebSecurity\JsonWebTokenPersistenceDriver($secret, $expirationTime, $regenerationTime);
 	}
 }

@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 /**
  * Encapsulates data source detection (itself encapsulating database server settings) from an XML tag
  */
@@ -7,19 +8,19 @@ abstract class DataSourceDetection {
 
     /**
      * DataSourceDetection constructor.
-     * @param SimpleXMLElement $databaseInfo XML tag containing data source info.
+     * @param \SimpleXMLElement $databaseInfo XML tag containing data source info.
      */
-    public function __construct(SimpleXMLElement $databaseInfo) {
+    public function __construct(\SimpleXMLElement $databaseInfo) {
         $this->setDataSource($databaseInfo);
     }
 
     /**
      * Detects data source (itself encapsulating database server settings) from an XML tag
      *
-     * @param SimpleXMLElement $databaseInfo
+     * @param \SimpleXMLElement $databaseInfo
      * @return mixed
      */
-    abstract protected function setDataSource(SimpleXMLElement $databaseInfo);
+    abstract protected function setDataSource(\SimpleXMLElement $databaseInfo);
 
     /**
      * Gets detected data source

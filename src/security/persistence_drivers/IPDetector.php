@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 /**
  * Detects client IP based on contents of $_SERVER superglobal
  */

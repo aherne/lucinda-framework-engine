@@ -1,0 +1,2 @@
+replaced application.paths.loggers with loggers[path]
+replaced application.paths.dao with security[dao_path]

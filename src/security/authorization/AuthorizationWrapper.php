@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 /**
  * Defines an abstract authorization mechanism that works with AuthenticationResult
  */
@@ -8,16 +9,16 @@ abstract class AuthorizationWrapper {
 	/**
 	 * Sets result of authorization attempt.
 	 * 
-	 * @param AuthorizationResult $result
+	 * @param \Lucinda\WebSecurity\AuthorizationResult $result
 	 */
-	protected function setResult(AuthorizationResult $result) {
+	protected function setResult(\Lucinda\WebSecurity\AuthorizationResult $result) {
 		$this->result = $result;
 	}
 	
 	/**
 	 * Gets result of authorization attempt
 	 * 
-	 * @return AuthorizationResult
+	 * @return \Lucinda\WebSecurity\AuthorizationResult
 	 */
 	public function getResult() {
 		return $this->result;

@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("vendor/lucinda/oauth2-client/loader.php");
 require_once("AuthenticationWrapper.php");
 
@@ -18,31 +19,31 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 	/**
 	 * Creates an object
 	 * 
-	 * @param SimpleXMLElement $xml Contents of security.authentication.oauth2 tag @ configuration.xml.
+	 * @param \SimpleXMLElement $xml Contents of security.authentication.oauth2 tag @ configuration.xml.
 	 * @param string $currentPage Current page requested.
-	 * @param PersistenceDriver[] $persistenceDrivers List of drivers to persist information across requests.
+	 * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers List of drivers to persist information across requests.
 	 * @param CsrfTokenDetector $csrf Object that performs CSRF token checks.
-	 * @throws ApplicationException If XML is malformed.
-	 * @throws AuthenticationException If one or more persistence drivers are not instanceof PersistenceDriver
-	 * @throws TokenException If CSRF checks fail.
-	 * @throws SQLConnectionException If connection to database server fails.
-	 * @throws SQLStatementException If query to database server fails.
-	 * @throws OAuth2\ClientException When oauth2 local client sends malformed requests to oauth2 server.
-	 * @throws OAuth2\ServerException When oauth2 remote server answers with an error.
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
+	 * @throws \Lucinda\WebSecurity\AuthenticationException If one or more persistence drivers are not instanceof PersistenceDriver
+	 * @throws \Lucinda\WebSecurity\TokenException If CSRF checks fail.
+	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
+	 * @throws \OAuth2\ClientException When oauth2 local client sends malformed requests to oauth2 server.
+	 * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
 	 */
-	public function __construct(SimpleXMLElement $xml, $currentPage, $persistenceDrivers, CsrfTokenDetector $csrf) {
+	public function __construct(\SimpleXMLElement $xml, $currentPage, $persistenceDrivers, CsrfTokenDetector $csrf) {
 		// set drivers
-		$this->xml = $xml->security->authentication->oauth2;
+		$this->xml = $xml->authentication->oauth2;
 		$this->setDrivers();
 		
 		// loads and instances DAO object
-		$className = (string) $xml->security->authentication->oauth2["dao"];
-		load_class((string) $xml->application->paths->dao, $className);
+		$className = (string) $xml->authentication->oauth2["dao"];
+		load_class((string) $xml["dao_path"], $className);
 		$daoObject = new $className();
-		if(!($daoObject instanceof Oauth2AuthenticationDAO)) throw new ServletException("Class must be instance of Oauth2AuthenticationDAO!");
+		if(!($daoObject instanceof \Lucinda\WebSecurity\Oauth2AuthenticationDAO)) throw new  \Lucinda\MVC\STDOUT\ServletException("Class must be instance of Oauth2AuthenticationDAO!");
 		
 		// setup class properties
-		$this->authentication = new Oauth2Authentication($daoObject, $persistenceDrivers);
+		$this->authentication = new \Lucinda\WebSecurity\Oauth2Authentication($daoObject, $persistenceDrivers);
 
 		// checks if a login action was requested, in which case it forwards
 		$xmlLocal = $this->xml->driver;
@@ -66,15 +67,15 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 	 * Logs user in (and registers if not found)
 	 * 
 	 * @param string $driverName Name of oauth2 driver (eg: facebook, google) that must exist as security.authentication.oauth2.{DRIVER} tag @ configuration.xml.
-	 * @param SimpleXMLElement $element Object that holds XML info about driver
+	 * @param \SimpleXMLElement $element Object that holds XML info about driver
 	 * @param CsrfTokenDetector $csrf Object that performs CSRF token checks. 
-	 * @throws ApplicationException If XML is malformed.
-	 * @throws AuthenticationException If one or more persistence drivers are not instanceof PersistenceDriver
-	 * @throws TokenException If CSRF checks fail.
-	 * @throws SQLConnectionException If connection to database server fails.
-	 * @throws SQLStatementException If query to database server fails.
-	 * @throws OAuth2\ClientException When oauth2 local client sends malformed requests to oauth2 server.
-	 * @throws OAuth2\ServerException When oauth2 remote server answers with an error.
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
+	 * @throws \Lucinda\WebSecurity\AuthenticationException If one or more persistence drivers are not instanceof PersistenceDriver
+	 * @throws \Lucinda\WebSecurity\TokenException If CSRF checks fail.
+	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
+	 * @throws \OAuth2\ClientException When oauth2 local client sends malformed requests to oauth2 server.
+	 * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
 	 */
 	private function login($driverName, $element, CsrfTokenDetector $csrf) {
 		// detect class and load file
@@ -92,7 +93,7 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 			// check state
 			if($driverName != "VK") { // hardcoding: VK sends wrong state
 				if(empty($_GET['state']) || !$csrf->isValid($_GET['state'], 0)) {
-					throw new TokenException("CSRF token is invalid or missing!");
+				    throw new \Lucinda\WebSecurity\TokenException("CSRF token is invalid or missing!");
 				}	
 			}
 			
@@ -109,7 +110,7 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 			else $targetScopes = $loginDriver->getDefaultScopes();
 		
 			// set result
-			$result = new AuthenticationResult(AuthenticationResultStatus::DEFERRED);
+			$result = new \Lucinda\WebSecurity\AuthenticationResult(\Lucinda\WebSecurity\AuthenticationResultStatus::DEFERRED);
 			$result->setCallbackURI($this->drivers[$driverName]->getAuthorizationCodeEndpoint($targetScopes, $csrf->generate(0)));
 			$this->result = $result;
 		}
@@ -118,8 +119,8 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 	/**
 	 * Logs user out and empties all tokens for that user.
 	 * 
-	 * @throws SQLConnectionException If connection to database server fails.
-	 * @throws SQLStatementException If query to database server fails.
+	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
 	 */
 	private function logout() {
 		$loginPage = (string) $this->xml["login"];
@@ -132,36 +133,36 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 	/**
 	 * Builds an oauth2 client information object based on contents of security.authentication.oauth2.{DRIVER} tag @ configuration.xml.
 	 * 
-	 * @param SimpleXMLElement $xml Contents of security.authentication.oauth2.{DRIVER} tag @ configuration.xml.
-	 * @throws ApplicationException If XML is malformed.
+	 * @param \SimpleXMLElement $xml Contents of security.authentication.oauth2.{DRIVER} tag @ configuration.xml.
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
 	 * @return \OAuth2\ClientInformation Encapsulates information about client that must match that in oauth2 remote server.
 	 */
-	private function getClientInformation(SimpleXMLElement $xml) {
+	private function getClientInformation(\SimpleXMLElement $xml) {
 		// get client id and secret from xml
 		$clientID = (string) $xml["client_id"];
 		$clientSecret = (string) $xml["client_secret"];
-		if(!$clientID || !$clientSecret) throw new ApplicationException("Tags 'client_id' and 'client_secret' are mandatory!");
+		if(!$clientID || !$clientSecret) throw new \Lucinda\MVC\STDOUT\XMLException("Tags 'client_id' and 'client_secret' are mandatory!");
 		
 		// callback page is same as driver login page
 		$callbackPage = (string) $xml["callback"];
-		if(!$callbackPage) throw new ApplicationException("Tag 'callback' is mandatory!");
+		if(!$callbackPage) throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'callback' is mandatory!");
 		
 		$callbackPage = (isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER['HTTP_HOST']."/".$callbackPage;
-		return new OAuth2\ClientInformation($clientID, $clientSecret, $callbackPage);
+		return new \OAuth2\ClientInformation($clientID, $clientSecret, $callbackPage);
 	}
 	
 	/**
 	 * Gets driver to interface OAuth2 operations with @ OAuth2Client API
 	 * 
 	 * @param string $driverName Name of OAuth2 vendor (eg: facebook)
-	 * @param OAuth2\ClientInformation $clientInformation Object that encapsulates application credentials
-	 * @throws ApplicationException If vendor is not found on disk.
-	 * @return OAuth2\Driver Instance of driver that abstracts OAuth2 operations.
+	 * @param \OAuth2\ClientInformation $clientInformation Object that encapsulates application credentials
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If vendor is not found on disk.
+	 * @return \OAuth2\Driver Instance of driver that abstracts OAuth2 operations.
 	 */
-	private function getAPIDriver($driverName, OAuth2\ClientInformation $clientInformation) {
+	private function getAPIDriver($driverName, \OAuth2\ClientInformation $clientInformation) {
 		$driverClass = $driverName."Driver";
 		$driverFilePath = "vendor/lucinda/oauth2-client/drivers/".$driverClass.".php";
-		if(!file_exists($driverFilePath)) throw new ServletException("Driver class not found: ".$driverFilePath);
+		if(!file_exists($driverFilePath)) throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
 		require_once($driverFilePath);
 		return new $driverClass($clientInformation);
 	}
@@ -170,13 +171,13 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 	 * Gets driver that binds OAuthLogin @ Security API to OAuth2\Driver @ OAuth2Client API
 	 * 
 	 * @param string $driverName Name of OAuth2 vendor (eg: facebook)
-	 * @throws ApplicationException If vendor is not found on disk.
-	 * @return OAuth2Driver Instance that performs OAuth2 login and collects user information.
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If vendor is not found on disk.
+	 * @return \Lucinda\WebSecurity\OAuth2Driver Instance that performs OAuth2 login and collects user information.
 	 */
 	private function getLoginDriver($driverName) {
 		$driverClass = $driverName."SecurityDriver";
 		$driverFilePath = "application/models/oauth2/".$driverClass.".php";
-		if(!file_exists($driverFilePath)) throw new ServletException("Driver class not found: ".$driverFilePath);
+		if(!file_exists($driverFilePath)) throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
 		require_once($driverFilePath);
 		return new $driverClass($this->drivers[$driverName]);
 	}
@@ -184,19 +185,19 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 	/**
 	 * Sets OAuth2\Driver instances based on XML
 	 *
-	 * @throws ApplicationException If required tags aren't found in XML / do not reflect on disk
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If required tags aren't found in XML / do not reflect on disk
 	 */
 	private function setDrivers() {
 		$xmlLocal = $this->xml->driver;
 		foreach($xmlLocal as $element) {
 			$driverName = (string) $element["name"];
-			if(!$driverName) throw new ApplicationException("Property 'name' of oauth2.driver tag is mandatory!");
+			if(!$driverName) throw new \Lucinda\MVC\STDOUT\XMLException("Property 'name' of oauth2.driver tag is mandatory!");
 		
 			$clientInformation = $this->getClientInformation($element);
 			$this->drivers[$driverName] = $this->getAPIDriver($driverName, $clientInformation);
 			if($driverName == "GitHub") {
 				$applicationName = (string) $element["application_name"];
-				if(!$applicationName) throw new ApplicationException("Property 'application_name' of oauth2.driver tag is mandatory for GitHub!");
+				if(!$applicationName) throw new \Lucinda\MVC\STDOUT\XMLException("Property 'application_name' of oauth2.driver tag is mandatory for GitHub!");
 				$this->drivers[$driverName]->setApplicationName($applicationName);
 			}
 		}

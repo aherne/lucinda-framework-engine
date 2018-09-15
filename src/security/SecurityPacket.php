@@ -1,8 +1,9 @@
 <?php
+namespace Lucinda\Framework;
 /**
  * Holds information about authentication/authorization outcomes incompatible with continuing execution (requiring a redirection).
  */
-class SecurityPacket extends Exception {
+class SecurityPacket extends \Exception {
 	private $callback;
 	private $status;
 	private $accessToken;
@@ -33,28 +34,28 @@ class SecurityPacket extends Exception {
 	public function setStatus($status) {
 		$result = "";
 		switch($status) {
-			case AuthenticationResultStatus::LOGIN_OK:
+		    case \Lucinda\WebSecurity\AuthenticationResultStatus::LOGIN_OK:
 				$result= "login_ok";
 				break;
-			case AuthenticationResultStatus::LOGOUT_OK:
+		    case \Lucinda\WebSecurity\AuthenticationResultStatus::LOGOUT_OK:
 				$result= "logout_ok";
 				break;
-			case AuthenticationResultStatus::DEFERRED:
+		    case \Lucinda\WebSecurity\AuthenticationResultStatus::DEFERRED:
 				$result= "redirect";
 				break;
-			case AuthenticationResultStatus::LOGIN_FAILED:
+		    case \Lucinda\WebSecurity\AuthenticationResultStatus::LOGIN_FAILED:
 				$result= "login_failed";
 				break;
-			case AuthenticationResultStatus::LOGOUT_FAILED:
+		    case \Lucinda\WebSecurity\AuthenticationResultStatus::LOGOUT_FAILED:
 				$result= "logout_failed";
 				break;
-			case AuthorizationResultStatus::UNAUTHORIZED:
+			case \Lucinda\WebSecurity\AuthorizationResultStatus::UNAUTHORIZED:
 				$result= "unauthorized";
 				break;
-			case AuthorizationResultStatus::FORBIDDEN:
+			case \Lucinda\WebSecurity\AuthorizationResultStatus::FORBIDDEN:
 				$result= "forbidden";
 				break;
-			case AuthorizationResultStatus::NOT_FOUND:
+			case \Lucinda\WebSecurity\AuthorizationResultStatus::NOT_FOUND:
 				$result= "not_found";
 				break;
 			default:
@@ -76,13 +77,13 @@ class SecurityPacket extends Exception {
 	 * Sets access token (useful for stateless applications).
 	 * 
 	 * @param mixed $userID Authenticated user id.
-	 * @param PersistenceDriver[] $persistenceDrivers List of persistence drivers registered.
+	 * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers List of persistence drivers registered.
 	 */
 	public function setAccessToken($userID, $persistenceDrivers) {
 		$token = "";
 		if($userID) {
 			foreach($persistenceDrivers as $persistenceDriver) {
-				if($persistenceDriver instanceof TokenPersistenceDriver) {
+			    if($persistenceDriver instanceof \Lucinda\WebSecurity\TokenPersistenceDriver) {
 					$token = $persistenceDriver->getAccessToken();
 				}
 			}

@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("AuthenticationWrapper.php");
 
 /**
@@ -162,17 +163,17 @@ class FormRequestValidator {
 	/**
 	 * Creates an object.
 	 *
-	 * @param SimpleXMLElement $xml Contents of security.authentication.form tag @ configuration.xml.
-	 * @throws ApplicationException If XML is malformed.
+	 * @param \SimpleXMLElement $xml Contents of security.authentication.form tag @ configuration.xml.
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
 	 */
-	public function __construct(SimpleXMLElement $xml) {
-		$this->xml = $xml->security->authentication->form;
+	public function __construct(\SimpleXMLElement $xml) {
+		$this->xml = $xml->authentication->form;
 	}
 	
 	/**
 	 * Sets up login data, if operation was requested
 	 * 
-	 * @throws ServletException If request doesn't come with mandatory parameters.
+	 * @throws  \Lucinda\MVC\STDOUT\ServletException If request doesn't come with mandatory parameters.
 	 * @param string $currentPage Current page requested.
 	 * @return LoginRequest|null
 	 */
@@ -201,11 +202,11 @@ class FormRequestValidator {
 		
 		// get parameter values
 		$username = (!empty($_POST[$parameterUsername])?$_POST[$parameterUsername]:"");
-		if(!$username) throw new ServletException("POST parameter missing: ".$parameterUsername);
+		if(!$username) throw new  \Lucinda\MVC\STDOUT\ServletException("POST parameter missing: ".$parameterUsername);
 		$loginRequest->setUsername($username);
 		
 		$password = (!empty($_POST[$parameterPassword])?$_POST[$parameterPassword]:"");
-		if(!$password) throw new ServletException("POST parameter missing: ".$parameterPassword);
+		if(!$password) throw new  \Lucinda\MVC\STDOUT\ServletException("POST parameter missing: ".$parameterPassword);
 		$loginRequest->setPassword($password);
 		
 		if($parameterRememberMe) {
@@ -218,7 +219,7 @@ class FormRequestValidator {
 	/**
 	 * Sets up logout data, if operation was requested
 	 *
-	 * @throws ApplicationException If XML is malformed.
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
 	 * @return LogoutRequest|null
 	 */
 	public function logout($currentPage) {

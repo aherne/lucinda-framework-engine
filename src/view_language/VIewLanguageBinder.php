@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("ViewLanguageWrapper.php");
 require_once(dirname(__DIR__)."/Json.php");
 
@@ -7,12 +8,12 @@ require_once(dirname(__DIR__)."/Json.php");
  */
 class ViewLanguageBinder {
     /**
-     * @param Application $application
-     * @param Response $response
+     * @param \Lucinda\MVC\STDOUT\Application $application
+     * @param \Lucinda\MVC\STDOUT\Response $response
      */
-    public function __construct(Application $application, Response $response) {        
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Response $response) {        
         // get compilation file
-        $wrapper = new ViewLanguageWrapper($application->getXML(), $response->getView(), $application->getAttribute("environment"));
+        $wrapper = new ViewLanguageWrapper($application->getTag("application"), $response->getView(), $application->attributes()->get("environment"));
         $compilationFile = $wrapper->getCompilationFile();
         
         // converts objects sent to response into array (throws JsonException if object is non-convertible)

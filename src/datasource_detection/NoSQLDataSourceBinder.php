@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("NoSQLDataSourceDetection.php");
 
 /**
@@ -7,24 +8,24 @@ require_once("NoSQLDataSourceDetection.php");
 class NoSQLDataSourceBinder
 {
     /**
-     * @param Application $application
-     * @throws ApplicationException If XML is invalid.
+     * @param \Lucinda\MVC\STDOUT\Application $application
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid.
      */
-    public function __construct(Application $application) {
-        $environment = $application->getAttribute("environment");
-        $xml = $application->getXML()->servers->nosql->$environment;
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application) {
+        $environment = $application->getAttribute->attributes()->get("environment");
+        $xml = $application->getTag("servers")->nosql->$environment;
         if(!empty($xml)) {
-            if(!$xml->server) throw new ApplicationException("Server not set for environment!");
+            if(!$xml->server) throw new \Lucinda\MVC\STDOUT\XMLException("Server not set for environment!");
             $xml = (array) $xml;
             if(is_array($xml["server"])) {
                 foreach($xml["server"] as $element) {
-                    if(!isset($element["name"])) throw new ApplicationException("Attribute 'name' not set for <server> tag!");
+                    if(!isset($element["name"])) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'name' not set for <server> tag!");
                     $dsd = new NoSQLDataSourceDetection($element);
-                    NoSQLConnectionFactory::setDataSource((string) $element["name"], $dsd->getDataSource());
+                    \Lucinda\NoSQL\ConnectionFactory::setDataSource((string) $element["name"], $dsd->getDataSource());
                 }
             } else {
                 $dsd = new NoSQLDataSourceDetection($xml["server"]);
-                NoSQLConnectionSingleton::setDataSource($dsd->getDataSource());
+                \Lucinda\NoSQL\ConnectionSingleton::setDataSource($dsd->getDataSource());
             }
         }
     }

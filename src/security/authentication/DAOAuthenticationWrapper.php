@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("AuthenticationWrapper.php");
 require_once("FormRequestValidator.php");
 
@@ -11,25 +12,25 @@ class DAOAuthenticationWrapper extends AuthenticationWrapper {
 	/**
 	 * Creates an object.
 	 * 
-	 * @param SimpleXMLElement $xml Contents of security.authentication.form tag @ configuration.xml.
+	 * @param \SimpleXMLElement $xml Contents of security.authentication.form tag @ configuration.xml.
 	 * @param string $currentPage Current page requested.
-	 * @param PersistenceDriver[] $persistenceDrivers List of drivers to persist information across requests.
+	 * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers List of drivers to persist information across requests.
 	 * @param CsrfTokenDetector $csrf Object that performs CSRF token checks.
-	 * @throws ApplicationException If XML is malformed.
-	 * @throws AuthenticationException If one or more persistence drivers are not instanceof PersistenceDriver
-	 * @throws TokenException If CSRF checks fail
-	 * @throws SQLConnectionException If connection to database server fails.
-	 * @throws SQLStatementException If query to database server fails.
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
+	 * @throws \Lucinda\WebSecurity\AuthenticationException If one or more persistence drivers are not instanceof PersistenceDriver
+	 * @throws \Lucinda\WebSecurity\TokenException If CSRF checks fail
+	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
 	 */
-	public function __construct(SimpleXMLElement $xml, $currentPage, $persistenceDrivers, CsrfTokenDetector $csrf) {
+	public function __construct(\SimpleXMLElement $xml, $currentPage, $persistenceDrivers, CsrfTokenDetector $csrf) {
 		// loads and instances DAO object
-	    $className = (string) $xml->security->authentication->form["dao"];
-	    load_class((string) $xml->application->paths->dao, $className);
+	    $className = (string) $xml->authentication->form["dao"];
+	    load_class((string) $xml["dao_path"], $className);
 		$daoObject = new $className();
-		if(!($daoObject instanceof UserAuthenticationDAO)) throw new ServletException("Class must be instance of UserAuthenticationDAO!");
+		if(!($daoObject instanceof \Lucinda\WebSecurity\UserAuthenticationDAO)) throw new  \Lucinda\MVC\STDOUT\ServletException("Class must be instance of UserAuthenticationDAO!");
 
 		// starts dao-based form authentication
-		$this->driver = new DAOAuthentication($daoObject, $persistenceDrivers);
+		$this->driver = new \Lucinda\WebSecurity\DAOAuthentication($daoObject, $persistenceDrivers);
 
 		// setup class properties
 		$validator = new FormRequestValidator($xml);
@@ -38,7 +39,7 @@ class DAOAuthenticationWrapper extends AuthenticationWrapper {
 		if($request = $validator->login($currentPage)) {
 			// check csrf token
 			if(empty($_POST['csrf']) || !$csrf->isValid($_POST['csrf'], 0)) {
-				throw new TokenException("CSRF token is invalid or missing!");
+			    throw new \Lucinda\WebSecurity\TokenException("CSRF token is invalid or missing!");
 			}
 			$this->login($request);
 		}
@@ -53,8 +54,8 @@ class DAOAuthenticationWrapper extends AuthenticationWrapper {
 	 * Logs user in authentication driver.
 	 * 
 	 * @param LoginRequest $request Encapsulates login request data.
-	 * @throws SQLConnectionException If connection to database server fails.
-	 * @throws SQLStatementException If query to database server fails.
+	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
 	 */
 	private function login(LoginRequest $request) {		
 		// set result
@@ -70,8 +71,8 @@ class DAOAuthenticationWrapper extends AuthenticationWrapper {
 	 * Logs user out authentication driver.
 	 * 
 	 * @param LogoutRequest $request Encapsulates logout request data.
-	 * @throws SQLConnectionException If connection to database server fails.
-	 * @throws SQLStatementException If query to database server fails.
+	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
 	 */
 	private function logout(LogoutRequest $request) {
 		// set result

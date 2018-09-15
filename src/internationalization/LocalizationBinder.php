@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("LocaleDetector.php");
 require_once("SettingsDetector.php");
 
@@ -8,14 +9,14 @@ require_once("SettingsDetector.php");
 class LocalizationBinder
 {
     /**
-     * @param Application $application
-     * @param Request $request
-     * @throws ApplicationException
+     * @param \Lucinda\MVC\STDOUT\Application $application
+     * @param \Lucinda\MVC\STDOUT\Request $request
+     * @throws \Lucinda\MVC\STDOUT\XMLException
      */
-    public function __construct(Application $application, Request $request) {
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request) {
         // parses XML
-        $xml = $application->getXML()->internationalization;
-        if(empty($xml)) throw new ApplicationException("Tag missing/empty in configuration.xml: internationalization");
+        $xml = $application->getTag("internationalization");
+        if(empty($xml)) throw new \Lucinda\MVC\STDOUT\XMLException("Tag missing/empty in configuration.xml: internationalization");
         
         // identifies locale
         $localeDetector = new LocaleDetector($xml, $request);
@@ -27,7 +28,7 @@ class LocalizationBinder
         if(!file_exists($settings->getFolder().DIRECTORY_SEPARATOR.$settings->getPreferredLocale())) {
             // if input locale is not supported, use default
             if(!file_exists($settings->getFolder().DIRECTORY_SEPARATOR.$settings->getDefaultLocale())) {
-                throw new ApplicationException("Translations not set for default locale: ".$settings->getDefaultLocale());
+                throw new \Lucinda\MVC\STDOUT\XMLException("Translations not set for default locale: ".$settings->getDefaultLocale());
             }
             $locale = $settings->getDefaultLocale();
         }
@@ -38,7 +39,7 @@ class LocalizationBinder
         }
         
         // sets reader instance
-        Lucinda\Internationalization\Reader::setInstance($settings, ($locale==$settings->getDefaultLocale()));
+        \Lucinda\Internationalization\Reader::setInstance($settings, ($locale==$settings->getDefaultLocale()));
     }
 }
 

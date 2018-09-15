@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once(dirname(__DIR__)."/ClassLoader.php");
 require_once("SecurityPacket.php");
 
@@ -9,30 +10,30 @@ class Authorization {
     /**
      * Runs authorization logic.
      *
-     * @param SimpleXMLElement $xml XML holding information relevant to authorization (above all via security.authorization tag)
+     * @param \SimpleXMLElement $xml XML holding information relevant to authorization (above all via security.authorization tag)
      * @param string $page Route requested by client
-     * @param string $contextPath Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
      * @param integer|string $userID Unique logged in user identifier (generally a number) or null (if user performing request isn't authenticated)
-     * @throws ApplicationException If XML is invalid
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
      * @throws SecurityPacket If authorization encounters a situation where execution cannot continue and redirection is required
      */
-    public function __construct(SimpleXMLElement $xml, $page, $contextPath, $userID) {
+    public function __construct(\SimpleXMLElement $xml, $page, $contextPath, $userID) {
         $wrapper = $this->getWrapper($xml, $page, $userID);
         $this->authorize($wrapper, $contextPath);
     }
     /**
      * Gets driver that performs authorization from security.authorization XML tag.
      *
-     * @param SimpleXMLElement $xmlRoot XML holding information relevant to authorization (above all via security.authorization tag)
+     * @param \SimpleXMLElement $xmlRoot XML holding information relevant to authorization (above all via security.authorization tag)
      * @param string $page Route requested by client
      * @param mixed $userID Unique logged in user identifier (generally a number) or null (if user performing request isn't authenticated)
-     * @throws ApplicationException If XML is invalid
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
      * @return AuthorizationWrapper
      */
-    private function getWrapper(SimpleXMLElement $xmlRoot, $page, $userID) {
-        $xml = $xmlRoot->security->authorization;
+    private function getWrapper(\SimpleXMLElement $xmlRoot, $page, $userID) {
+        $xml = $xmlRoot->authorization;
         if(empty($xml)) {
-            throw new ApplicationException("Entry missing in configuration.xml: security.authorization");
+            throw new \Lucinda\MVC\STDOUT\XMLException("Entry missing in configuration.xml: security.authorization");
         }
         
         $wrapper = null;
@@ -50,7 +51,7 @@ class Authorization {
                 $page,
                 $userID);
         }
-        if(!$wrapper) throw new ApplicationException("No authorization method chosen!");
+        if(!$wrapper) throw new \Lucinda\MVC\STDOUT\XMLException("No authorization method chosen!");
         return $wrapper;
     }
     
@@ -58,11 +59,11 @@ class Authorization {
      * Calls authorization driver detected to perform user authorization to requested route.
      *
      * @param AuthenticationWrapper $wrapper Driver that performs authentication (eg: via form & database).
-     * @param string $contextPath Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
      * @throws SecurityPacket If authorization encounters a situation where execution cannot continue and redirection is required
      */
     private function authorize(AuthorizationWrapper $wrapper, $contextPath) {
-        if($wrapper->getResult()->getStatus() == AuthorizationResultStatus::OK) {
+        if($wrapper->getResult()->getStatus() == \Lucinda\WebSecurity\AuthorizationResultStatus::OK) {
             // authorization was successful
             return;
         } else {

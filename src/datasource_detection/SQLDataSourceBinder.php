@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("SQLDataSourceDetection.php");
 
 /**
@@ -7,24 +8,24 @@ require_once("SQLDataSourceDetection.php");
 class SQLDataSourceBinder
 {
     /**
-     * @param Application $application
-     * @throws ApplicationException If XML is invalid.
+     * @param \Lucinda\MVC\STDOUT\Application $application
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid.
      */
-    public function __construct(Application $application) {        
-        $environment = $application->getAttribute("environment");
-        $xml = $application->getXML()->servers->sql->$environment;
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application) {        
+        $environment = $application->attributes()->get("environment");
+        $xml = $application->getTag("servers")->sql->$environment;
         if(!empty($xml)) {
-            if(!$xml->server) throw new ApplicationException("Server not set for environment!");
+            if(!$xml->server) throw new \Lucinda\MVC\STDOUT\XMLException("Server not set for environment!");
             $xml = (array) $xml;
             if(is_array($xml["server"])) {
                 foreach($xml["server"] as $element) {
-                    if(!isset($element["name"])) throw new ApplicationException("Attribute 'name' not set for <server> tag!");
+                    if(!isset($element["name"])) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'name' not set for <server> tag!");
                     $dsd = new SQLDataSourceDetection($element);
-                    SQLConnectionFactory::setDataSource((string) $element["name"], $dsd->getDataSource());
+                    \Lucinda\SQL\ConnectionFactory::setDataSource((string) $element["name"], $dsd->getDataSource());
                 }
             } else {
                 $dsd = new SQLDataSourceDetection($xml["server"]);
-                SQLConnectionSingleton::setDataSource($dsd->getDataSource());
+                \Lucinda\SQL\ConnectionSingleton::setDataSource($dsd->getDataSource());
             }
         }
     }

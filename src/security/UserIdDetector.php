@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 /**
  * Detects logged in unique user identifier from persistence drivers.
  */
@@ -7,7 +8,7 @@ class UserIdDetector
     private $userID;
     
     /**
-     * @param PersistenceDriver[] $persistenceDrivers List of persistence drivers to detect from.
+     * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers List of persistence drivers to detect from.
      */
     public function __construct($persistenceDrivers) {
         $this->setUserID($persistenceDrivers);  
@@ -16,7 +17,7 @@ class UserIdDetector
     /**
      * Saves detected unique user identifier from persistence drivers.
      * 
-     * @param PersistenceDriver[] $persistenceDrivers List of persistence drivers to detect from.
+     * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers List of persistence drivers to detect from.
      */
     private function setUserID($persistenceDrivers) {
         foreach($persistenceDrivers as $persistenceDriver) {

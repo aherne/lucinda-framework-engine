@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("EnvironmentDetection.php");
 
 /**

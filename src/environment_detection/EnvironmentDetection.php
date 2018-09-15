@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 /**
  * Class responsible for runtime environment detection by matching contents of application.environments XML tag
  * with runtime environment unique identifiers (eg: host name) to be implemented by its children.
@@ -9,22 +10,22 @@ abstract class EnvironmentDetection {
     /**
      * EnvironmentDetection constructor.
      *
-     * @param SimpleXMLElement $xml Holds information about application detected from XML.
-     * @throws ApplicationException If XML fails to hold required information to detect environment
+     * @param \SimpleXMLElement $xml Holds information about application detected from XML.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML fails to hold required information to detect environment
      */
-    public function __construct(SimpleXMLElement $xml) {
+    public function __construct(\SimpleXMLElement $xml) {
         $this->setEnvironment($xml);
     }
 
     /**
      * Matches information about application detected from XML with server or path info.
      *
-     * @param SimpleXMLElement $xml Holds information about application detected from XML.
-     * @throws ApplicationException If XML fails to hold required information to detect environment
+     * @param \SimpleXMLElement $xml Holds information about application detected from XML.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML fails to hold required information to detect environment
      */
-    private function setEnvironment(SimpleXMLElement $xml){
+    private function setEnvironment(\SimpleXMLElement $xml){
         $tMP = (array) $xml->application->environments;
-        if(empty($tMP)) throw new ApplicationException("Environments not configured!");
+        if(empty($tMP)) throw new \Lucinda\MVC\STDOUT\XMLException("Environments not configured!");
         foreach($tMP as $environmentName=>$value1) {
             if(is_array($value1)) { // it is allowed to have multiple server names per environment
                 foreach($value1 as $value2) {
@@ -40,7 +41,7 @@ abstract class EnvironmentDetection {
                 }
             }
         }
-        throw new ApplicationException("Environment not recognized!");
+        throw new \Lucinda\MVC\STDOUT\XMLException("Environment not recognized!");
     }
 
     /**

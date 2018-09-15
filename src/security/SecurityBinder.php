@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("PersistenceDriversDetector.php");
 require_once("UserIdDetector.php");
 require_once("CsrfTokenDetector.php");
@@ -16,12 +17,12 @@ class SecurityBinder {
     private $csrfToken;
 
     /**
-     * @param Application $application
-     * @param Request $request
+     * @param \Lucinda\MVC\STDOUT\Application $application
+     * @param \Lucinda\MVC\STDOUT\Request $request
      */
-    public function __construct(Application $application, Request $request) {
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request) {
         // detects relevant data
-        $xml = $application->getXML();
+        $xml = $application->getTag("security");
         $page = $request->getValidator()->getPage();
         $contextPath = $request->getURI()->getContextPath();
         
@@ -40,7 +41,7 @@ class SecurityBinder {
      * - synchronizer token: authenticated state is persisted in a synchronizer token by which all future requests will be able to authenticate
      * - json web token:  authenticated state is persisted in a json web token by which all future requests will be able to authenticate
      * 
-     * @param SimpleXMLElement $mainXML XML holding relevant information (above all via security.persistence_driver tag content)
+     * @param \SimpleXMLElement $mainXML XML holding relevant information (above all via security.persistence_driver tag content)
      */
     private function setPersistenceDrivers($mainXML) {
         $pdd = new PersistenceDriversDetector($mainXML);
@@ -50,9 +51,9 @@ class SecurityBinder {
     /**
      * Sets a driver able to generate or validate CSRF token required to be sent when using insecure form authentication.
      * 
-     * @param SimpleXMLElement $mainXML XML holding relevant information (above all via security.csrf tag content)
+     * @param \SimpleXMLElement $mainXML XML holding relevant information (above all via security.csrf tag content)
      */
-    private function setCsrfToken(SimpleXMLElement $mainXML) {
+    private function setCsrfToken(\SimpleXMLElement $mainXML) {
         $this->csrfToken = new CsrfTokenDetector($mainXML);
     }
 
@@ -67,11 +68,11 @@ class SecurityBinder {
     /**
      * Performs user authentication based on mechanism chosen by developmer in XML (eg: from database via login form, from an oauth2 provider, etc)
      * 
-     * @param SimpleXMLElement $mainXML XML holding relevant information (above all via security.authentication tag content)
+     * @param \SimpleXMLElement $mainXML XML holding relevant information (above all via security.authentication tag content)
      * @param string $page Route requested by client
-     * @param string $contextPath Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
      */
-    private function authenticate(SimpleXMLElement $mainXML, $page, $contextPath) {
+    private function authenticate(\SimpleXMLElement $mainXML, $page, $contextPath) {
         $authentication = new Authentication($mainXML, $page, $contextPath, $this->csrfToken, $this->persistenceDrivers);
         $this->oauth2Drivers = $authentication->getOAuth2Drivers();
     }
@@ -79,11 +80,11 @@ class SecurityBinder {
     /**
      * Performs request authorization based on mechanism chosen by developmer in XML (eg: from database)
      *
-     * @param SimpleXMLElement $mainXML XML holding relevant information (above all via security.authorization tag content)
+     * @param \SimpleXMLElement $mainXML XML holding relevant information (above all via security.authorization tag content)
      * @param string $page Route requested by client
-     * @param string $contextPath Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
      */
-    private function authorize(SimpleXMLElement $mainXML, $page, $contextPath) {
+    private function authorize(\SimpleXMLElement $mainXML, $page, $contextPath) {
         new Authorization($mainXML, $page, $contextPath, $this->userID);
     }
 

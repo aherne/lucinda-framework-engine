@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("PersistenceDriverWrapper.php");
 require_once("IPDetector.php");
 
@@ -14,9 +15,9 @@ class RememberMePersistenceDriverWrapper extends PersistenceDriverWrapper {
 	 * {@inheritDoc}
 	 * @see PersistenceDriverWrapper::setDriver()
 	 */
-	protected function setDriver(SimpleXMLElement $xml) {
+	protected function setDriver(\SimpleXMLElement $xml) {
 		$secret = (string) $xml["secret"];
-		if(!$secret) throw new ApplicationException("'secret' key of security.persistence.remember_me tag is mandatory!");
+		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("'secret' key of security.persistence.remember_me tag is mandatory!");
 
 		$parameterName = (string) $xml["parameter_name"];
 		if(!$parameterName) $parameterName = self::DEFAULT_PARAMETER_NAME;
@@ -30,6 +31,6 @@ class RememberMePersistenceDriverWrapper extends PersistenceDriverWrapper {
 		$ipDetector = new IPDetector();
 		$ipAddress = $ipDetector->getIP();
 		
-		$this->driver = new RememberMePersistenceDriver($secret, $parameterName,$expirationTime,$isHttpOnly,$isHttpsOnly, $ipAddress);
+		$this->driver = new \Lucinda\WebSecurity\RememberMePersistenceDriver($secret, $parameterName,$expirationTime,$isHttpOnly,$isHttpsOnly, $ipAddress);
 	}
 }

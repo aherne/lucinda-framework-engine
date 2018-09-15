@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("PersistenceDriverWrapper.php");
 require_once("IPDetector.php");
 
@@ -14,7 +15,7 @@ class SessionPersistenceDriverWrapper extends PersistenceDriverWrapper {
 	 * {@inheritDoc}
 	 * @see PersistenceDriverWrapper::setDriver()
 	 */
-	protected function setDriver(SimpleXMLElement $xml) {
+	protected function setDriver(\SimpleXMLElement $xml) {
 		$parameterName = (string) $xml["parameter_name"];
 		if(!$parameterName) $parameterName = self::DEFAULT_PARAMETER_NAME;
 
@@ -30,23 +31,23 @@ class SessionPersistenceDriverWrapper extends PersistenceDriverWrapper {
 		$ipDetector = new IPDetector();
 		$ipAddress = $ipDetector->getIP();
 		
-		$this->driver = new SessionPersistenceDriver($parameterName, $expirationTime, $isHttpOnly, $isHttpsOnly, $ipAddress);
+		$this->driver = new \Lucinda\WebSecurity\SessionPersistenceDriver($parameterName, $expirationTime, $isHttpOnly, $isHttpsOnly, $ipAddress);
 	}
 	
 	/**
 	 * Gets instance of handler based on handler name
 	 * 
 	 * @param string $handlerName Name of handler class
-	 * @throws ServletException If handler file/class not found or latter is not instanceof SessionHandlerInterface
-	 * @return SessionHandlerInterface
+	 * @throws  \Lucinda\MVC\STDOUT\ServletException If handler file/class not found or latter is not instanceof SessionHandlerInterface
+	 * @return \SessionHandlerInterface
 	 */
 	private function getHandlerInstance($handlerName) {
 	    $file = self::HANDLER_FOLDER."/".$handlerName.".php";
-	    if(!file_exists($file)) throw new ServletException("Handler file not found: ".$file);
+	    if(!file_exists($file)) throw new  \Lucinda\MVC\STDOUT\ServletException("Handler file not found: ".$file);
 	    require_once($file);
-	    if(!class_exists($handlerName)) throw new ServletException("Handler class not found: ".$handlerName);
+	    if(!class_exists($handlerName)) throw new  \Lucinda\MVC\STDOUT\ServletException("Handler class not found: ".$handlerName);
 	    $object = new $handlerName();
-	    if(!($object instanceof SessionHandlerInterface))  throw new ServletException("Handler must be instance of SessionHandlerInterface!");
+	    if(!($object instanceof \SessionHandlerInterface))  throw new  \Lucinda\MVC\STDOUT\ServletException("Handler must be instance of SessionHandlerInterface!");
 	    return $object;
 	}
 }

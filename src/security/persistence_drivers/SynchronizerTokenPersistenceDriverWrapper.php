@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("PersistenceDriverWrapper.php");
 require_once("IPDetector.php");
 
@@ -14,9 +15,9 @@ class SynchronizerTokenPersistenceDriverWrapper extends PersistenceDriverWrapper
 	 * {@inheritDoc}
 	 * @see PersistenceDriverWrapper::setDriver()
 	 */
-	protected function setDriver(SimpleXMLElement $xml) {
+	protected function setDriver(\SimpleXMLElement $xml) {
 		$secret = (string) $xml["secret"];
-		if(!$secret) throw new ApplicationException("'secret' key of security.persistence.synchronizer_token tag is mandatory!");
+		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("'secret' key of security.persistence.synchronizer_token tag is mandatory!");
 
 		$expirationTime = (integer) $xml["expiration"];
 		if(!$expirationTime) $expirationTime = self::DEFAULT_EXPIRATION_TIME;
@@ -27,6 +28,6 @@ class SynchronizerTokenPersistenceDriverWrapper extends PersistenceDriverWrapper
 		$ipDetector = new IPDetector();
 		$ipAddress = $ipDetector->getIP();
 		
-		$this->driver = new SynchronizerTokenPersistenceDriver($secret, $expirationTime, $regenerationTime, $ipAddress);
+		$this->driver = new \Lucinda\WebSecurity\SynchronizerTokenPersistenceDriver($secret, $expirationTime, $regenerationTime, $ipAddress);
 	}
 }

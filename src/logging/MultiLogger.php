@@ -1,14 +1,15 @@
 <?php
+namespace Lucinda\Framework;
 /**
  * Implements a logger that forwards internally to multiple loggers.
  */
-class MultiLogger extends Logger {
+class MultiLogger extends \Lucinda\Logging\Logger {
 	private $loggers;
 	
 	/**
 	 * Creates an object.
 	 * 
-	 * @param Logger[] $loggers List of loggers to delegate logging to.
+	 * @param \Lucinda\Logging\Logger[] $loggers List of loggers to delegate logging to.
 	 */
 	public function __construct($loggers) {
 		$this->loggers = $loggers;
@@ -16,7 +17,7 @@ class MultiLogger extends Logger {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see Logger::log()
+	 * @see \Lucinda\Logging\Logger::log()
 	 */
 	public function log($info, $level) {
 		foreach($this->loggers as $logger) {

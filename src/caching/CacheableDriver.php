@@ -1,19 +1,20 @@
 <?php
+namespace Lucinda\Framework;
 /**
  * Driver binding Servlets API and HTTP Caching API, fed with application and request information. Children have the responsibility
  * of implementing setters for etag and last modified time according to their specific business needs.
  */
-abstract class CacheableDriver implements Cacheable {
+abstract class CacheableDriver implements \Lucinda\Caching\Cacheable {
 	/**
-	 * @var Application
+	 * @var \Lucinda\MVC\STDOUT\Application
 	 */
 	protected $application;
 	/**
-	 * @var Request
+	 * @var \Lucinda\MVC\STDOUT\Request
 	 */
 	protected $request;
 	/**
-	 * @var Response
+	 * @var \Lucinda\MVC\STDOUT\Response
 	 */
 	protected $response;
 	
@@ -27,7 +28,7 @@ abstract class CacheableDriver implements Cacheable {
 	 */
 	protected $last_modified_time;
 	
-	public function __construct(Application $application, Request $request, Response $response) {
+	public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
 		$this->application = $application;
 		$this->request = $request;
 		$this->response = $response;
@@ -43,7 +44,7 @@ abstract class CacheableDriver implements Cacheable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see Cacheable::getTime()
+	 * @see \Lucinda\Caching\Cacheable::getTime()
 	 */
 	public function getTime() {
 		return $this->last_modified_time;
@@ -56,7 +57,7 @@ abstract class CacheableDriver implements Cacheable {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see Cacheable::getEtag()
+	 * @see \Lucinda\Caching\Cacheable::getEtag()
 	 */
 	public function getEtag() {
 		return $this->etag;

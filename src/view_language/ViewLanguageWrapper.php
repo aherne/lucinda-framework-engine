@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 /**
  * Binds contents of <application> XML tag with detected environment then uses ViewLanguageAPI to produce a PHP file where templating logic in view
  * is compiled into PHP language.
@@ -7,29 +8,29 @@ class ViewLanguageWrapper {
     private $compilationFile;
     
     /**
-     * @param SimpleXMLElement $xml XML file holding compiler settings.
+     * @param \SimpleXMLElement $xml XML file holding compiler settings.
      * @param string $viewFile View file location (without extension, optionally including views folder path)
      * @param string $environment Detected runtime environment (eg: local, dev, live).
      */
-    public function __construct(SimpleXMLElement $xml, $viewFile, $environment) {
+    public function __construct(\SimpleXMLElement $xml, $viewFile, $environment) {
         $this->setCompilationFile($xml, $viewFile, $environment);
     }
     
     /**
      * Reads XML then delegates to ViewLanguageAPI to compile a templated view recursively into a PHP file.
      * 
-     * @param SimpleXMLElement $xml XML file holding compiler settings.
+     * @param \SimpleXMLElement $xml XML file holding compiler settings.
      * @param string $viewFile View file location (without extension, optionally including views folder path)
      * @param string $environment Detected runtime environment (eg: local, dev, live).
-     * @throws ApplicationException
+     * @throws \Lucinda\MVC\STDOUT\XMLException
      */
-    private function setCompilationFile(SimpleXMLElement $xml, $viewFile, $environment) {
+    private function setCompilationFile(\SimpleXMLElement $xml, $viewFile, $environment) {
         // get settings necessary in compilation
-        $compilationsFolder = (string) $xml->application->paths->compilations->$environment;
-        if(!$compilationsFolder) throw new ApplicationException("Compilations folder not defined!");
-        $tagsFolder = (string) $xml->application->paths->tags;
-        $viewsFolder = (string) $xml->application->paths->views;
-        $extension = (string) $xml->application->templates_extension;
+        $compilationsFolder = (string) $xml->paths->compilations->$environment;
+        if(!$compilationsFolder) throw new \Lucinda\MVC\STDOUT\XMLException("Compilations folder not defined!");
+        $tagsFolder = (string) $xml->paths->tags;
+        $viewsFolder = (string) $xml->paths->views;
+        $extension = (string) $xml->templates_extension;
         
         // gets view file
         if($viewsFolder && strpos($viewFile, $viewsFolder)===0) {
@@ -37,7 +38,7 @@ class ViewLanguageWrapper {
         }
         
         // compiles templates recursively into a single compilation file
-        $vlp = new ViewLanguageParser($viewsFolder, $extension, $compilationsFolder, $tagsFolder);
+        $vlp = new \Lucinda\Templating\ViewLanguageParser($viewsFolder, $extension, $compilationsFolder, $tagsFolder);
         $this->compilationFile = $vlp->compile($viewFile);
     }
     

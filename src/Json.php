@@ -1,8 +1,6 @@
 <?php
-/**
- * Encapsulates errors in json manipulation.
- */
-class JsonException extends Exception {}
+namespace Lucinda\Framework;
+require_once("JsonException.php");
 
 /**
  * Simple wrapper over json functionality.

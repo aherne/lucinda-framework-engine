@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("LoggingWrapper.php");
 require_once("MultiLogger.php");
 
@@ -10,11 +11,11 @@ class LoggingBinder
     private $logger;
     
     /**
-     * @param Application $application
+     * @param \Lucinda\MVC\STDOUT\Application $application
      */
-    public function __construct(Application $application) {        
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application) {        
         // finds loggers and return a global wrapper
-        $finder = new LoggingWrapper($application->getXML(), $application->getAttribute("environment"));
+        $finder = new LoggingWrapper($application->getXML("loggers"), $application->attributes()->get("environment"));
         $loggers = $finder->getLoggers();
         if(!empty($loggers)) {
             $this->logger = new MultiLogger($loggers);

@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("CachingPolicyLocator.php");
 
 /**
@@ -6,11 +7,11 @@ require_once("CachingPolicyLocator.php");
  */
 class CachingBinder {
     /**
-     * @param Application $application
-     * @param Request $request
-     * @param Response $response
+     * @param \Lucinda\MVC\STDOUT\Application $application
+     * @param \Lucinda\MVC\STDOUT\Request $request
+     * @param \Lucinda\MVC\STDOUT\Response $response
      */
-    public function __construct(Application $application, Request $request, Response $response) {
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
         $policy = $this->getPolicy($application, $request, $response);
         $this->validate($policy, $response);
     }
@@ -18,12 +19,12 @@ class CachingBinder {
     /**
      * Gets caching policy that will be used for cache validation
      * 
-     * @param Application $application
-     * @param Request $request
-     * @param Response $response
+     * @param \Lucinda\MVC\STDOUT\Application $application
+     * @param \Lucinda\MVC\STDOUT\Request $request
+     * @param \Lucinda\MVC\STDOUT\Response $response
      * @return CachingPolicy
      */
-    private function getPolicy(Application $application, Request $request, Response $response) {
+    private function getPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
         // detects caching_policy
         $cpb = new CachingPolicyLocator($application, $request, $response);
         $policy = $cpb->getPolicy();
@@ -39,13 +40,13 @@ class CachingBinder {
      * Performs cache validation and modifies response accordingly
      * 
      * @param CachingPolicy $policy
-     * @param Response $response
+     * @param \Lucinda\MVC\STDOUT\Response $response
      */
-    private function validate(CachingPolicy $policy, Response $response) {
+    private function validate(CachingPolicy $policy, \Lucinda\MVC\STDOUT\Response $response) {
         if(!$policy->getCachingDisabled() && $policy->getCacheableDriver()) {
-            $cacheRequest = new CacheRequest();
+            $cacheRequest = new \Lucinda\Caching\CacheRequest();
             if($cacheRequest->isValidatable()) {
-                $validator = new CacheValidator($cacheRequest);
+                $validator = new \Lucinda\Caching\CacheValidator($cacheRequest);
                 $httpStatusCode = $validator->validate($policy->getCacheableDriver());
                 if($httpStatusCode==304) {
                     $response->setStatus(304);
@@ -63,12 +64,12 @@ class CachingBinder {
      * Append caching headers to response.
      * 
      * @param CachingPolicy $policy
-     * @param Response $response
+     * @param \Lucinda\MVC\STDOUT\Response $response
      */
-    private function appendHeaders(CachingPolicy $policy, Response $response) {
+    private function appendHeaders(CachingPolicy $policy, \Lucinda\MVC\STDOUT\Response $response) {
         $cacheable = $policy->getCacheableDriver();
         
-        $cacheResponse = new CacheResponse();
+        $cacheResponse = new \Lucinda\Caching\CacheResponse();
         if($cacheable->getEtag()) {
             $cacheResponse->setEtag($cacheable->getEtag());
         }

@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("persistence_drivers/IPDetector.php");
 
 /**
@@ -16,13 +17,13 @@ class CsrfTokenDetector {
 	/**
 	 * Creates an object
 	 * 
-	 * @param SimpleXMLElement $xml Contents of security.csrf @ configuration.xml
-	 * @throws ApplicationException If 'secret' key is not defined in XML
+	 * @param \SimpleXMLElement $xml Contents of security.csrf @ configuration.xml
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If 'secret' key is not defined in XML
 	 */
-	public function __construct(SimpleXMLElement $xml) {
-	    $xml = $xml->security->csrf;
+	public function __construct(\SimpleXMLElement $xml) {
+	    $xml = $xml->csrf;
 	    if(empty($xml)) {
-	        throw new ApplicationException("Entry missing in configuration.xml: security.csrf");
+	        throw new \Lucinda\MVC\STDOUT\XMLException("Entry missing in configuration.xml: security.csrf");
 	    }    
 	    
 	    // sets ip
@@ -31,10 +32,10 @@ class CsrfTokenDetector {
 		
 		// sets secret
 		$secret = (string) $xml["secret"];
-		if(!$secret) throw new ApplicationException("'secret' attribute not set in security.csrf tag");
+		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("'secret' attribute not set in security.csrf tag");
 		
 		// sets token
-		$this->token = new SynchronizerToken($ip, $secret);
+		$this->token = new \Lucinda\WebSecurity\SynchronizerToken($ip, $secret);
 		
 		// sets expiration
 		$expiration = (string) $xml["expiration"];
@@ -46,7 +47,7 @@ class CsrfTokenDetector {
 	 * Encodes a token based on unique user identifier
 	 * @param mixed $userID Unique user identifier (usually an integer)
 	 * @return string Value of synchronizer token.
-     * @throws EncryptionException If encryption of token fails.
+     * @throws \Lucinda\WebSecurity\EncryptionException If encryption of token fails.
 	 */
 	public function generate($userID) {
 		return $this->token->encode($userID, $this->expiration);
@@ -58,9 +59,9 @@ class CsrfTokenDetector {
 	 * @param string $token Value of synchronizer token
 	 * @param mixed $userID Unique user identifier (usually an integer)
 	 * @return boolean
-     * @throws EncryptionException If decryption of token fails.
-     * @throws TokenException If token fails validations.
-     * @throws TokenRegenerationException If token needs to be refreshed
+     * @throws \Lucinda\WebSecurity\EncryptionException If decryption of token fails.
+     * @throws \Lucinda\WebSecurity\TokenException If token fails validations.
+     * @throws \Lucinda\WebSecurity\TokenRegenerationException If token needs to be refreshed
 	 */
 	public function isValid($token, $userID) {
 		try {
@@ -70,7 +71,7 @@ class CsrfTokenDetector {
 			} else {
 				return false;
 			}
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			return false;
 		}
 	}

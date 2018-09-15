@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("XMLSessionSetup.php");
 
 /**
@@ -13,10 +14,10 @@ class LocaleDetector {
     private $detectedLocale;
     
     /**
-     * @param SimpleXMLElement $xml Internationalization tag content.
-     * @param Request $request Encapsulates request information.
+     * @param \SimpleXMLElement $xml Internationalization tag content.
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
      */
-    public function __construct(SimpleXMLElement $xml, Request $request) {
+    public function __construct(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Request $request) {
         $this->setDetectionMethod($xml);
         $this->setDefaultLocale($xml);
         $this->setDetectedLocale($xml, $request);
@@ -25,37 +26,37 @@ class LocaleDetector {
     /**
      * Sets detection method based on "method" attribute of <internationalization> tag.
      * 
-     * @param SimpleXMLElement $xml Internationalization tag content.
-     * @throws ApplicationException If "method" attribute is missing or empty.
+     * @param \SimpleXMLElement $xml Internationalization tag content.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If "method" attribute is missing or empty.
      */
-    private function setDetectionMethod(SimpleXMLElement $xml) {
+    private function setDetectionMethod(\SimpleXMLElement $xml) {
         $detectionMethod = (string) $xml["method"];
-        if(!$detectionMethod) throw new ApplicationException("Attribute missing/empty in configuration.xml: internationalization['method]");
+        if(!$detectionMethod) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute missing/empty in configuration.xml: internationalization['method]");
         $detectionMethod = strtolower($detectionMethod);
-        if(!in_array($detectionMethod, array("header","request","session"))) throw new ApplicationException("Invalid detection method: ".$detectionMethod);
+        if(!in_array($detectionMethod, array("header","request","session"))) throw new \Lucinda\MVC\STDOUT\XMLException("Invalid detection method: ".$detectionMethod);
         $this->detectionMethod = $detectionMethod;
     }
     
     /**
      * Sets default locale based on "locale" attribute of <internationalization> tag.
      *
-     * @param SimpleXMLElement $xml Internationalization tag content.
-     * @throws ApplicationException If "locale" attribute is missing or empty.
+     * @param \SimpleXMLElement $xml Internationalization tag content.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If "locale" attribute is missing or empty.
      */
-    private function setDefaultLocale(SimpleXMLElement $xml) {
+    private function setDefaultLocale(\SimpleXMLElement $xml) {
         $defaultLocale =  (string) $xml["locale"];
-        if(!$defaultLocale) throw new ApplicationException("Attribute missing/empty in configuration.xml: internationalization['locale]");
+        if(!$defaultLocale) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute missing/empty in configuration.xml: internationalization['locale]");
         $this->defaultLocale = $defaultLocale;
     }
     
     /**
      * Sets detected locale based on detection method, client request as well as <session> XML tag (if detection method is session)
      * 
-     * @param SimpleXMLElement $xml  Internationalization tag content.
-     * @param Request $request Encapsulates request information.
-     * @throws ApplicationException If "method" attribute contains a wrong value.
+     * @param \SimpleXMLElement $xml  Internationalization tag content.
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If "method" attribute contains a wrong value.
      */
-    private function setDetectedLocale(SimpleXMLElement $xml, Request $request) {
+    private function setDetectedLocale(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Request $request) {
         $this->detectedLocale = $this->defaultLocale;
         switch($this->detectionMethod) {
             case "header":
@@ -67,7 +68,7 @@ class LocaleDetector {
                 }
                 break;
             case "request":
-                $parameter = $request->getURI()->getParameter(self::PARAMETER_NAME);
+                $parameter = $request->getURI()->parameters()->get(self::PARAMETER_NAME);
                 if($parameter) {
                     $this->detectedLocale = $parameter;
                 }
@@ -83,7 +84,7 @@ class LocaleDetector {
                         $session->start();
                     }
                 }
-                $parameter = $request->getURI()->getParameter(self::PARAMETER_NAME);
+                $parameter = $request->getURI()->parameters()->get(self::PARAMETER_NAME);
                 if($parameter) {
                     $this->detectedLocale = $parameter;
                     return;

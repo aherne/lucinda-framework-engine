@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("CachingPolicyFinder.php");
 
 /**
@@ -11,23 +12,23 @@ class CachingPolicyLocator {
     /**
      * CachingPolicyBinder constructor.
      *
-     * @param Application $application Encapsulates application settings @ ServletsAPI.
-     * @param Request $request Encapsulates request information.
-     * @param Response $response Encapsulates response information.
+     * @param \Lucinda\MVC\STDOUT\Application $application Encapsulates application settings @ ServletsAPI.
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
+     * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
      */
-    public function __construct(Application $application, Request $request, Response $response) {
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
         $this->setPolicy($application, $request, $response);
     }
 
     /**
      * Detects caching policy based on contents of http_caching tag and sets a CachingPolicy object in result
      *
-     * @param Application $application Encapsulates application settings @ ServletsAPI.
-     * @param Request $request Encapsulates request information.
-     * @param Response $response Encapsulates response information.
-     * @throws ApplicationException If XML is incorrect formatted.
+     * @param \Lucinda\MVC\STDOUT\Application $application Encapsulates application settings @ ServletsAPI.
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
+     * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is incorrect formatted.
      */
-    private function setPolicy(Application $application, Request $request, Response $response) {
+    private function setPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
         $this->policy = $this->getGlobalPolicy($application, $request, $response);
         $specificPolicy = $this->getSpecificPolicy($application, $request, $response);
         if($specificPolicy) {
@@ -46,14 +47,14 @@ class CachingPolicyLocator {
     /**
      * Detects generic CachingPolicy (applying by default to all routes)
      *
-     * @param Application $application Encapsulates application settings @ ServletsAPI.
-     * @param Request $request Encapsulates request information.
-     * @param Response $response Encapsulates response information.
-     * @throws ApplicationException If XML is incorrect formatted.
+     * @param \Lucinda\MVC\STDOUT\Application $application Encapsulates application settings @ ServletsAPI.
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
+     * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is incorrect formatted.
      */
-    private function getGlobalPolicy(Application $application, Request $request, Response $response) {
-        $caching = $application->getXML()->http_caching;
-        if(!$caching) throw new ApplicationException("Entry missing in configuration.xml: http_caching");
+    private function getGlobalPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
+        $caching = $application->getTag("http_caching");
+        if(!$caching) throw new \Lucinda\MVC\STDOUT\XMLException("Entry missing in configuration.xml: http_caching");
         $finder = new CachingPolicyFinder($caching, $application, $request, $response);
         return $finder->getPolicy();
     }
@@ -61,19 +62,19 @@ class CachingPolicyLocator {
     /**
      * Detects route-specific CachingPolicy (if any)
      *
-     * @param Application $application Encapsulates application settings @ ServletsAPI.
-     * @param Request $request Encapsulates request information.
-     * @param Response $response Encapsulates response information.
-     * @throws ApplicationException If XML is incorrect formatted.
+     * @param \Lucinda\MVC\STDOUT\Application $application Encapsulates application settings @ ServletsAPI.
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
+     * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is incorrect formatted.
      */
-    private function getSpecificPolicy(Application $application, Request $request, Response $response) {
+    private function getSpecificPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
         $page = $request->getValidator()->getPage();
-        $tmp = (array) $application->getXML()->http_caching;
+        $tmp = (array) $application->getTag("http_caching");
         if(!empty($tmp["route"])) {
             $elements = is_array($tmp["route"])?$tmp["route"]:array($tmp["route"]);
             foreach($elements as $info) {
                 $route = $info["url"];
-                if($route === null) throw new ApplicationException("Property missing in http_caching.route tag: url");
+                if($route === null) throw new \Lucinda\MVC\STDOUT\XMLException("Property missing in http_caching.route tag: url");
                 if($route == $page) {
                     $finder = new CachingPolicyFinder($info, $application, $request, $response);
                     return $finder->getPolicy();

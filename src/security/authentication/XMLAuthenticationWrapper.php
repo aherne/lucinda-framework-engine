@@ -1,4 +1,5 @@
 <?php
+namespace Lucinda\Framework;
 require_once("AuthenticationWrapper.php");
 require_once("FormRequestValidator.php");
 
@@ -12,19 +13,19 @@ class XMLAuthenticationWrapper extends AuthenticationWrapper {
 	/**
 	 * Creates an object.
 	 *
-	 * @param SimpleXMLElement $xml Contents of security.authentication.form tag @ configuration.xml.
+	 * @param \SimpleXMLElement $xml Contents of security.authentication.form tag @ configuration.xml.
 	 * @param string $currentPage Current page requested.
-	 * @param PersistenceDriver[] $persistenceDrivers List of drivers to persist information across requests.
+	 * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers List of drivers to persist information across requests.
 	 * @param CsrfTokenDetector $csrf Object that performs CSRF token checks.
-	 * @throws ApplicationException If XML is malformed.
-	 * @throws AuthenticationException If one or more persistence drivers are not instanceof PersistenceDriver
-	 * @throws TokenException If CSRF checks fail
-	 * @throws SQLConnectionException If connection to database server fails.
-	 * @throws SQLStatementException If query to database server fails.
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
+	 * @throws \Lucinda\WebSecurity\AuthenticationException If one or more persistence drivers are not instanceof PersistenceDriver
+	 * @throws \Lucinda\WebSecurity\TokenException If CSRF checks fail
+	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
 	 */
-	public function __construct(SimpleXMLElement $xml, $currentPage, $persistenceDrivers, CsrfTokenDetector $csrf) {
+	public function __construct(\SimpleXMLElement $xml, $currentPage, $persistenceDrivers, CsrfTokenDetector $csrf) {
 		// set driver
-		$this->driver = new XMLAuthentication($xml, $persistenceDrivers);
+	    $this->driver = new \Lucinda\WebSecurity\XMLAuthentication($xml, $persistenceDrivers);
 		
 		// setup class properties
 		$validator = new FormRequestValidator($xml);
@@ -33,7 +34,7 @@ class XMLAuthenticationWrapper extends AuthenticationWrapper {
 		if($request = $validator->login($currentPage)) {
 			// check csrf token
 			if(empty($_POST['csrf']) || !$csrf->isValid($_POST['csrf'], 0)) {
-				throw new TokenException("CSRF token is invalid or missing!");
+			    throw new \Lucinda\WebSecurity\TokenException("CSRF token is invalid or missing!");
 			}
 			$this->login($request);
 		}
@@ -48,8 +49,8 @@ class XMLAuthenticationWrapper extends AuthenticationWrapper {
 	 * Logs user in authentication driver.
 	 *
 	 * @param LoginRequest $request Encapsulates login request data.
-	 * @throws SQLConnectionException If connection to database server fails.
-	 * @throws SQLStatementException If query to database server fails.
+	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
 	 */
 	private function login(LoginRequest $request) {
 		// set result
@@ -64,8 +65,8 @@ class XMLAuthenticationWrapper extends AuthenticationWrapper {
 	 * Logs user out authentication driver.
 	 *
 	 * @param LogoutRequest $request Encapsulates logout request data.
-	 * @throws SQLConnectionException If connection to database server fails.
-	 * @throws SQLStatementException If query to database server fails.
+	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
 	 */
 	private function logout(LogoutRequest $request) {
 		// set result
