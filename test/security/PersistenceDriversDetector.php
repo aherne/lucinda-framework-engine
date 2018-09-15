@@ -18,8 +18,8 @@ $xml = '
 
 // csrf
 $_SERVER = array("HTTP_X_FORWARDED_FOR"=>"82.76.206.3","REMOTE_ADDR"=>"192.168.21.211");
-$pdd = new PersistenceDriversDetector(simplexml_load_string($xml));
-echo __LINE__.": ".($pdd->getPersistenceDrivers()[0] instanceof SessionPersistenceDriver?"Y":"N")."\n";
-echo __LINE__.": ".($pdd->getPersistenceDrivers()[1] instanceof RememberMePersistenceDriver?"Y":"N")."\n";
-echo __LINE__.": ".($pdd->getPersistenceDrivers()[2] instanceof SynchronizerTokenPersistenceDriver?"Y":"N")."\n";
-echo __LINE__.": ".($pdd->getPersistenceDrivers()[3] instanceof JsonWebTokenPersistenceDriver?"Y":"N");
+$pdd = new Lucinda\Framework\PersistenceDriversDetector(simplexml_load_string($xml));
+echo __LINE__.": ".($pdd->getPersistenceDrivers()[0] instanceof Lucinda\WebSecurity\SessionPersistenceDriver?"Y":"N")."\n";
+echo __LINE__.": ".($pdd->getPersistenceDrivers()[1] instanceof Lucinda\WebSecurity\RememberMePersistenceDriver?"Y":"N")."\n";
+echo __LINE__.": ".($pdd->getPersistenceDrivers()[2] instanceof Lucinda\WebSecurity\SynchronizerTokenPersistenceDriver?"Y":"N")."\n";
+echo __LINE__.": ".($pdd->getPersistenceDrivers()[3] instanceof Lucinda\WebSecurity\JsonWebTokenPersistenceDriver?"Y":"N");

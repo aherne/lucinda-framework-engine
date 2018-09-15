@@ -1,8 +1,8 @@
 <?php
-class UserAuthorization implements UserAuthorizationDAO {
+class UserAuthorization implements Lucinda\WebSecurity\UserAuthorizationDAO {
     private $userID;
     
-    public function isAllowed(PageAuthorizationDAO $page, $httpRequestMethod)
+    public function isAllowed(Lucinda\WebSecurity\PageAuthorizationDAO $page, $httpRequestMethod)
     {
         return $page->isPublic() || ($this->userID && $page->getID()==1);
     }

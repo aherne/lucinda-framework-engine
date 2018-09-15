@@ -8,7 +8,7 @@ $xml = '
 ';
 
 // instance class
-$test = new SQLDataSourceDetection(simplexml_load_string($xml));
+$test = new Lucinda\Framework\SQLDataSourceDetection(simplexml_load_string($xml));
 
 // run tests
 echo "driver: ".($test->getDataSource()->getDriverName()=="mysql"?"OK":"NOK")."\n";

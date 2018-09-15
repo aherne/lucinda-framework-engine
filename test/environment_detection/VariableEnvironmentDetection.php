@@ -16,7 +16,7 @@ $xml = '
 putenv("ENVIRONMENT=live");
 
 // instance class
-$test = new VariableEnvironmentDetection(simplexml_load_string($xml));
+$test = new Lucinda\Framework\VariableEnvironmentDetection(simplexml_load_string($xml));
 
 // run tests
 echo ($test->getEnvironment()=="live"?"OK":"NOK");

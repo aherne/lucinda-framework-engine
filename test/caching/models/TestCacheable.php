@@ -1,5 +1,5 @@
 <?php
-class TestCacheable extends CacheableDriver {
+class TestCacheable extends Lucinda\Framework\CacheableDriver {
     protected function setTime() {
         return time();
     }

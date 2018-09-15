@@ -23,8 +23,8 @@ $xml = '
 
 $xml = simplexml_load_string($xml);
 
-$lw = new LoggingWrapper($xml, "local");
-echo __LINE__.": ".($lw->getLoggers()[0] instanceof FileLogger?"Y":"N")."\n";
-echo __LINE__.": ".($lw->getLoggers()[1] instanceof SysLogger?"Y":"N")."\n";
+$lw = new Lucinda\Framework\LoggingWrapper($xml, "local");
+echo __LINE__.": ".($lw->getLoggers()[0] instanceof Lucinda\Logging\FileLogger?"Y":"N")."\n";
+echo __LINE__.": ".($lw->getLoggers()[1] instanceof Lucinda\Logging\SysLogger?"Y":"N")."\n";
 echo __LINE__.": ".($lw->getLoggers()[2] instanceof MyLogger?"Y":"N")."\n";
 

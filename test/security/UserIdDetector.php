@@ -17,10 +17,10 @@ $xml = '
 // csrf
 $userID = 1;
 $_SERVER = array("HTTP_X_FORWARDED_FOR"=>"82.76.206.3","REMOTE_ADDR"=>"192.168.21.211");
-$pdd = new PersistenceDriversDetector(simplexml_load_string($xml));
+$pdd = new Lucinda\Framework\PersistenceDriversDetector(simplexml_load_string($xml));
 $persistenceDriver = $pdd->getPersistenceDrivers()[0];
 $persistenceDriver->save($userID);
 
 
-$uid = new UserIdDetector($pdd->getPersistenceDrivers());
+$uid = new Lucinda\Framework\UserIdDetector($pdd->getPersistenceDrivers());
 echo __LINE__.": ".($uid->getUserID()==1?"Y":"N")."\n";

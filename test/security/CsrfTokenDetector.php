@@ -14,6 +14,6 @@ $xml = '
 
 $_SERVER = array("HTTP_X_FORWARDED_FOR"=>"82.76.206.3","REMOTE_ADDR"=>"192.168.21.211");
 $userID = 1;
-$csrf = new CsrfTokenDetector(simplexml_load_string($xml));
+$csrf = new Lucinda\Framework\CsrfTokenDetector(simplexml_load_string($xml));
 $token = $csrf->generate($userID);
 echo __LINE__.": ".($csrf->isValid($token, $userID)?"Y":"N");

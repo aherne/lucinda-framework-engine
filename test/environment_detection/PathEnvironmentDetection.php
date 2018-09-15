@@ -15,7 +15,7 @@ $xml = '
 ';
 
 // instance class
-$test = new PathEnvironmentDetection(simplexml_load_string($xml));
+$test = new Lucinda\Framework\PathEnvironmentDetection(simplexml_load_string($xml));
 
 // run tests
 echo ($test->getEnvironment()=="live"?"OK":"NOK");

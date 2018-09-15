@@ -16,7 +16,7 @@ $xml = '
 $_SERVER["SERVER_NAME"] = "www.example.com";
 
 // instance class
-$test = new HostEnvironmentDetection(simplexml_load_string($xml));
+$test = new Lucinda\Framework\HostEnvironmentDetection(simplexml_load_string($xml));
 
 // run tests
 echo ($test->getEnvironment()=="live"?"OK":"NOK");

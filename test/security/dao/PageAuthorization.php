@@ -1,5 +1,5 @@
 <?php
-class PageAuthorization implements PageAuthorizationDAO {
+class PageAuthorization implements Lucinda\WebSecurity\PageAuthorizationDAO {
     const PAGE_IDS = array(
         array("id"=>1, "path"=>"index", "public"=>0),
         array("id"=>2, "path"=>"login", "public"=>1),

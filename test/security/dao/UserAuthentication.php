@@ -1,5 +1,5 @@
 <?php
-class UserAuthentication implements UserAuthenticationDAO {
+class UserAuthentication implements Lucinda\WebSecurity\UserAuthenticationDAO {
     public function logout($userID)
     {}
 
