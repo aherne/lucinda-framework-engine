@@ -14,7 +14,7 @@ class DAOAuthorizationWrapper extends AuthorizationWrapper {
 	/**
 	 * Creates an object
 	 * 
-	 * @param \SimpleXMLElement $xml Contents of security.authorization.by_dao tag @ configuration.xml
+	 * @param \SimpleXMLElement $xml Contents of security tag
 	 * @param string $currentPage Current page requested.
 	 * @param mixed $userID Unique user identifier (usually an integer) 
 	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.

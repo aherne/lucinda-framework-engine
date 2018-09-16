@@ -15,7 +15,7 @@ class ViewLanguageBinder {
      */
     public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Response $response) {        
         // get compilation file
-        $wrapper = new ViewLanguageWrapper($application->getTag("application"), $response->getView(), $application->attributes()->get("environment"));
+        $wrapper = new ViewLanguageWrapper($application->getTag("application"), $response->getView());
         $compilationFile = $wrapper->getCompilationFile();
         
         // converts objects sent to response into array (throws JsonException if object is non-convertible)

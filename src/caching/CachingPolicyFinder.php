@@ -11,27 +11,29 @@ class CachingPolicyFinder {
 	
 	/**
 	 * @param \SimpleXMLElement $xml Tag that's holding policies.
+	 * @param string $cacheablesFolder Path to caching policies folder.
 	 * @param \Lucinda\MVC\STDOUT\Application $application 
 	 * @param \Lucinda\MVC\STDOUT\Request $request
 	 * @param \Lucinda\MVC\STDOUT\Response $response
 	 */
-	public function __construct(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
-	    $this->setPolicy($xml, $application, $request, $response);
+	public function __construct(\SimpleXMLElement $xml, $cacheablesFolder, \Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
+	    $this->setPolicy($xml, $cacheablesFolder, $application, $request, $response);
 	}
 	
 	/**
 	 * Generates and saves a CachingPolicy object
 	 *
 	 * @param \SimpleXMLElement $xml Tag that's holding policies.
+	 * @param string $cacheablesFolder Path to caching policies folder.
 	 * @param \Lucinda\MVC\STDOUT\Application $application
 	 * @param \Lucinda\MVC\STDOUT\Request $request
 	 * @param \Lucinda\MVC\STDOUT\Response $response
 	 */
-	private function setPolicy(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
+	private function setPolicy(\SimpleXMLElement $xml, $cacheablesFolder, \Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
 	    $this->policy = new CachingPolicy();
 	    $this->policy->setCachingDisabled($this->getNoCache($xml));
 	    $this->policy->setExpirationPeriod($this->getExpirationPeriod($xml));
-	    $cacheableDriver = $this->getCacheableDriver($xml, $application, $request, $response);
+	    $cacheableDriver = $this->getCacheableDriver($xml, $cacheablesFolder, $application, $request, $response);
 	    if($cacheableDriver!==null) {
 	        $this->policy->setCacheableDriver($cacheableDriver);
 	    }
@@ -69,20 +71,16 @@ class CachingPolicyFinder {
 	 * Gets CacheableDriver instance that matches "class" property value.
 	 *
      * @param \SimpleXMLElement $xml Tag that's holding policies.
+	 * @param string $cacheablesFolder Path to caching policies folder.
 	 * @param \Lucinda\MVC\STDOUT\Application $application
 	 * @param \Lucinda\MVC\STDOUT\Request $request
 	 * @param \Lucinda\MVC\STDOUT\Response $response
 	 * @return CacheableDriver|NULL
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
      * @throws \Lucinda\MVC\STDOUT\ServletException If pointed file doesn't exist or is invalid
 	 */
-	private function getCacheableDriver(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
+	private function getCacheableDriver(\SimpleXMLElement $xml, $cacheablesFolder, \Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
 		$driverClass = (string) $xml["class"];
 		if($driverClass) {
-		    // get cacheables folder
-		    $cacheablesFolder = (string) $application->getTag("application")->paths->cacheables;
-		    if(!$cacheablesFolder) throw new \Lucinda\MVC\STDOUT\XMLException("Entry missing in configuration.xml: application.paths.cacheables");
-		    
 		    // loads and validates class
             load_class($cacheablesFolder, $driverClass);
 

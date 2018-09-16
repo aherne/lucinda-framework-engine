@@ -10,10 +10,9 @@ class ViewLanguageWrapper {
     /**
      * @param \SimpleXMLElement $xml XML file holding compiler settings.
      * @param string $viewFile View file location (without extension, optionally including views folder path)
-     * @param string $environment Detected runtime environment (eg: local, dev, live).
      */
-    public function __construct(\SimpleXMLElement $xml, $viewFile, $environment) {
-        $this->setCompilationFile($xml, $viewFile, $environment);
+    public function __construct(\SimpleXMLElement $xml, $viewFile) {
+        $this->setCompilationFile($xml, $viewFile);
     }
     
     /**
@@ -21,12 +20,11 @@ class ViewLanguageWrapper {
      * 
      * @param \SimpleXMLElement $xml XML file holding compiler settings.
      * @param string $viewFile View file location (without extension, optionally including views folder path)
-     * @param string $environment Detected runtime environment (eg: local, dev, live).
      * @throws \Lucinda\MVC\STDOUT\XMLException
      */
-    private function setCompilationFile(\SimpleXMLElement $xml, $viewFile, $environment) {
+    private function setCompilationFile(\SimpleXMLElement $xml, $viewFile) {
         // get settings necessary in compilation
-        $compilationsFolder = (string) $xml->paths->compilations->$environment;
+        $compilationsFolder = (string) $xml->paths->compilations;
         if(!$compilationsFolder) throw new \Lucinda\MVC\STDOUT\XMLException("Compilations folder not defined!");
         $tagsFolder = (string) $xml->paths->tags;
         $viewsFolder = (string) $xml->paths->views;
