@@ -20,7 +20,7 @@ class ViewLanguageBinder {
         
         // converts objects sent to response into array (throws JsonException if object is non-convertible)
         $json = new Json();
-        $data = $json->decode($json->encode($response->toArray()));
+        $data = $json->decode($json->encode($response->attributes()->toArray()));
           
         // commits response to output stream
         ob_start();

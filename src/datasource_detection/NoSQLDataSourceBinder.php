@@ -14,7 +14,7 @@ class NoSQLDataSourceBinder
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid.
      */
     public function __construct(\Lucinda\MVC\STDOUT\Application $application) {
-        $environment = $application->getAttribute->attributes()->get("environment");
+        $environment = $application->attributes()->get("environment");
         $xml = $application->getTag("servers")->nosql->$environment;
         if(!empty($xml)) {
             if(!$xml->server) throw new \Lucinda\MVC\STDOUT\XMLException("Server not set for environment!");

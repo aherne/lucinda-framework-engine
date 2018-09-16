@@ -17,7 +17,7 @@ class LoggingBinder
      */
     public function __construct(\Lucinda\MVC\STDOUT\Application $application) {        
         // finds loggers and return a global wrapper
-        $finder = new LoggingWrapper($application->getXML("loggers"), $application->attributes()->get("environment"));
+        $finder = new LoggingWrapper($application->getTag("loggers"), $application->attributes()->get("environment"));
         $loggers = $finder->getLoggers();
         if(!empty($loggers)) {
             $this->logger = new MultiLogger($loggers);
