@@ -25,7 +25,7 @@ class CsrfTokenDetector {
 	public function __construct(\SimpleXMLElement $xml) {
 	    $xml = $xml->csrf;
 	    if(empty($xml)) {
-	        throw new \Lucinda\MVC\STDOUT\XMLException("Entry missing in configuration.xml: security.csrf");
+	        throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'csrf' child of 'security' tag is empty or missing");
 	    }    
 	    
 	    // sets ip
@@ -34,7 +34,7 @@ class CsrfTokenDetector {
 		
 		// sets secret
 		$secret = (string) $xml["secret"];
-		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("'secret' attribute not set in security.csrf tag");
+		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'secret' is mandatory for 'csrf' tag");
 		
 		// sets token
 		$this->token = new \Lucinda\WebSecurity\SynchronizerToken($ip, $secret);

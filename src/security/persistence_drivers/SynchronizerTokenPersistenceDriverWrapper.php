@@ -19,7 +19,7 @@ class SynchronizerTokenPersistenceDriverWrapper extends PersistenceDriverWrapper
 	 */
 	protected function setDriver(\SimpleXMLElement $xml) {
 		$secret = (string) $xml["secret"];
-		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("'secret' key of security.persistence.synchronizer_token tag is mandatory!");
+		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'secret' is mandatory for 'synchronizer_token' tag");
 
 		$expirationTime = (integer) $xml["expiration"];
 		if(!$expirationTime) $expirationTime = self::DEFAULT_EXPIRATION_TIME;

@@ -33,7 +33,7 @@ class Authorization {
     private function getWrapper(\SimpleXMLElement $xmlRoot, $page, $userID) {
         $xml = $xmlRoot->authorization;
         if(empty($xml)) {
-            throw new \Lucinda\MVC\STDOUT\XMLException("Entry missing in configuration.xml: security.authorization");
+            throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'authorization' child of 'security' tag is empty or missing");
         }
         
         $wrapper = null;

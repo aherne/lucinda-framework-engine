@@ -38,7 +38,7 @@ class Authentication {
     private function getWrapper(\SimpleXMLElement $xmlRoot, $page, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers) {
         $xml = $xmlRoot->authentication;
         if(empty($xml)) {
-            throw new \Lucinda\MVC\STDOUT\XMLException("Entry missing in configuration.xml: security.authentication");
+            throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'authentication' child of 'security' is empty or missing");
         }
         
         $wrapper = null;

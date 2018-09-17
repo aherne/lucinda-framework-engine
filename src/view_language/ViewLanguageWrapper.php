@@ -25,7 +25,7 @@ class ViewLanguageWrapper {
     private function setCompilationFile(\SimpleXMLElement $xml, $viewFile) {
         // get settings necessary in compilation
         $compilationsFolder = (string) $xml->paths->compilations;
-        if(!$compilationsFolder) throw new \Lucinda\MVC\STDOUT\XMLException("Compilations folder not defined!");
+        if(!$compilationsFolder) throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'compilations' child of 'paths' child of 'application' tags is empty or missing");
         $tagsFolder = (string) $xml->paths->tags;
         $viewsFolder = (string) $xml->paths->views;
         $extension = (string) $xml->templates_extension;

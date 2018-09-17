@@ -21,7 +21,7 @@ class SQLDataSourceBinder
             $xml = (array) $xml;
             if(is_array($xml["server"])) {
                 foreach($xml["server"] as $element) {
-                    if(!isset($element["name"])) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'name' not set for <server> tag!");
+                    if(!isset($element["name"])) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'name' empty or missing in 'server' tag");
                     $dsd = new SQLDataSourceDetection($element);
                     \Lucinda\SQL\ConnectionFactory::setDataSource((string) $element["name"], $dsd->getDataSource());
                 }

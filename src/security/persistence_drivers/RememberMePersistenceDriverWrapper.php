@@ -19,7 +19,7 @@ class RememberMePersistenceDriverWrapper extends PersistenceDriverWrapper {
 	 */
 	protected function setDriver(\SimpleXMLElement $xml) {
 		$secret = (string) $xml["secret"];
-		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("'secret' key of security.persistence.remember_me tag is mandatory!");
+		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'secret' is mandatory for 'remember_me' tag");
 
 		$parameterName = (string) $xml["parameter_name"];
 		if(!$parameterName) $parameterName = self::DEFAULT_PARAMETER_NAME;

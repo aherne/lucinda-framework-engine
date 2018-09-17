@@ -54,7 +54,7 @@ class CachingPolicyLocator {
      */
     private function getGlobalPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
         $caching = $application->getTag("http_caching");
-        if(!$caching) throw new \Lucinda\MVC\STDOUT\XMLException("Entry missing in configuration.xml: http_caching");
+        if(!$caching) throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'http_caching' missing");
         $finder = new CachingPolicyFinder($caching, $application, $request, $response);
         return $finder->getPolicy();
     }
@@ -74,7 +74,7 @@ class CachingPolicyLocator {
             $elements = is_array($tmp["route"])?$tmp["route"]:array($tmp["route"]);
             foreach($elements as $info) {
                 $route = $info["url"];
-                if($route === null) throw new \Lucinda\MVC\STDOUT\XMLException("Property missing in http_caching.route tag: url");
+                if($route === null) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'url' empty or missing in 'route' subtag of 'http_caching' tag");
                 if($route == $page) {
                     $finder = new CachingPolicyFinder($info, $application, $request, $response);
                     return $finder->getPolicy();

@@ -18,7 +18,7 @@ class JsonWebTokenPersistenceDriverWrapper extends PersistenceDriverWrapper {
 	 */
 	protected function setDriver(\SimpleXMLElement $xml) {
 		$secret = (string) $xml["secret"];
-		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("'secret' key of security.persistence.json_web_token tag is mandatory!");
+		if(!$secret) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'secret' is mandatory for 'json_web_token' tag");
 		
 		$expirationTime = (integer) $xml["expiration"];
 		if(!$expirationTime) $expirationTime = self::DEFAULT_EXPIRATION_TIME;

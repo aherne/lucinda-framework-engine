@@ -1,5 +1,0 @@
-replaced application.paths.loggers with loggers[path]
-replaced application.paths.dao with security[dao_path]
-replaced application.paths.cacheables with http_caching[drivers_path]
-
-TODO: make XMLException reporting format uniform

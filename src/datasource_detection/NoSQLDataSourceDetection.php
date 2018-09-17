@@ -8,7 +8,7 @@ require_once("DataSourceDetection.php");
 class NoSQLDataSourceDetection extends DataSourceDetection {    
     protected function setDataSource(\SimpleXMLElement $databaseInfo) {
         $driver = (string) $databaseInfo["driver"];
-        if(!$driver) throw new \Lucinda\MVC\STDOUT\XMLException("Child tag <driver> is mandatory for <server> tags!");
+        if(!$driver) throw new \Lucinda\MVC\STDOUT\XMLException("Child tag 'driver' is mandatory for 'server' tags");
         switch($driver) {
             case "couchbase":
                 $host = (string) $databaseInfo["host"];
@@ -57,7 +57,7 @@ class NoSQLDataSourceDetection extends DataSourceDetection {
                 $this->dataSource = new \Lucinda\NoSQL\APCuDataSource();
                 break;
             default:
-                throw new \Lucinda\MVC\STDOUT\XMLException("Nosql driver not supported: ".$driver);
+                throw new \Lucinda\MVC\STDOUT\XMLException("NoSQL driver not supported: ".$driver);
                 break;
         }
     }
@@ -65,7 +65,7 @@ class NoSQLDataSourceDetection extends DataSourceDetection {
     private function setServerInfo(\SimpleXMLElement $databaseInfo, \Lucinda\NoSQL\DataSource $dataSource) {
         // set host and ports
         $temp = (string) $databaseInfo["host"];
-        if(!$temp) throw new \Lucinda\MVC\STDOUT\XMLException("Driver attribute 'host' is mandatory");
+        if(!$temp) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'host' empty or missing in 'server' tag");
         $hosts = explode(",",$temp);
         foreach($hosts as $hostAndPort) {
             $hostAndPort = trim($hostAndPort);

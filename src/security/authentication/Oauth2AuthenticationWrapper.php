@@ -144,11 +144,11 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 		// get client id and secret from xml
 		$clientID = (string) $xml["client_id"];
 		$clientSecret = (string) $xml["client_secret"];
-		if(!$clientID || !$clientSecret) throw new \Lucinda\MVC\STDOUT\XMLException("Tags 'client_id' and 'client_secret' are mandatory!");
+		if(!$clientID || !$clientSecret) throw new \Lucinda\MVC\STDOUT\XMLException("Tags 'client_id' and 'client_secret' are mandatory for 'driver' subtag of 'oauth2' tag");
 		
 		// callback page is same as driver login page
 		$callbackPage = (string) $xml["callback"];
-		if(!$callbackPage) throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'callback' is mandatory!");
+		if(!$callbackPage) throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'callback' is mandatory for 'driver' subtag of 'oauth2' tag");
 		
 		$callbackPage = (isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER['HTTP_HOST']."/".$callbackPage;
 		return new \OAuth2\ClientInformation($clientID, $clientSecret, $callbackPage);
@@ -194,13 +194,13 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 		$xmlLocal = $this->xml->driver;
 		foreach($xmlLocal as $element) {
 			$driverName = (string) $element["name"];
-			if(!$driverName) throw new \Lucinda\MVC\STDOUT\XMLException("Property 'name' of oauth2.driver tag is mandatory!");
+			if(!$driverName) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'name' is mandatory for 'driver' subtag of oauth2 tag");
 		
 			$clientInformation = $this->getClientInformation($element);
 			$this->drivers[$driverName] = $this->getAPIDriver($driverName, $clientInformation);
 			if($driverName == "GitHub") {
 				$applicationName = (string) $element["application_name"];
-				if(!$applicationName) throw new \Lucinda\MVC\STDOUT\XMLException("Property 'application_name' of oauth2.driver tag is mandatory for GitHub!");
+				if(!$applicationName) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'application_name' of 'driver' subtag of 'oauth2' tag is mandatory for GitHub");
 				$this->drivers[$driverName]->setApplicationName($applicationName);
 			}
 		}
