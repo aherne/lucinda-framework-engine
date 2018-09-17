@@ -65,7 +65,7 @@ class NoSQLDataSourceDetection extends DataSourceDetection {
     private function setServerInfo(\SimpleXMLElement $databaseInfo, \Lucinda\NoSQL\DataSource $dataSource) {
         // set host and ports
         $temp = (string) $databaseInfo["host"];
-        if(!$temp) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'host' empty or missing in 'server' tag");
+        if(!$temp) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'host' is mandatory for 'server' tag");
         $hosts = explode(",",$temp);
         foreach($hosts as $hostAndPort) {
             $hostAndPort = trim($hostAndPort);

@@ -81,7 +81,7 @@ class CachingPolicyFinder {
 		if($driverClass) {
 		    // get cacheables folder
 		    $cacheablesFolder = (string) $application->getTag("http_caching")["drivers_path"];
-		    if(!$cacheablesFolder) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'drivers_path' empty or missing in 'http_caching' tag");
+		    if(!$cacheablesFolder) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'drivers_path' is mandatory for 'http_caching' tag");
 		    
 		    // loads and validates class
             load_class($cacheablesFolder, $driverClass);

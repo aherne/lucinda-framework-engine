@@ -31,7 +31,7 @@ class LocaleDetector {
      */
     private function setDetectionMethod(\SimpleXMLElement $xml) {
         $detectionMethod = (string) $xml["method"];
-        if(!$detectionMethod) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'method' empty or missing in 'internationalization' tag");
+        if(!$detectionMethod) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'method' is mandatory for 'internationalization' tag");
         $detectionMethod = strtolower($detectionMethod);
         if(!in_array($detectionMethod, array("header","request","session"))) throw new \Lucinda\MVC\STDOUT\XMLException("Invalid detection method: ".$detectionMethod);
         $this->detectionMethod = $detectionMethod;
@@ -45,7 +45,7 @@ class LocaleDetector {
      */
     private function setDefaultLocale(\SimpleXMLElement $xml) {
         $defaultLocale =  (string) $xml["locale"];
-        if(!$defaultLocale) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'locale' empty or missing in 'internationalization' tag");
+        if(!$defaultLocale) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'locale' is mandatory for 'internationalization' tag");
         $this->defaultLocale = $defaultLocale;
     }
     

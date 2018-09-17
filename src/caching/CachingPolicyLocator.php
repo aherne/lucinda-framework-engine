@@ -74,7 +74,7 @@ class CachingPolicyLocator {
             $elements = is_array($tmp["route"])?$tmp["route"]:array($tmp["route"]);
             foreach($elements as $info) {
                 $route = $info["url"];
-                if($route === null) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'url' empty or missing in 'route' subtag of 'http_caching' tag");
+                if($route === null) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'url' is mandatory for 'route' subtag of 'http_caching' tag");
                 if($route == $page) {
                     $finder = new CachingPolicyFinder($info, $application, $request, $response);
                     return $finder->getPolicy();

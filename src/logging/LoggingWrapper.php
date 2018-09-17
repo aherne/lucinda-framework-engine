@@ -18,7 +18,7 @@ class LoggingWrapper {
 	 */
 	public function __construct(\SimpleXMLElement $xml, $developmentEnvironment) {
 	    $loggersPath = (string) $xml["path"];
-        if(!$loggersPath) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'path' empty or missing in 'loggers' tag");
+        if(!$loggersPath) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'path' is mandatory for 'loggers' tag");
 		$this->setLoggers($loggersPath, $xml->{$developmentEnvironment});
 	}
 	
