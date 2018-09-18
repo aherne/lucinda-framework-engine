@@ -28,7 +28,8 @@ class ViewLanguageWrapper {
         if(!$compilationsFolder) throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'compilations' child of 'paths' child of 'application' tags is empty or missing");
         $tagsFolder = (string) $xml->paths->tags;
         $viewsFolder = (string) $xml->paths->views;
-        $extension = (string) $xml->templates_extension;
+        $extension = (string) $xml["templates_extension"];
+        if(!$extension) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'templates_extension' is missing for 'application' tag");
         
         // gets view file
         if($viewsFolder && strpos($viewFile, $viewsFolder)===0) {
