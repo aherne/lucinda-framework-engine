@@ -1,35 +1,29 @@
 <?php
-class PageAuthorization implements Lucinda\WebSecurity\PageAuthorizationDAO {
+class PageAuthorization extends Lucinda\WebSecurity\PageAuthorizationDAO {
     const PAGE_IDS = array(
         array("id"=>1, "path"=>"index", "public"=>0),
         array("id"=>2, "path"=>"login", "public"=>1),
         array("id"=>3, "path"=>"logout", "public"=>1),
         array("id"=>4, "path"=>"private", "public"=>0)
     );
-    private $id;
     
     public function isPublic()
     {
         foreach(self::PAGE_IDS as $info) {
-            if($info["id"]==$this->id) {
+            if($info["id"]==$this->pageID) {
                 return $info["public"];
             }
         }
     }
     
-    public function setID($path)
+    protected function detectID($path)
     {
         foreach(self::PAGE_IDS as $info) {
             if($info["path"]==$path) {
-                $this->id = $info["id"];
+                $this->pageID = $info["id"];
             }
         }
     }
-    
-    public function getID()
-    {
-        return $this->id;
-    }    
 
     
 }

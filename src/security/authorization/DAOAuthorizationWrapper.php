@@ -35,17 +35,15 @@ class DAOAuthorizationWrapper extends AuthorizationWrapper {
 		// loads and instances page DAO object
 		$className = (string) $xmlTag["page_dao"];
 		load_class((string) $xml["dao_path"], $className);
-		$pageDAO = new $className();
+		$pageDAO = new $className($currentPage);
 		if(!($pageDAO instanceof \Lucinda\WebSecurity\PageAuthorizationDAO)) throw new  \Lucinda\MVC\STDOUT\ServletException("Class must be instance of PageAuthorizationDAO!");
-		$pageDAO->setID($currentPage);
-		
+
 		// loads and instances user DAO object
 		$className = (string) $xmlTag["user_dao"];
 		load_class((string) $xml["dao_path"], $className);
-		$userDAO = new $className();
+		$userDAO = new $className($userID);
 		if(!($userDAO instanceof \Lucinda\WebSecurity\UserAuthorizationDAO)) throw new  \Lucinda\MVC\STDOUT\ServletException("Class must be instance of UserAuthorizationDAO!");
-		$userDAO->setID($userID);
-		
+
 		// performs authorization
 		$authorization = new \Lucinda\WebSecurity\DAOAuthorization($loggedInCallback, $loggedOutCallback);
 		$this->setResult($authorization->authorize($pageDAO, $userDAO, $_SERVER["REQUEST_METHOD"]));
