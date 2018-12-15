@@ -13,11 +13,12 @@ class LoggingBinder
     private $logger;
     
     /**
-     * @param \Lucinda\MVC\STDOUT\Application $application
+     * @param \SimpleXMLElement $xml
+     * @param string $developmentEnvironment
      */
-    public function __construct(\Lucinda\MVC\STDOUT\Application $application) {        
+    public function __construct(\SimpleXMLElement $xml, $developmentEnvironment) {        
         // finds loggers and return a global wrapper
-        $finder = new LoggingWrapper($application->getTag("loggers"), $application->attributes()->get("environment"));
+        $finder = new LoggingWrapper($xml, $developmentEnvironment);
         $loggers = $finder->getLoggers();
         if(!empty($loggers)) {
             $this->logger = new MultiLogger($loggers);

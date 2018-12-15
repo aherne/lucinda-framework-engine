@@ -10,12 +10,12 @@ require_once("NoSQLDataSourceDetection.php");
 class NoSQLDataSourceBinder
 {
     /**
-     * @param \Lucinda\MVC\STDOUT\Application $application
+     * @param \SimpleXMLElement $xml
+     * @param string $developmentEnvironment
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid.
      */
-    public function __construct(\Lucinda\MVC\STDOUT\Application $application) {
-        $environment = $application->attributes()->get("environment");
-        $xml = $application->getTag("servers")->nosql->$environment;
+    public function __construct(\SimpleXMLElement $xml, $developmentEnvironment) {     
+        $xml = $xml->$developmentEnvironment;
         if(!empty($xml)) {
             if(!$xml->server) throw new \Lucinda\MVC\STDOUT\XMLException("Server not set for environment!");
             $xml = (array) $xml;
