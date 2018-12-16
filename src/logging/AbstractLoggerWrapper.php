@@ -10,13 +10,14 @@ abstract class AbstractLoggerWrapper {
      * @param \SimpleXMLElement $xml XML tag that is child of loggers.(environment)
      */
     public function __construct(\SimpleXMLElement $xml) {
-        $this->setLogger($xml);
+        $this->logger = $this->setLogger($xml);
     }
     
     /**
      * Detects Logger instance based on XML tag supplied
-     * 
+     *
      * @param \SimpleXMLElement $xml XML tag that is child of loggers.(environment)
+     * @return \Lucinda\Logging\Logger
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid.
      * @throws \Lucinda\MVC\STDOUT\ServletException If referenced resources do not exist.
      */
@@ -24,7 +25,7 @@ abstract class AbstractLoggerWrapper {
     
     /**
      * Gets detected logger
-     * 
+     *
      * @return \Lucinda\Logging\Logger
      */
     public function getLogger() {

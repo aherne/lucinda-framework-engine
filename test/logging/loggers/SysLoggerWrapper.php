@@ -16,6 +16,6 @@ class SysLoggerWrapper extends Lucinda\Framework\AbstractLoggerWrapper {
             throw new Lucinda\MVC\STDOUT\XMLException("Property 'format' missing in configuration.xml tag: syslog!");
         }
         
-        $this->logger = new Lucinda\Logging\SysLogger($applicationName, new Lucinda\Logging\LogFormatter($pattern));
+        return new Lucinda\Logging\SysLogger($applicationName, new Lucinda\Logging\LogFormatter($pattern));
     }
 }

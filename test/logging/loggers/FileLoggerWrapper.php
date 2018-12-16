@@ -16,6 +16,6 @@ class FileLoggerWrapper extends Lucinda\Framework\AbstractLoggerWrapper {
             throw new Lucinda\MVC\STDOUT\XMLException("Property 'format' missing in configuration.xml tag: file!");
         }
         
-        $this->logger = new Lucinda\Logging\FileLogger($filePath, (string) $xml["rotation"], new Lucinda\Logging\LogFormatter($pattern));
+        return new Lucinda\Logging\FileLogger($filePath, (string) $xml["rotation"], new Lucinda\Logging\LogFormatter($pattern));
     }
 }
