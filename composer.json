@@ -21,7 +21,8 @@
         "lucinda/mvc": "~2.0",
         "lucinda/sql-data-access": "~2.0",
         "lucinda/view-language": "~2.0",
-        "lucinda/internationalization": "~2.0"
+        "lucinda/internationalization": "~2.0",
+        "lucinda/parameters-validator": "~1.0"
     },
     "require-dev": {
     }
