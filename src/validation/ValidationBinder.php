@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/parameters-validator/loader.php");
+require_once("vendor/lucinda/request-validator/loader.php");
 
 /**
  * Binds Parameters Validation API with MVC STDOUT API (aka Servlets API) and stdout.xml in order to perform validation of path/request parameters 
@@ -13,7 +13,7 @@ class ValidationBinder {
      * @param \Lucinda\MVC\STDOUT\Request $request
      */
     public function __construct(\Lucinda\MVC\STDOUT\Request $request) {
-        $validator = new \Lucinda\ParameterValidator\Validator(
+        $validator = new \Lucinda\RequestValidator\Validator(
             "stdout.xml",
             $request->getValidator()->getPage(),
             $request->getMethod(),
@@ -47,7 +47,7 @@ class ValidationBinder {
     /**
      * Gets validation results
      * 
-     * @return \Lucinda\ParameterValidator\ResultsList
+     * @return \Lucinda\RequestValidator\ResultsList
      */
     public function getResults() {
         return $this->results;
