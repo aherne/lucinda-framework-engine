@@ -71,8 +71,7 @@ class CachingPolicyLocator {
         $page = $request->getValidator()->getPage();
         $tmp = (array) $application->getTag("http_caching");
         if(!empty($tmp["route"])) {
-            $elements = is_array($tmp["route"])?$tmp["route"]:array($tmp["route"]);
-            foreach($elements as $info) {
+            foreach($tmp["route"] as $info) {
                 $route = $info["url"];
                 if($route === null) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'url' is mandatory for 'route' subtag of 'http_caching' tag");
                 if($route == $page) {
