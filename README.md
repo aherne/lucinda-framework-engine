@@ -11,4 +11,9 @@ This is the engine behind Lucinda Framework, binding component APIs with content
 - **ViewLanguageBinder**: binds View Language API with MVC STDOUT API and contents of *application* XML tag. Compiles a templated HTML view and alters response accordingly.
 - **ValidationBinder**: binds Parameters Validation API with MVC STDOUT API and contents of *routes* XML tag. Allows developers to create simple and elegant XML-based request/path parameters validation policies.
 
-Each of "binders" above will be used by the framework in respective event listeners, promoting complete separation of framework and user level logic as well as allowing developers to update framework functionality in tandem with referenced APIs via *composer update*.   
+Each of "binders" above will be used by the framework in respective event listeners, promoting complete separation of framework and user level logic as well as allowing developers to update framework functionality in tandem with referenced APIs via *composer update*.
+
+In addition to binders, engine defines blueprints necessary for developers to bind to in order to gain an ability in application:
+
+- **AbstractLoggerWrapper**: defines blueprints for logging, requiring class that extends it to generate a Lucinda\Logging\Logger instance from matching XML &lt;logger&gt; tag
+- **LogReporter**: defines blueprints for error reporting, binding Logging API with MVC STDERR API, requiring class that extends it to generate a Lucinda\Logging\Logger instance from matching XML &lt;reporter&gt; tag
