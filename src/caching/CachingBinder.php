@@ -9,9 +9,13 @@ require_once("CachingPolicyLocator.php");
  */
 class CachingBinder {
     /**
+     * Binds APIs to XML for HTTP cache validation
+     * 
      * @param \Lucinda\MVC\STDOUT\Application $application
      * @param \Lucinda\MVC\STDOUT\Request $request
      * @param \Lucinda\MVC\STDOUT\Response $response
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If referenced resources in XML do not exist on disk or are invalid.
      */
     public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
         $policy = $this->getPolicy($application, $request, $response);

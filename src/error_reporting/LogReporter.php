@@ -10,7 +10,7 @@ abstract class LogReporter implements \Lucinda\MVC\STDERR\ErrorReporter {
 	private $logger;
 	
 	/**
-	 * Detects
+	 * Calls child to produce a Lucinda\Logger instance out of a "logger" XML tag
 	 * 
 	 * @param \SimpleXMLElement $xml Contents of reporter tag @ errors document descriptor XML
 	 */

@@ -7,6 +7,8 @@ abstract class AbstractLoggerWrapper {
     protected $logger;
     
     /**
+     * Calls children to return a \Lucinda\Logger instance from matching "logger" XML tag
+     * 
      * @param \SimpleXMLElement $xml XML tag that is child of loggers.(environment)
      */
     public function __construct(\SimpleXMLElement $xml) {

@@ -28,6 +28,13 @@ abstract class CacheableDriver implements \Lucinda\Caching\Cacheable {
 	 */
 	protected $last_modified_time;
 	
+	/**
+	 * Saves STDOUT MVC API objects for internal operations and calls children to set ETag and Last-Modified values.
+	 * 
+	 * @param \Lucinda\MVC\STDOUT\Application $application
+	 * @param \Lucinda\MVC\STDOUT\Request $request
+	 * @param \Lucinda\MVC\STDOUT\Response $response
+	 */
 	public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
 		$this->application = $application;
 		$this->request = $request;

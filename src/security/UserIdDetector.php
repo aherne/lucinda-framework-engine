@@ -8,6 +8,8 @@ class UserIdDetector
     private $userID;
     
     /**
+     * Sets logged in user id based on persistence drivers
+     * 
      * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers List of persistence drivers to detect from.
      */
     public function __construct($persistenceDrivers) {

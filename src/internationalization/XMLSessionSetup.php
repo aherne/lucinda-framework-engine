@@ -17,6 +17,12 @@ class XMLSessionSetup {
     private $options;
     private $handler;
 
+    /**
+     * Sets up session for locale persistance across requests based on XML settings
+     * 
+     * @param \SimpleXMLElement $xml
+     * @throws \Lucinda\MVC\STDOUT\ServletException If handler file/class not found or latter is not instanceof SessionHandlerInterface
+     */
     public function __construct(\SimpleXMLElement $xml) {
         $this->setSecurityOptions($xml);
         $this->setHandler($xml);

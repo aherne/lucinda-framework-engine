@@ -18,8 +18,18 @@ class SecurityBinder {
     private $csrfToken;
 
     /**
+     * Binds APIs based on XML to perform authentication/authorization on a request
+     * 
      * @param \Lucinda\MVC\STDOUT\Application $application
      * @param \Lucinda\MVC\STDOUT\Request $request
+	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
+	 * @throws \Lucinda\WebSecurity\AuthenticationException If one or more persistence drivers are not instanceof PersistenceDriver
+	 * @throws \Lucinda\WebSecurity\TokenException If CSRF checks fail
+	 * @throws \Lucinda\MVC\STDOUT\ServletException If request doesn't come with mandatory parameters.
+	 * @throws \OAuth2\ClientException When oauth2 local client sends malformed requests to oauth2 server.
+	 * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
      */
     public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request) {
         // detects relevant data

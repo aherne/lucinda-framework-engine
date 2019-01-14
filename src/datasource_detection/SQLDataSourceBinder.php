@@ -10,9 +10,12 @@ require_once("SQLDataSourceDetection.php");
 class SQLDataSourceBinder
 {
     /**
+     * Binds SQL Data Access API to XML based on development environment and sets DataSource for later querying
+     * 
      * @param \SimpleXMLElement $xml
      * @param string $developmentEnvironment
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid.
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If referenced resources in XML do not exist on disk or are invalid.
      */
     public function __construct(\SimpleXMLElement $xml, $developmentEnvironment) {     
         $xml = $xml->$developmentEnvironment;

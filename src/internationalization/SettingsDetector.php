@@ -7,6 +7,8 @@ class SettingsDetector {
     private $settings;
     
     /**
+     * Saves detected internationalization settings based on contents of <internationalization> XML tag.
+     * 
      * @param \SimpleXMLElement $xml Content of <internationalization> tag.
      * @param LocaleDetector $locale Locale detected previously by matching <internationalization> tag content with user request.
      */

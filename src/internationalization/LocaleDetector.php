@@ -14,6 +14,8 @@ class LocaleDetector {
     private $detectedLocale;
     
     /**
+     * Determines method to detect locale then performs locale detection by matching XML with client request/headers 
+     * 
      * @param \SimpleXMLElement $xml Internationalization tag content.
      * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
      */

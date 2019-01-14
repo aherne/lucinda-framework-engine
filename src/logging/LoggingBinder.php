@@ -13,8 +13,12 @@ class LoggingBinder
     private $logger;
     
     /**
+     * Performs loggers detection based on XML and execution environment then aggregates results into a MultiLogger for cascading logs
+     * 
      * @param \SimpleXMLElement $xml
      * @param string $developmentEnvironment
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If referenced resources in XML do not exist on disk or are invalid.
      */
     public function __construct(\SimpleXMLElement $xml, $developmentEnvironment) {        
         // finds loggers and return a global wrapper

@@ -10,8 +10,12 @@ class ViewLanguageBinder {
     private $compilationFile;
     
     /**
+     * Compiles view file from ViewLanguage to PHP using also contents of <application> XML tag.
+     * 
      * @param \SimpleXMLElement $xml XML file holding compiler settings.
      * @param string $viewFile View file location (without extension, optionally including views folder path)
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is misconfigured
+     * @throws \Lucinda\Templating\ViewException If compilation failed due to a developer error.
      */
     public function __construct(\SimpleXMLElement $xml, $viewFile) {
         $this->setCompilationFile($xml, $viewFile);

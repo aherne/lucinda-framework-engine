@@ -7,6 +7,8 @@ class PersistenceDriversDetector {
     private $persistenceDrivers;
     
     /**
+     * Sets persistence drivers based on contents of <persistence> XML tag.
+     * 
      * @param \SimpleXMLElement $xml XML that contains security.persistence tag.
      */
     public function __construct(\SimpleXMLElement $xml) {

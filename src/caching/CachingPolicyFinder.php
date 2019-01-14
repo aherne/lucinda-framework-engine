@@ -10,6 +10,8 @@ class CachingPolicyFinder {
 	private $policy;
 	
 	/**
+	 * Detects caching policy from XML tag holding its definitions.
+	 * 
 	 * @param \SimpleXMLElement $xml Tag that's holding policies.
 	 * @param \Lucinda\MVC\STDOUT\Application $application 
 	 * @param \Lucinda\MVC\STDOUT\Request $request

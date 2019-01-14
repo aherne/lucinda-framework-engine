@@ -6,6 +6,10 @@ require_once("DataSourceDetection.php");
  * Encapsulates NoSQLDataSource detection (itself encapsulating database server settings) based on <server> XML tag contents
  */
 class NoSQLDataSourceDetection extends DataSourceDetection {    
+    /**
+     * {@inheritDoc}
+     * @see DataSourceDetection::setDataSource()
+     */
     protected function setDataSource(\SimpleXMLElement $databaseInfo) {
         $driver = (string) $databaseInfo["driver"];
         if(!$driver) throw new \Lucinda\MVC\STDOUT\XMLException("Child tag 'driver' is mandatory for 'server' tags");

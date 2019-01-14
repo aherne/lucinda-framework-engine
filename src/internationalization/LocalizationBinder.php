@@ -11,9 +11,12 @@ require_once("SettingsDetector.php");
 class LocalizationBinder
 {
     /**
+     * Sets up \Lucinda\Internationalization\Reader instance to use later on in automatic translation based on XML and client headers
+     * 
      * @param \Lucinda\MVC\STDOUT\Application $application
      * @param \Lucinda\MVC\STDOUT\Request $request
-     * @throws \Lucinda\MVC\STDOUT\XMLException
+	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If referenced resources in XML do not exist on disk or are invalid.
      */
     public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request) {
         // parses XML
