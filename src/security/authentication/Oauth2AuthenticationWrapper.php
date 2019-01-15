@@ -209,7 +209,7 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 	/**
 	 * Gets OAuth2 drivers
 	 * 
-	 * @return array[string:OAuth2\Driver] List of available oauth2 drivers by driver name.
+	 * @return \OAuth2\Driver[string] List of available oauth2 drivers by driver name.
 	 */
 	public function getDrivers() {
 		return $this->drivers;
