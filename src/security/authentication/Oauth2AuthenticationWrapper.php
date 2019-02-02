@@ -11,6 +11,8 @@ require_once("AuthenticationWrapper.php");
  * (eg: google / facebook) driver implementation, then performs login/logout if path requested matches paths @ xml.
  */
 class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
+    const DRIVERS_LOCATION = "application/models/oauth2";
+
 	const DEFAULT_LOGIN_PAGE = "login";
 	const DEFAULT_LOGOUT_PAGE = "logout";
 	const DEFAULT_TARGET_PAGE = "index";
@@ -164,7 +166,7 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 	 */
 	private function getAPIDriver($driverName, \OAuth2\ClientInformation $clientInformation) {
 		$driverClass = $driverName."Driver";
-		$driverFilePath = "vendor/lucinda/oauth2-client/drivers/".$driverClass.".php";
+		$driverFilePath = self::DRIVERS_LOCATION."/".$driverName."/".$driverClass.".php";
 		if(!file_exists($driverFilePath)) throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
 		require_once($driverFilePath);
 		return new $driverClass($clientInformation);
@@ -179,7 +181,7 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 	 */
 	private function getLoginDriver($driverName) {
 		$driverClass = $driverName."SecurityDriver";
-		$driverFilePath = "application/models/oauth2/".$driverClass.".php";
+		$driverFilePath = self::DRIVERS_LOCATION."/".$driverName."/".$driverClass.".php";
 		if(!file_exists($driverFilePath)) throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
 		require_once($driverFilePath);
 		return new $driverClass($this->drivers[$driverName]);
@@ -209,7 +211,7 @@ class Oauth2AuthenticationWrapper extends AuthenticationWrapper {
 	/**
 	 * Gets OAuth2 drivers
 	 * 
-	 * @return array[string:OAuth2\Driver] List of available oauth2 drivers by driver name.
+	 * @return \OAuth2\Driver[string] List of available oauth2 drivers by driver name.
 	 */
 	public function getDrivers() {
 		return $this->drivers;

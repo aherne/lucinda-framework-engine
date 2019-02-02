@@ -98,7 +98,7 @@ class Authentication {
     /*
      * Gets oauth2 drivers found (if authentication method was "oauth2")
      * 
-	 * @return array[string:OAuth2\Driver] List of available oauth2 drivers by driver name.
+	 * @return \OAuth2\Driver[string] List of available oauth2 drivers by driver name.
      */
     public function getOAuth2Drivers() {
         return $this->oauth2Drivers;
