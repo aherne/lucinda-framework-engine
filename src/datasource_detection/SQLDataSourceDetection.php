@@ -13,7 +13,7 @@ class SQLDataSourceDetection extends DataSourceDetection {
     protected function setDataSource(\SimpleXMLElement $databaseInfo) {
         $dataSource = new \Lucinda\SQL\DataSource();
         $dataSource->setDriverName((string) $databaseInfo["driver"]);
-        $dataSource->setDriverOptions((array) $databaseInfo["options"]);
+        $dataSource->setDriverOptions(array()); // currently, setting driver options isn't possible
         $dataSource->setHost((string) $databaseInfo["host"]);
         $dataSource->setPort((string) $databaseInfo["port"]);
         $dataSource->setUserName((string) $databaseInfo["username"]);

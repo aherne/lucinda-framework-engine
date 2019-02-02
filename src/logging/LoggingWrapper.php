@@ -34,10 +34,9 @@ class LoggingWrapper {
 	    $xmlLoggers = (array) $xml;
 	    if(empty($xmlLoggers["logger"])) {
 	        return;
-	    } else if(!is_array($xmlLoggers["logger"])){
-	        $xmlLoggers["logger"] = array(0=>$xmlLoggers["logger"]);
 	    }
-	    foreach($xmlLoggers["logger"] as $xmlProperties) {
+	    $list = (is_array($xmlLoggers["logger"])?$xmlLoggers["logger"]:[$xmlLoggers["logger"]]);
+	    foreach($list as $xmlProperties) {
 	        // detects class name
             $className = (string) $xmlProperties["class"];
 
