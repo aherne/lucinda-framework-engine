@@ -6,7 +6,7 @@ require_once("LocaleDetector.php");
 require_once("SettingsDetector.php");
 
 /**
- * Binds Internationalization API with MVC STDOUT API (aka Servlets API) in order to be able to produce a localizable response via GETTEXT
+ * Binds Internationalization API with MVC STDOUT API (aka Servlets API) in order to be able to produce a localizable response
  */
 class LocalizationBinder
 {
@@ -29,22 +29,21 @@ class LocalizationBinder
         // compiles settings
         $detector = new SettingsDetector($xml, $localeDetector);
         $settings = $detector->getSettings();
-        $locale = $settings->getPreferredLocale();
         if(!file_exists($settings->getFolder().DIRECTORY_SEPARATOR.$settings->getPreferredLocale())) {
             // if input locale is not supported, use default
             if(!file_exists($settings->getFolder().DIRECTORY_SEPARATOR.$settings->getDefaultLocale())) {
                 throw new \Lucinda\MVC\STDOUT\XMLException("Translations not set for default locale: ".$settings->getDefaultLocale());
             }
-            $locale = $settings->getDefaultLocale();
+            $settings->setPreferredLocale($settings->getDefaultLocale()); // overrides not supported preferred locale with default
         }
         
         // saves locale in session
         if($localeDetector->getDetectionMethod() == "session") {
-            $request->getSession()->set(LocaleDetector::PARAMETER_NAME, $locale);
+            $request->getSession()->set(LocaleDetector::PARAMETER_NAME, $settings->getPreferredLocale());
         }
         
-        // sets reader instance
-        \Lucinda\Internationalization\Reader::setInstance($settings, ($locale==$settings->getDefaultLocale()));
+        // injects settings into reader for later translations
+        \Lucinda\Internationalization\Reader::setSettings($settings);
     }
 }
 
