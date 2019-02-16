@@ -1,17 +1,17 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/request-validator/loader.php");
+require_once("vendor/lucinda/request-validator/src/Validator.php");
 
 /**
- * Binds Parameters Validation API with MVC STDOUT API (aka Servlets API) and stdout.xml in order to perform validation of path/request parameters 
+ * Binds Parameters Validation API with MVC STDOUT API (aka Servlets API) and stdout.xml in order to perform validation of path/request parameters
  */
 class ValidationBinder {
     private $results;
     
     /**
      * Binds APIs to XML in order to perform request parameters validation based on contents of <route> tag.
-     * 
+     *
      * @param \Lucinda\MVC\STDOUT\Request $request
      * @throws \Lucinda\RequestValidator\Exception If XML is misconfigured
      * @throws \Lucinda\RequestValidator\MethodNotSupportedException If http method used to retrieve resource is not supported.
@@ -27,7 +27,7 @@ class ValidationBinder {
     
     /**
      * Builds a compilation of path parameters and request method specific parameters. If param names are the same, path parameter version takes precedence.
-     * 
+     *
      * @param \Lucinda\MVC\STDOUT\Request $request
      * @return string[mixed] Parameters by name and value
      */
@@ -39,7 +39,7 @@ class ValidationBinder {
         $output = $pathParameters;
         
         // appends request parameters
-        $requestParameters = $request->getParameters();
+        $requestParameters = $request->parameters()->toArray();
         foreach($requestParameters as $name=>$value) {
             if(isset($output[$name])) continue;
             $output[$name] = $value;
@@ -50,7 +50,7 @@ class ValidationBinder {
     
     /**
      * Gets validation results
-     * 
+     *
      * @return \Lucinda\RequestValidator\ResultsList
      */
     public function getResults() {
