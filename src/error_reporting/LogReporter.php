@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once(dirname(__DIR__,3)."/logging/loader.php");
+require_once(dirname(dirname(dirname(__DIR__)))."/logging/loader.php");
 
 /**
  * Binds STDERR MVC API to Logging API in order to report errors through loggers.
