@@ -1,9 +1,9 @@
 {
     "name": "lucinda/framework-engine",
     "type": "library",
-    "description": "Engine used behind Lucinda Framework",
-    "keywords": ["mvc","stdout"],
-    "homepage": "http://www.lucinda-framework.com",
+    "description": "Engine behind Lucinda Framework 2.0",
+    "keywords": ["framework","engine"],
+    "homepage": "http://www.lucinda-framework.com/framework-engine",
     "license": "MIT",
     "authors": [
         {
