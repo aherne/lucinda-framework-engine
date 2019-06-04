@@ -62,7 +62,7 @@ class LocaleDetector {
         $this->detectedLocale = $this->defaultLocale;
         switch($this->detectionMethod) {
             case "header":
-                $header = $request->headers()->get("Accept-Language");
+                $header = $request->headers("Accept-Language");
                 if($header) {
                     $locale = substr($header, 0, strpos($header, ","));
                     $slashPosition = strpos($locale, "-");
@@ -70,7 +70,7 @@ class LocaleDetector {
                 }
                 break;
             case "request":
-                $parameter = $request->getURI()->parameters()->get(self::PARAMETER_NAME);
+                $parameter = $request->getURI()->parameters(self::PARAMETER_NAME);
                 if($parameter) {
                     $this->detectedLocale = $parameter;
                 }
@@ -86,7 +86,7 @@ class LocaleDetector {
                         $session->start();
                     }
                 }
-                $parameter = $request->getURI()->parameters()->get(self::PARAMETER_NAME);
+                $parameter = $request->getURI()->parameters(self::PARAMETER_NAME);
                 if($parameter) {
                     $this->detectedLocale = $parameter;
                     return;

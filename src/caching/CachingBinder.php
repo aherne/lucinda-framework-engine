@@ -87,7 +87,7 @@ class CachingBinder {
         }
         $headers = $cacheResponse->getHeaders();
         foreach($headers as $name=>$value) {
-            $response->headers()->set($name, $value);
+            $response->headers($name, $value);
         }
     }
 }

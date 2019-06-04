@@ -35,11 +35,11 @@ class ValidationBinder {
         $output = array();
         
         // get path parameters
-        $pathParameters = $request->getValidator()->getPathParameters();
+        $pathParameters = $request->getValidator()->parameters();
         $output = $pathParameters;
         
         // appends request parameters
-        $requestParameters = $request->parameters()->toArray();
+        $requestParameters = $request->parameters();
         foreach($requestParameters as $name=>$value) {
             if(isset($output[$name])) continue;
             $output[$name] = $value;
