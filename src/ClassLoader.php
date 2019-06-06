@@ -9,7 +9,7 @@ namespace Lucinda\Framework;
  */
 function load_class($classPath, $className) {
     // get actual class name without namespace
-    $slashPosition = strpos($className, "\\");
+    $slashPosition = strrpos($className, "\\");
     $simpleClassName = ($slashPosition!==false?substr($className,$slashPosition+1):$className);
 
     // loads class file
