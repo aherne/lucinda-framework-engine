@@ -38,12 +38,13 @@ class OAuth2ResourcesDriver {
      * 
      * @param string $url
      * @param array $fields
-     * @return array|null
+     * @return array
      * @throws \OAuth2\ClientException When client fails to provide mandatory parameters.
      * @throws \OAuth2\ServerException When server responds with an error.
+     * @throws OAuth2ResourcesException When no valid driver or access token were detected.
      */
     public function getResource($url, $fields=array()) {
-        if(!$this->driver) throw new OAuth2ResourcesException("No OAuth2 driver was detected in XML!");
+        if(!$this->driver) throw new OAuth2ResourcesException("No valid OAuth2 driver was detected in XML!");
         if(!$this->accessToken) throw new OAuth2ResourcesException("No access token was detected for current user!");
         return $this->driver->getResource($this->accessToken, $url, $fields);
     }

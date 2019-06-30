@@ -106,10 +106,9 @@ class OAuth2AuthenticationWrapper extends AuthenticationWrapper {
 			$this->setResult($result, $targetFailurePage, $targetSuccessPage);
 		} else {
 			// get scopes
-			// TODO: merge scopes
+		    $targetScopes = $loginDriver->getDefaultScopes();
 			$scopes = (string) $element["scopes"];
-			if($scopes) $targetScopes = explode(",",$scopes);
-			else $targetScopes = $loginDriver->getDefaultScopes();
+			if($scopes) $targetScopes = array_merge($targetScopes, explode(",",$scopes));
 		
 			// set result
 			$result = new \Lucinda\WebSecurity\AuthenticationResult(\Lucinda\WebSecurity\AuthenticationResultStatus::DEFERRED);
