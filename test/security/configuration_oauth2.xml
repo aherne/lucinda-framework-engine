@@ -21,10 +21,6 @@
             <synchronizer_token secret="rrwe"/>
         </persistence>
         <authentication>
-            <form dao="UserAuthentication">
-                <login/>
-                <logout/>
-            </form>
             <oauth2 dao="UsersOAuth2Authentication">
                 <driver name="Facebook" callback="login/facebook" client_id="MY_CLIENT" client_secret="MY_SECRET" scopes="user_photos"/>
             </oauth2>

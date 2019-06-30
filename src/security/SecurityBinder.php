@@ -6,6 +6,7 @@ require_once("UserIdDetector.php");
 require_once("CsrfTokenDetector.php");
 require_once("Authentication.php");
 require_once("Authorization.php");
+require_once("oauth2/OAuth2ResourcesDriver.php");
 
 /**
  * Binds HTTP Security API & OAuth2 Client API with MVC STDOUT API (aka Servlets API) in order to apply web security operations 
@@ -13,7 +14,7 @@ require_once("Authorization.php");
  */
 class SecurityBinder {
     private $persistenceDrivers = array();
-    private $oauth2Drivers = array();
+    private $oauth2Driver;
     private $userID;
     private $csrfToken;
 
@@ -84,8 +85,8 @@ class SecurityBinder {
      * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
      */
     private function authenticate(\SimpleXMLElement $mainXML, $page, $contextPath) {
-        $authentication = new Authentication($mainXML, $page, $contextPath, $this->csrfToken, $this->persistenceDrivers);
-        $this->oauth2Drivers = $authentication->getOAuth2Drivers();
+        new Authentication($mainXML, $page, $contextPath, $this->csrfToken, $this->persistenceDrivers);
+        $this->oauth2Driver = new Oauth2ResourcesDriver($mainXML, $this->userID);
     }
     
     /**
@@ -118,11 +119,11 @@ class SecurityBinder {
     }
     
     /*
-     * Gets oauth2 drivers found (if authentication method was "oauth2")
+     * Gets oauth2 driver in current use to extract resources from
      *
-     * @return \OAuth2\Driver[string] List of available oauth2 drivers by driver name.
+     * @return Oauth2ResourcesDriver
      */
-    public function getOAuth2Drivers() {
-        return $this->oauth2Drivers;
+    public function getOAuth2Driver() {
+        return $this->oauth2Driver;
     }
 }

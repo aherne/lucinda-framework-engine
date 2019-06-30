@@ -7,8 +7,6 @@ require_once("SecurityPacket.php");
  * Performs user authentication based on mechanism chosen by developmer in XML (eg: from database via login form, from an oauth2 provider, etc)
  */
 class Authentication {
-    private $oauth2Drivers = array();
-
     /**
      * Runs authentication logic. 
      * 
@@ -60,14 +58,12 @@ class Authentication {
             }
         }
         if($xml->oauth2) {
-            require_once("authentication/Oauth2AuthenticationWrapper.php");
-            $wrapper = new Oauth2AuthenticationWrapper(
+            require_once("authentication/OAuth2AuthenticationWrapper.php");
+            $wrapper = new OAuth2AuthenticationWrapper(
                 $xmlRoot,
                 $page,
                 $persistenceDrivers,
                 $csrfTokenDetector);
-            // saves oauth2 drivers to be used later on
-            $this->oauth2Drivers = $wrapper->getDrivers();
         }
         if(!$wrapper) throw new \Lucinda\MVC\STDOUT\XMLException("No authentication method chosen!");
         return $wrapper;
@@ -93,14 +89,5 @@ class Authentication {
             $transport->setAccessToken($wrapper->getResult()->getUserID(), $persistenceDrivers);
             throw $transport;
         }
-    }
-
-    /*
-     * Gets oauth2 drivers found (if authentication method was "oauth2")
-     * 
-	 * @return \OAuth2\Driver[string] List of available oauth2 drivers by driver name.
-     */
-    public function getOAuth2Drivers() {
-        return $this->oauth2Drivers;
     }
 }
