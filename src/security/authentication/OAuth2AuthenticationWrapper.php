@@ -89,8 +89,7 @@ class OAuth2AuthenticationWrapper extends AuthenticationWrapper {
 			if(!$targetSuccessPage) $targetSuccessPage = self::DEFAULT_TARGET_PAGE;
 			$targetFailurePage = (string) $this->xml["login"];
 			if(!$targetFailurePage) $targetFailurePage = self::DEFAULT_LOGIN_PAGE;
-			$createIfNotExists = (integer) $this->xml["auto_create"];
-		
+
 			// check state
 			if($driverName != "VK") { // hardcoding: VK sends wrong state
 				if(empty($_GET['state']) || !$csrf->isValid($_GET['state'], 0)) {
@@ -102,7 +101,7 @@ class OAuth2AuthenticationWrapper extends AuthenticationWrapper {
 			$accessTokenResponse = $this->parser->getDriver($driverName)->getAccessToken($_GET["code"]);
 			
 			// get 
-			$result = $this->authentication->login($loginDriver, $accessTokenResponse->getAccessToken(), $createIfNotExists);
+			$result = $this->authentication->login($loginDriver, $accessTokenResponse->getAccessToken());
 			$this->setResult($result, $targetFailurePage, $targetSuccessPage);
 		} else {
 			// get scopes
