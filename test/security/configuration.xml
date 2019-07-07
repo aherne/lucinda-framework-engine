@@ -25,7 +25,10 @@
                 <logout/>
             </form>
             <oauth2 dao="UsersOAuth2Authentication">
-                <driver name="Facebook" callback="login/facebook" client_id="MY_CLIENT" client_secret="MY_SECRET" scopes="user_photos"/>
+            	<local>
+                	<driver name="Facebook" callback="login/facebook" client_id="MY_CLIENT" client_secret="MY_SECRET" scopes="user_photos"/>
+                	<driver name="Google" callback="login/google" client_id="MY_CLIENT" client_secret="MY_SECRET" scopes="user_photos"/>
+                </local>
             </oauth2>
         </authentication>
         <authorization>

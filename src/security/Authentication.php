@@ -11,6 +11,7 @@ class Authentication {
      * Runs authentication logic. 
      * 
      * @param \SimpleXMLElement $xml XML holding information relevant to authentication (above all via security.authentication tag)
+     * @param string $developmentEnvironment
      * @param string $page Route requested by client
      * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
      * @param CsrfTokenDetector $csrfTokenDetector Driver performing CSRF validation
@@ -18,7 +19,7 @@ class Authentication {
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
      * @throws SecurityPacket If authentication encounters a situation where execution cannot continue and redirection is required
      */
-    public function __construct(\SimpleXMLElement $xml, $page, $contextPath, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers) {
+    public function __construct(\SimpleXMLElement $xml, $developmentEnvironment, $page, $contextPath, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers) {
         $wrapper = $this->getWrapper($xml, $page, $csrfTokenDetector, $persistenceDrivers);
         $this->authenticate($wrapper, $contextPath, $persistenceDrivers);
     }
@@ -27,13 +28,14 @@ class Authentication {
      * Gets driver that performs authentication from security.authentication XML tag.
      * 
      * @param \SimpleXMLElement $xmlRoot XML holding information relevant to authentication (above all via security.authentication tag)
+     * @param string $developmentEnvironment
      * @param string $page Route requested by client
      * @param CsrfTokenDetector $csrfTokenDetector Driver performing CSRF validation
      * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers Drivers where authenticated state is persisted (eg: session, remember me cookie).
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
      * @return AuthenticationWrapper
      */
-    private function getWrapper(\SimpleXMLElement $xmlRoot, $page, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers) {
+    private function getWrapper(\SimpleXMLElement $xmlRoot, $developmentEnvironment, $page, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers) {
         $xml = $xmlRoot->authentication;
         if(empty($xml)) {
             throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'authentication' child of 'security' is empty or missing");
@@ -61,6 +63,7 @@ class Authentication {
             require_once("authentication/OAuth2AuthenticationWrapper.php");
             $wrapper = new OAuth2AuthenticationWrapper(
                 $xmlRoot,
+                $developmentEnvironment,
                 $page,
                 $persistenceDrivers,
                 $csrfTokenDetector);

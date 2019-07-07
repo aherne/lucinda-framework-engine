@@ -54,7 +54,7 @@ require_once(dirname(dirname(__DIR__))."/vendor/lucinda/oauth2-client/src/Respon
 require_once(dirname(dirname(__DIR__))."/vendor/lucinda/oauth2-client/src/Driver.php");
 $_SERVER["SERVER_NAME"] = "www.test.com";
 $_SERVER["HTTPS"] = 1;
-$xmlParser = new Lucinda\Framework\OAuth2XMLParser($xml);
+$xmlParser = new Lucinda\Framework\OAuth2XMLParser($xml, "local");
 echo __LINE__.": ".($xmlParser->getDAO() instanceof UsersOAuth2Authentication?"Y":"N")."\n";
 echo __LINE__.": ".($xmlParser->getDriver("Facebook") instanceof \Lucinda\Framework\FacebookDriver?"Y":"N")."\n";
 echo __LINE__.": ".($xmlParser->getLoginDriver("Facebook") instanceof \Lucinda\Framework\FacebookSecurityDriver?"Y":"N")."\n";
@@ -62,18 +62,18 @@ echo __LINE__.": ".($xmlParser->getLoginDriver("Facebook") instanceof \Lucinda\F
 require_once(dirname(dirname(__DIR__))."/src/security/authentication/OAuth2AuthenticationWrapper.php");
 
 // no authentication requested
-$authentication = new Lucinda\Framework\OAuth2AuthenticationWrapper($xml, "login", $persistenceDrivers, $csrf);
+$authentication = new Lucinda\Framework\OAuth2AuthenticationWrapper($xml, "local", "login", $persistenceDrivers, $csrf);
 echo __LINE__.": ".($authentication->getResult()==null?"Y":"N")."\n";
 
 // login requested
-$authentication = new Lucinda\Framework\OAuth2AuthenticationWrapper($xml, "login/facebook", $persistenceDrivers, $csrf);
+$authentication = new Lucinda\Framework\OAuth2AuthenticationWrapper($xml, "local", "login/facebook", $persistenceDrivers, $csrf);
 echo __LINE__.": ".($authentication->getResult()->getStatus()==\Lucinda\WebSecurity\AuthenticationResultStatus::DEFERRED?"Y":"N")."\n";
 
 // authorization code received, asking for a token
 $_GET["code"] = "test";
 $_GET["state"] = $csrf->generate(0);
 try {
-    new Lucinda\Framework\OAuth2AuthenticationWrapper($xml, "login/facebook", $persistenceDrivers, $csrf);
+    new Lucinda\Framework\OAuth2AuthenticationWrapper($xml, "local", "login/facebook", $persistenceDrivers, $csrf);
     echo __LINE__.": N\n";
 } catch(Exception $e) {
     echo __LINE__.": ".($e instanceof \OAuth2\ServerException && $e->getMessage()=="Missing or invalid client id."?"Y":"N")."\n";
@@ -81,11 +81,11 @@ try {
 $persistenceDrivers[0]->save(1);
 
 // logout success
-$authentication = new Lucinda\Framework\OAuth2AuthenticationWrapper($xml, "logout", $persistenceDrivers, $csrf);
+$authentication = new Lucinda\Framework\OAuth2AuthenticationWrapper($xml, "local", "logout", $persistenceDrivers, $csrf);
 echo __LINE__.": ".($authentication->getResult()->getStatus()==\Lucinda\WebSecurity\AuthenticationResultStatus::LOGOUT_OK?"Y":"N")."\n";
 
 // logout failed
-$authentication = new Lucinda\Framework\OAuth2AuthenticationWrapper($xml, "logout", $persistenceDrivers, $csrf);
+$authentication = new Lucinda\Framework\OAuth2AuthenticationWrapper($xml, "local", "logout", $persistenceDrivers, $csrf);
 echo __LINE__.": ".($authentication->getResult()->getStatus()==\Lucinda\WebSecurity\AuthenticationResultStatus::LOGOUT_FAILED?"Y":"N")."\n";
 
 

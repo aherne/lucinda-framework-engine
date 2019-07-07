@@ -24,6 +24,7 @@ class OAuth2AuthenticationWrapper extends AuthenticationWrapper {
 	 * Creates an object
 	 * 
 	 * @param \SimpleXMLElement $xml Contents of security.authentication.oauth2 tag @ configuration.xml.
+     * @param string $developmentEnvironment
 	 * @param string $currentPage Current page requested.
 	 * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers List of drivers to persist information across requests.
 	 * @param CsrfTokenDetector $csrf Object that performs CSRF token checks.
@@ -35,9 +36,9 @@ class OAuth2AuthenticationWrapper extends AuthenticationWrapper {
 	 * @throws \OAuth2\ClientException When oauth2 local client sends malformed requests to oauth2 server.
 	 * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
 	 */
-	public function __construct(\SimpleXMLElement $xml, $currentPage, $persistenceDrivers, CsrfTokenDetector $csrf) {
+	public function __construct(\SimpleXMLElement $xml, $developmentEnvironment, $currentPage, $persistenceDrivers, CsrfTokenDetector $csrf) {
 	    $this->xml = $xml->authentication->oauth2;
-	    $this->parser = new OAuth2XMLParser($xml);
+	    $this->parser = new OAuth2XMLParser($xml, $developmentEnvironment);
 		
 		// loads and instances DAO object
 		$daoObject = $this->parser->getDAO();
@@ -47,8 +48,9 @@ class OAuth2AuthenticationWrapper extends AuthenticationWrapper {
 		$this->authentication = new \Lucinda\WebSecurity\Oauth2Authentication($daoObject, $persistenceDrivers);
 
 		// checks if a login action was requested, in which case it forwards
-		$xmlLocal = $this->xml->driver;
-		foreach($xmlLocal as $element) {
+		$xmlLocal = (array) $this->xml->{$developmentEnvironment};
+		$list = (is_array($xmlLocal["driver"])?$xmlLocal["driver"]:[$xmlLocal["driver"]]);
+		foreach($list as $element) {
 			$driverName = (string) $element["name"];
 			$callbackPage = (string) $element["callback"];
 			if($callbackPage == $currentPage) {

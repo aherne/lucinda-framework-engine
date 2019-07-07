@@ -23,6 +23,7 @@ class SecurityBinder {
      * 
      * @param \Lucinda\MVC\STDOUT\Application $application
      * @param \Lucinda\MVC\STDOUT\Request $request
+     * @param string $developmentEnvironment
 	 * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
 	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
 	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
@@ -32,7 +33,7 @@ class SecurityBinder {
 	 * @throws \OAuth2\ClientException When oauth2 local client sends malformed requests to oauth2 server.
 	 * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
      */
-    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request) {
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment) {
         // detects relevant data
         $xml = $application->getTag("security");
         $page = $request->getValidator()->getPage();
@@ -42,7 +43,7 @@ class SecurityBinder {
         $this->setPersistenceDrivers($xml);
         $this->setUserID();
         $this->setCsrfToken($xml);
-        $this->authenticate($xml, $page, $contextPath);
+        $this->authenticate($xml, $developmentEnvironment, $page, $contextPath);
         $this->authorize($xml, $page, $contextPath);
     }
 
@@ -81,11 +82,12 @@ class SecurityBinder {
      * Performs user authentication based on mechanism chosen by developmer in XML (eg: from database via login form, from an oauth2 provider, etc)
      * 
      * @param \SimpleXMLElement $mainXML XML holding relevant information (above all via security.authentication tag content)
+     * @param string $developmentEnvironment
      * @param string $page Route requested by client
      * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
      */
-    private function authenticate(\SimpleXMLElement $mainXML, $page, $contextPath) {
-        new Authentication($mainXML, $page, $contextPath, $this->csrfToken, $this->persistenceDrivers);
+    private function authenticate(\SimpleXMLElement $mainXML, $developmentEnvironment, $page, $contextPath) {
+        new Authentication($mainXML, $developmentEnvironment, $page, $contextPath, $this->csrfToken, $this->persistenceDrivers);
         $this->oauth2Driver = new Oauth2ResourcesDriver($mainXML, $this->userID);
     }
     

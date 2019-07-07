@@ -15,10 +15,12 @@ class OAuth2XMLParser {
      * Kick-starts detection process.
      * 
      * @param \SimpleXMLElement $xml
+     * @param string $developmentEnvironment
      */
-    public function __construct(\SimpleXMLElement $xml) {
+    public function __construct(\SimpleXMLElement $xml, $developmentEnvironment) {
         // set drivers
-        $this->xml = $xml->authentication->oauth2;
+        $this->xml = $xml->authentication->oauth2->{$developmentEnvironment};
+        if(!$this->xml) throw new \Lucinda\MVC\STDOUT\XMLException("Missing 'driver' subtag of '".$developmentEnvironment."', child of 'oauth2' tag");
         $this->setDrivers();
         
         // loads and instances DAO object
@@ -71,8 +73,12 @@ class OAuth2XMLParser {
      * @throws \Lucinda\MVC\STDOUT\XMLException If required tags aren't found in XML / do not reflect on disk
      */
     private function setDrivers() {
-        $xmlLocal = $this->xml->driver;
-        foreach($xmlLocal as $element) {
+        $xmlLocal = (array) $this->xml;
+        if(empty($xmlLocal["driver"])) {
+            return;
+        }
+        $list = (is_array($xmlLocal["driver"])?$xmlLocal["driver"]:[$xmlLocal["driver"]]);
+        foreach($list as $element) {
             $driverName = (string) $element["name"];
             if(!$driverName) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'name' is mandatory for 'driver' subtag of oauth2 tag");
             
