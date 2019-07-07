@@ -5,12 +5,11 @@
         <auto_routing>0</auto_routing>
     </application>
     <routes>
-        <route url="login"/>
-        <route url="login/facebook"/>
-        <route url="index"/>
-        <route url="logout"/>
-        <route url="private"/>
-        <route url="missing"/>
+        <route url="login" roles="GUEST,USER"/>
+        <route url="login/facebook" roles="GUEST"/>
+        <route url="index" roles="USER"/>
+        <route url="logout" roles="USER"/>
+        <route url="private" roles="GUEST"/>
     </routes>
     <formats>
         <format name="html" content_type="text/html" charset="UTF-8"/>
@@ -33,4 +32,8 @@
 			<by_dao page_dao="PageAuthorization" user_dao="UserAuthorization"/>
         </authorization>
     </security>
+    <users>
+    	<user id="1" username="lucian" password="$2y$10$zXPli6TXeksjxwSofLKoluTezu9fydg05wVMhMNkbSIDhY.LTZb2S" roles="ADMINISTRATORS,USERS"/>
+    	<user id="2" username="john" password="$2y$10$.8WH6Xq4upytcWifsQk60.3Nxa4jvG9jTNihCbL/8ByXMiugeHr2G" roles="USERS"/>
+    </users>
 </xml>

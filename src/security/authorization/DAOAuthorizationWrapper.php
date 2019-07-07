@@ -9,7 +9,6 @@ require_once("AuthorizationWrapper.php");
 class DAOAuthorizationWrapper extends AuthorizationWrapper {
 	const DEFAULT_LOGGED_IN_PAGE = "index";
 	const DEFAULT_LOGGED_OUT_PAGE = "login";
-	const REFRESH_TIME = 0;
 	
 	/**
 	 * Creates an object

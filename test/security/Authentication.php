@@ -101,3 +101,26 @@ try {
     echo __LINE__.": ".$e->getMessage()==("No access token was detected for current user!"?"Y":"N")."\n";
 }
 
+
+/**
+ * XML Authentication
+ */
+require_once(dirname(dirname(__DIR__))."/src/security/authentication/XMLAuthenticationWrapper.php");
+
+// login failed
+$_POST = array("username"=>"lucian", "password"=>"epopescu", "csrf" => $csrf->generate(0));
+$authentication = new Lucinda\Framework\XMLAuthenticationWrapper($xml, "login", $persistenceDrivers, $csrf);
+echo __LINE__.": ".($authentication->getResult()->getStatus()==\Lucinda\WebSecurity\AuthenticationResultStatus::LOGIN_FAILED?"Y":"N")."\n";
+
+// login success
+$_POST = array("username"=>"lucian", "password"=>"popescu", "csrf" => $csrf->generate(0));
+$authentication = new Lucinda\Framework\XMLAuthenticationWrapper($xml, "login", $persistenceDrivers, $csrf);
+echo __LINE__.": ".($authentication->getResult()->getStatus()==\Lucinda\WebSecurity\AuthenticationResultStatus::LOGIN_OK?"Y":"N")."\n";
+
+// logout success
+$authentication = new Lucinda\Framework\XMLAuthenticationWrapper($xml, "logout", $persistenceDrivers, $csrf);
+echo __LINE__.": ".($authentication->getResult()->getStatus()==\Lucinda\WebSecurity\AuthenticationResultStatus::LOGOUT_OK?"Y":"N")."\n";
+
+// logout failed
+$authentication = new Lucinda\Framework\XMLAuthenticationWrapper($xml, "logout", $persistenceDrivers, $csrf);
+echo __LINE__.": ".($authentication->getResult()->getStatus()==\Lucinda\WebSecurity\AuthenticationResultStatus::LOGOUT_FAILED?"Y":"N")."\n";

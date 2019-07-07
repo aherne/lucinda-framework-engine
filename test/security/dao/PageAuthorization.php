@@ -20,7 +20,7 @@ class PageAuthorization extends Lucinda\WebSecurity\PageAuthorizationDAO {
     {
         foreach(self::PAGE_IDS as $info) {
             if($info["path"]==$path) {
-                $this->pageID = $info["id"];
+                return $info["id"];
             }
         }
     }

@@ -1,6 +1,5 @@
 <?php
 namespace Lucinda\Framework;
-
 require_once("vendor/lucinda/security/src/authentication/XMLAuthentication.php");
 require_once("vendor/lucinda/security/src/token/TokenException.php");
 require_once("AuthenticationWrapper.php");
@@ -27,11 +26,13 @@ class XMLAuthenticationWrapper extends AuthenticationWrapper {
 	 * @throws \Lucinda\SQL\StatementException If query to database server fails.
 	 */
 	public function __construct(\SimpleXMLElement $xml, $currentPage, $persistenceDrivers, CsrfTokenDetector $csrf) {
+	    $xml = $xml->xpath("..")[0];
+	    
 		// set driver
 	    $this->driver = new \Lucinda\WebSecurity\XMLAuthentication($xml, $persistenceDrivers);
-		
+	    
 		// setup class properties
-		$validator = new FormRequestValidator($xml);
+		$validator = new FormRequestValidator($xml->security);
 		
 		// checks if a login action was requested, in which case it forwards object to driver
 		if($request = $validator->login($currentPage)) {
