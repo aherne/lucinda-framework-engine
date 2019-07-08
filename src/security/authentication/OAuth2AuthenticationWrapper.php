@@ -85,8 +85,7 @@ class OAuth2AuthenticationWrapper extends AuthenticationWrapper {
 		$loginDriver = $this->parser->getLoginDriver($driverName);
 
 		// detect parameters from xml
-		$authorizationCode = (!empty($_GET["code"])?$_GET["code"]:"");
-		if($authorizationCode) {
+		if(!empty($_GET["code"])) {
 			$targetSuccessPage = (string) $this->xml["target"];
 			if(!$targetSuccessPage) $targetSuccessPage = self::DEFAULT_TARGET_PAGE;
 			$targetFailurePage = (string) $this->xml["login"];
@@ -101,11 +100,22 @@ class OAuth2AuthenticationWrapper extends AuthenticationWrapper {
 			
 			// get access token
 			$accessTokenResponse = $this->parser->getDriver($driverName)->getAccessToken($_GET["code"]);
-			
-			// get 
 			$result = $this->authentication->login($loginDriver, $accessTokenResponse->getAccessToken());
 			$this->setResult($result, $targetFailurePage, $targetSuccessPage);
-		} else {
+		} else if(!empty($_GET["error"])) {
+            // check state
+            if($driverName != "VK") { // hardcoding: VK sends wrong state
+                if(empty($_GET['state']) || !$csrf->isValid($_GET['state'], 0)) {
+                    throw new \Lucinda\WebSecurity\TokenException("CSRF token is invalid or missing!");
+                }
+            }
+
+            // throw exception
+            $exception = new \OAuth2\ServerException($_GET["error"]);
+            $exception->setErrorCode($_GET["error"]);
+            $exception->setErrorDescription(!empty($_GET["error_description"])?$_GET["error_description"]:"");
+            throw $exception;
+        } else {
 			// get scopes
 		    $targetScopes = $loginDriver->getDefaultScopes();
 			$scopes = (string) $element["scopes"];

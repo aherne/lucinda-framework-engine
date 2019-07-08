@@ -1,5 +1,6 @@
 <?php
 namespace Lucinda\Framework;
+
 /**
  * Implements parsing of Instagram OAUTH2 API response
  */

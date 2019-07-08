@@ -1,7 +1,6 @@
 <?php
 namespace Lucinda\Framework;
 
-
 /**
  * Collects information about logged in Instagram user
  */

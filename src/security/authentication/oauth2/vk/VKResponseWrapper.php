@@ -1,5 +1,6 @@
 <?php
 namespace Lucinda\Framework;
+
 /**
  * Implements parsing of VK OAUTH2 API response
  */

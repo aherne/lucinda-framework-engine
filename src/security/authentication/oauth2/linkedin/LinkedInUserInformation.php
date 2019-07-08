@@ -14,6 +14,6 @@ class LinkedInUserInformation extends AbstractUserInformation {
 	public function __construct($info) {
 		$this->id = $info["id"];
 		$this->name = $info["firstName"]." ".$info["lastName"];
-		$this->email = $info["email"];
+        $this->email = (!empty($info["email"])?$info["email"]:"");
 	} 
 }

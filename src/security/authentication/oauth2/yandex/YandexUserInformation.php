@@ -1,7 +1,6 @@
 <?php
 namespace Lucinda\Framework;
 
-
 /**
  * Collects information about logged in Yandex user
  */
@@ -14,6 +13,6 @@ class YandexUserInformation extends AbstractUserInformation {
 	public function __construct($info) {
 		$this->id = $info["id"];
 		$this->name = $info["first_name"]." ".$info["last_name"];
-		$this->email = $info["default_email"];
+        $this->email = (!empty($info["default_email"])?$info["default_email"]:"");
 	} 
 }

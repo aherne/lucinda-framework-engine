@@ -1,5 +1,6 @@
 <?php
 namespace Lucinda\Framework;
+
 /**
  * Implements parsing of GitHub OAUTH2 API response
  */
