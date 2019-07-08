@@ -33,6 +33,6 @@ abstract class AbstractUserInformation implements \Lucinda\WebSecurity\OAuth2Use
      * @see \Lucinda\WebSecurity\OAuth2UserInformation::getEmail()
      */
 	public function getEmail() {
-		return $this->id;
+		return $this->email;
 	}
 }

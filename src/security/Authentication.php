@@ -20,7 +20,7 @@ class Authentication {
      * @throws SecurityPacket If authentication encounters a situation where execution cannot continue and redirection is required
      */
     public function __construct(\SimpleXMLElement $xml, $developmentEnvironment, $page, $contextPath, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers) {
-        $wrapper = $this->getWrapper($xml, $page, $csrfTokenDetector, $persistenceDrivers);
+        $wrapper = $this->getWrapper($xml, $developmentEnvironment, $page, $csrfTokenDetector, $persistenceDrivers);
         $this->authenticate($wrapper, $contextPath, $persistenceDrivers);
     }
     
