@@ -10,6 +10,7 @@ require_once("LogoutRequest.php");
 class FormRequestValidator {
 	const DEFAULT_PARAMETER_USERNAME = "username";
 	const DEFAULT_PARAMETER_PASSWORD = "password";
+	const DEFAULT_PARAMETER_REMEMBER_ME = "remember_me";
 	const DEFAULT_TARGET_PAGE = "index";
 	const DEFAULT_LOGIN_PAGE = "login";
 	const DEFAULT_LOGOUT_PAGE = "logout";
@@ -55,6 +56,7 @@ class FormRequestValidator {
 		$parameterPassword = (string) $this->xml->login["parameter_password"];
 		if(!$parameterPassword) $parameterPassword = self::DEFAULT_PARAMETER_PASSWORD;
 		$parameterRememberMe = (string) $this->xml->login["parameter_rememberMe"];
+		if(!$parameterRememberMe) $parameterRememberMe = self::DEFAULT_PARAMETER_REMEMBER_ME;
 		
 		// get parameter values
 		$username = (!empty($_POST[$parameterUsername])?$_POST[$parameterUsername]:"");
@@ -65,9 +67,7 @@ class FormRequestValidator {
 		if(!$password) throw new  \Lucinda\MVC\STDOUT\ServletException("POST parameter missing: ".$parameterPassword);
 		$loginRequest->setPassword($password);
 		
-		if($parameterRememberMe) {
-			$loginRequest->setRememberMe(!empty($_POST[$parameterRememberMe])?true:false);
-		}
+		$loginRequest->setRememberMe(!empty($_POST[$parameterRememberMe])?true:false);
 		
 		return $loginRequest;
 	}
