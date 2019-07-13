@@ -17,6 +17,7 @@ class SecurityBinder {
     private $oauth2Driver;
     private $userID;
     private $csrfToken;
+    private $accessToken;
 
     /**
      * Binds APIs based on XML to perform authentication/authorization on a request
@@ -43,6 +44,7 @@ class SecurityBinder {
         $this->setPersistenceDrivers($xml);
         $this->setUserID();
         $this->setCsrfToken($xml);
+        $this->setAccessToken();
         $this->authenticate($xml, $developmentEnvironment, $page, $contextPath);
         $this->authorize($xml, $page, $contextPath);
     }
@@ -68,6 +70,17 @@ class SecurityBinder {
      */
     private function setCsrfToken(\SimpleXMLElement $mainXML) {
         $this->csrfToken = new CsrfTokenDetector($mainXML);
+    }
+    
+    /**
+     * Detects access token for REST-ful sites from persistence drivers
+     */
+    private function setAccessToken() {
+        foreach($this->persistenceDrivers as $driver) {
+            if($driver instanceof \Lucinda\WebSecurity\TokenPersistenceDriver) {
+                $this->accessToken = $driver->getAccessToken();
+            }
+        }
     }
 
     /**
@@ -127,5 +140,14 @@ class SecurityBinder {
      */
     public function getOAuth2Driver() {
         return $this->oauth2Driver;
+    }
+    
+    /**
+     * Gets access token to preserve/renew authentication for REST-ful sites
+     *
+     * @return string
+     */
+    public function getAccessToken() {
+        return $this->accessToken;
     }
 }
