@@ -1,5 +1,5 @@
 <?php
-require_once(str_replace("/test/","/src/",__FILE__));
+require_once(str_replace("/test/", "/src/", __FILE__));
 require_once(dirname(dirname(__DIR__))."/vendor/lucinda/nosql-data-access/loader.php");
 
 // create test environment

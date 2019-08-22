@@ -1,25 +1,32 @@
 <?php
 namespace Lucinda\Framework;
+
 require_once("DataSourceDetection.php");
 
 /**
  * Encapsulates NoSQLDataSource detection (itself encapsulating database server settings) based on <server> XML tag contents
  */
-class NoSQLDataSourceDetection extends DataSourceDetection {    
+class NoSQLDataSourceDetection extends DataSourceDetection
+{
     /**
      * {@inheritDoc}
      * @see DataSourceDetection::setDataSource()
      */
-    protected function setDataSource(\SimpleXMLElement $databaseInfo) {
+    protected function setDataSource(\SimpleXMLElement $databaseInfo)
+    {
         $driver = (string) $databaseInfo["driver"];
-        if(!$driver) throw new \Lucinda\MVC\STDOUT\XMLException("Child tag 'driver' is mandatory for 'server' tags");
-        switch($driver) {
+        if (!$driver) {
+            throw new \Lucinda\MVC\STDOUT\XMLException("Child tag 'driver' is mandatory for 'server' tags");
+        }
+        switch ($driver) {
             case "couchbase":
                 $host = (string) $databaseInfo["host"];
                 $userName = (string) $databaseInfo["username"];
                 $password = (string) $databaseInfo["password"];
                 $bucket = (string) $databaseInfo["bucket_name"];
-                if(!$host || !$userName || !$password || !$bucket) throw new \Lucinda\MVC\STDOUT\XMLException("For COUCHBASE driver following attributes are mandatory: host, username, password, bucket_name");
+                if (!$host || !$userName || !$password || !$bucket) {
+                    throw new \Lucinda\MVC\STDOUT\XMLException("For COUCHBASE driver following attributes are mandatory: host, username, password, bucket_name");
+                }
                 
                 require_once("vendor/lucinda/nosql-data-access/src/CouchbaseDriver.php");
                 
@@ -66,16 +73,19 @@ class NoSQLDataSourceDetection extends DataSourceDetection {
         }
     }
     
-    private function setServerInfo(\SimpleXMLElement $databaseInfo, \Lucinda\NoSQL\DataSource $dataSource) {
+    private function setServerInfo(\SimpleXMLElement $databaseInfo, \Lucinda\NoSQL\DataSource $dataSource)
+    {
         // set host and ports
         $temp = (string) $databaseInfo["host"];
-        if(!$temp) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'host' is mandatory for 'server' tag");
-        $hosts = explode(",",$temp);
-        foreach($hosts as $hostAndPort) {
+        if (!$temp) {
+            throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'host' is mandatory for 'server' tag");
+        }
+        $hosts = explode(",", $temp);
+        foreach ($hosts as $hostAndPort) {
             $hostAndPort = trim($hostAndPort);
-            $position = strpos($hostAndPort,":");
-            if($position!==false) {
-                $dataSource->addServer(substr($hostAndPort, 0, $position), substr($hostAndPort,$position+1));
+            $position = strpos($hostAndPort, ":");
+            if ($position!==false) {
+                $dataSource->addServer(substr($hostAndPort, 0, $position), substr($hostAndPort, $position+1));
             } else {
                 $dataSource->addServer($hostAndPort);
             }
@@ -83,13 +93,13 @@ class NoSQLDataSourceDetection extends DataSourceDetection {
         
         // set timeout
         $timeout= (string) $databaseInfo["timeout"];
-        if($timeout) {
+        if ($timeout) {
             $dataSource->setTimeout($timeout);
         }
         
         // set persistent
         $persistent = (string) $databaseInfo["persistent"];
-        if($persistent) {
+        if ($persistent) {
             $dataSource->setPersistent();
         }
     }

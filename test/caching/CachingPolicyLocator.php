@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(dirname(__DIR__))."/vendor/lucinda/http-caching/loader.php");
-require_once(str_replace("/test/","/src/",__FILE__));
+require_once(str_replace("/test/", "/src/", __FILE__));
 
 require_once(dirname(__DIR__)."/application.php");
 require_once(dirname(__DIR__)."/request.php");

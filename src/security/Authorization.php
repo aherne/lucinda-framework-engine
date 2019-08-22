@@ -1,12 +1,14 @@
 <?php
 namespace Lucinda\Framework;
+
 require_once(dirname(__DIR__)."/ClassLoader.php");
 require_once("SecurityPacket.php");
 
 /**
  * Performs request authorization based on mechanism chosen by developmer in XML (eg: from database)
  */
-class Authorization {
+class Authorization
+{
     /**
      * Runs authorization logic.
      *
@@ -17,7 +19,8 @@ class Authorization {
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
      * @throws SecurityPacket If authorization encounters a situation where execution cannot continue and redirection is required
      */
-    public function __construct(\SimpleXMLElement $xml, $page, $contextPath, $userID) {
+    public function __construct(\SimpleXMLElement $xml, $page, $contextPath, $userID)
+    {
         $wrapper = $this->getWrapper($xml, $page, $userID);
         $this->authorize($wrapper, $contextPath);
     }
@@ -30,28 +33,33 @@ class Authorization {
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
      * @return AuthorizationWrapper
      */
-    private function getWrapper(\SimpleXMLElement $xmlRoot, $page, $userID) {
+    private function getWrapper(\SimpleXMLElement $xmlRoot, $page, $userID)
+    {
         $xml = $xmlRoot->authorization;
-        if(empty($xml)) {
+        if (empty($xml)) {
             throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'authorization' child of 'security' tag is empty or missing");
         }
         
         $wrapper = null;
-        if($xml->by_route) {
+        if ($xml->by_route) {
             require_once("authorization/XMLAuthorizationWrapper.php");
             $wrapper = new XMLAuthorizationWrapper(
                 $xmlRoot,
                 $page,
-                $userID);
+                $userID
+            );
         }
-        if($xml->by_dao) {
+        if ($xml->by_dao) {
             require_once("authorization/DAOAuthorizationWrapper.php");
             $wrapper = new DAOAuthorizationWrapper(
                 $xmlRoot,
                 $page,
-                $userID);
+                $userID
+            );
         }
-        if(!$wrapper) throw new \Lucinda\MVC\STDOUT\XMLException("No authorization method chosen!");
+        if (!$wrapper) {
+            throw new \Lucinda\MVC\STDOUT\XMLException("No authorization method chosen!");
+        }
         return $wrapper;
     }
     
@@ -62,8 +70,9 @@ class Authorization {
      * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
      * @throws SecurityPacket If authorization encounters a situation where execution cannot continue and redirection is required
      */
-    private function authorize(AuthorizationWrapper $wrapper, $contextPath) {
-        if($wrapper->getResult()->getStatus() == \Lucinda\WebSecurity\AuthorizationResultStatus::OK) {
+    private function authorize(AuthorizationWrapper $wrapper, $contextPath)
+    {
+        if ($wrapper->getResult()->getStatus() == \Lucinda\WebSecurity\AuthorizationResultStatus::OK) {
             // authorization was successful
             return;
         } else {

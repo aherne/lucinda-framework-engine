@@ -1,10 +1,13 @@
 <?php
-class TestCacheable extends Lucinda\Framework\CacheableDriver {
-    protected function setTime() {
+class TestCacheable extends Lucinda\Framework\CacheableDriver
+{
+    protected function setTime()
+    {
         return time();
     }
 
-    protected function setEtag() {
+    protected function setEtag()
+    {
         return "asd";
     }
 }

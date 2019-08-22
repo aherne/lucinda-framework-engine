@@ -1,5 +1,5 @@
 <?php
-$_SERVER = array (
+$_SERVER = array(
     'SERVER_SOFTWARE' => 'Apache/2.4.29 (Ubuntu)',
     'SERVER_NAME' => 'www.test.local',
     'SERVER_ADDR' => '127.0.0.1',

@@ -1,16 +1,19 @@
 <?php
 namespace Lucinda\Framework;
+
 require_once("DataSourceDetection.php");
 
 /**
  * Encapsulates SQLDataSource detection (itself encapsulating database server settings) based on <server> XML tag contents
  */
-class SQLDataSourceDetection extends DataSourceDetection {
+class SQLDataSourceDetection extends DataSourceDetection
+{
     /**
      * {@inheritDoc}
      * @see DataSourceDetection::setDataSource()
      */
-    protected function setDataSource(\SimpleXMLElement $databaseInfo) {
+    protected function setDataSource(\SimpleXMLElement $databaseInfo)
+    {
         $dataSource = new \Lucinda\SQL\DataSource();
         $dataSource->setDriverName((string) $databaseInfo["driver"]);
         $dataSource->setDriverOptions(array()); // currently, setting driver options isn't possible

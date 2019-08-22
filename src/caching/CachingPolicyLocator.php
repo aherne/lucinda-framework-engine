@@ -1,12 +1,14 @@
 <?php
 namespace Lucinda\Framework;
+
 require_once("CachingPolicyFinder.php");
 
 /**
  * Locates CachingPolicy in XML based on contents of http_caching tag. Binds route-based settings (if any) with
  * global caching settings into a CachingPolicy object.
  */
-class CachingPolicyLocator {
+class CachingPolicyLocator
+{
     private $policy;
 
     /**
@@ -16,7 +18,8 @@ class CachingPolicyLocator {
      * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
      * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
      */
-    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response)
+    {
         $this->setPolicy($application, $request, $response);
     }
 
@@ -28,17 +31,18 @@ class CachingPolicyLocator {
      * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is incorrect formatted.
      */
-    private function setPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
+    private function setPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response)
+    {
         $this->policy = $this->getGlobalPolicy($application, $request, $response);
         $specificPolicy = $this->getSpecificPolicy($application, $request, $response);
-        if($specificPolicy) {
-            if($specificPolicy->getCachingDisabled()!==null) {
+        if ($specificPolicy) {
+            if ($specificPolicy->getCachingDisabled()!==null) {
                 $this->policy->setCachingDisabled($specificPolicy->getCachingDisabled());
             }
-            if($specificPolicy->getExpirationPeriod()!==null) {
+            if ($specificPolicy->getExpirationPeriod()!==null) {
                 $this->policy->setExpirationPeriod($specificPolicy->getExpirationPeriod());
             }
-            if($specificPolicy->getCacheableDriver()!==null) {
+            if ($specificPolicy->getCacheableDriver()!==null) {
                 $this->policy->setCacheableDriver($specificPolicy->getCacheableDriver());
             }
         }
@@ -52,9 +56,12 @@ class CachingPolicyLocator {
      * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is incorrect formatted.
      */
-    private function getGlobalPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
+    private function getGlobalPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response)
+    {
         $caching = $application->getTag("http_caching");
-        if(!$caching) throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'http_caching' missing");
+        if (!$caching) {
+            throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'http_caching' missing");
+        }
         $finder = new CachingPolicyFinder($caching, $application, $request, $response);
         return $finder->getPolicy();
     }
@@ -67,14 +74,17 @@ class CachingPolicyLocator {
      * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is incorrect formatted.
      */
-    private function getSpecificPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response) {
+    private function getSpecificPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response)
+    {
         $page = $request->getValidator()->getPage();
         $tmp = (array) $application->getTag("http_caching");
-        if(!empty($tmp["route"])) {
-            foreach($tmp["route"] as $info) {
+        if (!empty($tmp["route"])) {
+            foreach ($tmp["route"] as $info) {
                 $route = $info["url"];
-                if($route === null) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'url' is mandatory for 'route' subtag of 'http_caching' tag");
-                if($route == $page) {
+                if ($route === null) {
+                    throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'url' is mandatory for 'route' subtag of 'http_caching' tag");
+                }
+                if ($route == $page) {
                     $finder = new CachingPolicyFinder($info, $application, $request, $response);
                     return $finder->getPolicy();
                 }
@@ -87,7 +97,8 @@ class CachingPolicyLocator {
      *
      * @return CachingPolicy
      */
-    public function getPolicy() {
+    public function getPolicy()
+    {
         return $this->policy;
     }
 }

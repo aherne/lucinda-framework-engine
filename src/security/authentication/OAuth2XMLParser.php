@@ -7,20 +7,24 @@ require_once("oauth2/AbstractUserInformation.php");
 /**
  * Detects oauth2 drivers and DAO based on contents of <oauth2> XML tag
  */
-class OAuth2XMLParser {
+class OAuth2XMLParser
+{
     private $drivers = array();
     private $daoObject;
     
     /**
      * Kick-starts detection process.
-     * 
+     *
      * @param \SimpleXMLElement $xml
      * @param string $developmentEnvironment
      */
-    public function __construct(\SimpleXMLElement $xml, $developmentEnvironment) {
+    public function __construct(\SimpleXMLElement $xml, $developmentEnvironment)
+    {
         // set drivers
         $this->xml = $xml->authentication->oauth2->{$developmentEnvironment};
-        if(!$this->xml) throw new \Lucinda\MVC\STDOUT\XMLException("Missing 'driver' subtag of '".$developmentEnvironment."', child of 'oauth2' tag");
+        if (!$this->xml) {
+            throw new \Lucinda\MVC\STDOUT\XMLException("Missing 'driver' subtag of '".$developmentEnvironment."', child of 'oauth2' tag");
+        }
         $this->setDrivers();
         
         // loads and instances DAO object
@@ -36,15 +40,20 @@ class OAuth2XMLParser {
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
      * @return \OAuth2\ClientInformation Encapsulates information about client that must match that in oauth2 remote server.
      */
-    private function getClientInformation(\SimpleXMLElement $xml) {
+    private function getClientInformation(\SimpleXMLElement $xml)
+    {
         // get client id and secret from xml
         $clientID = (string) $xml["client_id"];
         $clientSecret = (string) $xml["client_secret"];
-        if(!$clientID || !$clientSecret) throw new \Lucinda\MVC\STDOUT\XMLException("Tags 'client_id' and 'client_secret' are mandatory for 'driver' subtag of 'oauth2' tag");
+        if (!$clientID || !$clientSecret) {
+            throw new \Lucinda\MVC\STDOUT\XMLException("Tags 'client_id' and 'client_secret' are mandatory for 'driver' subtag of 'oauth2' tag");
+        }
         
         // callback page is same as driver login page
         $callbackPage = (string) $xml["callback"];
-        if(!$callbackPage) throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'callback' is mandatory for 'driver' subtag of 'oauth2' tag");
+        if (!$callbackPage) {
+            throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'callback' is mandatory for 'driver' subtag of 'oauth2' tag");
+        }
         
         $callbackPage = (isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER['SERVER_NAME']."/".$callbackPage;
         return new \OAuth2\ClientInformation($clientID, $clientSecret, $callbackPage);
@@ -58,10 +67,13 @@ class OAuth2XMLParser {
      * @throws \Lucinda\MVC\STDOUT\XMLException If vendor is not found on disk.
      * @return \OAuth2\Driver Instance of driver that abstracts OAuth2 operations.
      */
-    private function getAPIDriver($driverName, \OAuth2\ClientInformation $clientInformation) {
+    private function getAPIDriver($driverName, \OAuth2\ClientInformation $clientInformation)
+    {
         $driverClass = $driverName."Driver";
         $driverFilePath = __DIR__."/oauth2/".strtolower($driverName)."/".$driverClass.".php";
-        if(!file_exists($driverFilePath)) throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
+        if (!file_exists($driverFilePath)) {
+            throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
+        }
         require_once($driverFilePath);
         $tmpClass = "\\Lucinda\\Framework\\".$driverClass;
         return new $tmpClass($clientInformation);
@@ -72,21 +84,26 @@ class OAuth2XMLParser {
      *
      * @throws \Lucinda\MVC\STDOUT\XMLException If required tags aren't found in XML / do not reflect on disk
      */
-    private function setDrivers() {
+    private function setDrivers()
+    {
         $xmlLocal = (array) $this->xml;
-        if(empty($xmlLocal["driver"])) {
+        if (empty($xmlLocal["driver"])) {
             return;
         }
         $list = (is_array($xmlLocal["driver"])?$xmlLocal["driver"]:[$xmlLocal["driver"]]);
-        foreach($list as $element) {
+        foreach ($list as $element) {
             $driverName = (string) $element["name"];
-            if(!$driverName) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'name' is mandatory for 'driver' subtag of oauth2 tag");
+            if (!$driverName) {
+                throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'name' is mandatory for 'driver' subtag of oauth2 tag");
+            }
             
             $clientInformation = $this->getClientInformation($element);
             $this->drivers[$driverName] = $this->getAPIDriver($driverName, $clientInformation);
-            if($driverName == "GitHub") {
+            if ($driverName == "GitHub") {
                 $applicationName = (string) $element["application_name"];
-                if(!$applicationName) throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'application_name' of 'driver' subtag of 'oauth2' tag is mandatory for GitHub");
+                if (!$applicationName) {
+                    throw new \Lucinda\MVC\STDOUT\XMLException("Attribute 'application_name' of 'driver' subtag of 'oauth2' tag is mandatory for GitHub");
+                }
                 $this->drivers[$driverName]->setApplicationName($applicationName);
             }
         }
@@ -99,10 +116,13 @@ class OAuth2XMLParser {
      * @throws \Lucinda\MVC\STDOUT\XMLException If vendor is not found on disk.
      * @return \Lucinda\WebSecurity\OAuth2Driver Instance that performs OAuth2 login and collects user information.
      */
-    public function getLoginDriver($driverName) {
+    public function getLoginDriver($driverName)
+    {
         $driverClass = $driverName."SecurityDriver";
         $driverFilePath = __DIR__."/oauth2/".strtolower($driverName)."/".$driverClass.".php";
-        if(!file_exists($driverFilePath)) throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
+        if (!file_exists($driverFilePath)) {
+            throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
+        }
         require_once($driverFilePath);
         $tmpClass = "\\Lucinda\\Framework\\".$driverClass;
         return new $tmpClass($this->drivers[$driverName]);
@@ -110,20 +130,22 @@ class OAuth2XMLParser {
     
     /**
      * Gets oauth2 driver instance based on driver name
-     * 
+     *
      * @param string $driverName
      * @return \OAuth2\Driver
      */
-    public function getDriver($driverName) {
+    public function getDriver($driverName)
+    {
         return $this->drivers[$driverName];
     }
     
     /**
      * Gets DAO instance persisting OAuth2 authentication results into DB
-     * 
+     *
      * @return \Lucinda\WebSecurity\OAuth2AuthenticationDAO
      */
-    public function getDAO() {
+    public function getDAO()
+    {
         return $this->daoObject;
     }
 }

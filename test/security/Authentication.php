@@ -75,7 +75,7 @@ $_GET["state"] = $csrf->generate(0);
 try {
     new Lucinda\Framework\OAuth2AuthenticationWrapper($xml, "local", "login/facebook", $persistenceDrivers, $csrf);
     echo __LINE__.": N\n";
-} catch(Exception $e) {
+} catch (Exception $e) {
     echo __LINE__.": ".($e instanceof \OAuth2\ServerException && $e->getMessage()=="Missing or invalid client id."?"Y":"N")."\n";
 }
 $persistenceDrivers[0]->save(1);
@@ -90,14 +90,14 @@ echo __LINE__.": ".($authentication->getResult()->getStatus()==\Lucinda\WebSecur
 
 
 /**
- * OAuth2 resources retrieval 
+ * OAuth2 resources retrieval
  */
 require_once(dirname(dirname(__DIR__))."/src/security/oauth2/OAuth2ResourcesDriver.php");
 $resources = new Lucinda\Framework\OAuth2ResourcesDriver($xml, 0);
 try {
     $data = $resources->getResource("test/me");
     echo __LINE__.": N\n";
-} catch(Lucinda\Framework\OAuth2ResourcesException $e) {
+} catch (Lucinda\Framework\OAuth2ResourcesException $e) {
     echo __LINE__.": ".$e->getMessage()==("No access token was detected for current user!"?"Y":"N")."\n";
 }
 

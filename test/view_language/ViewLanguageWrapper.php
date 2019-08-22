@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(dirname(__DIR__))."/vendor/lucinda/view-language/loader.php");
-require_once(str_replace("/test/","/src/",__FILE__));
+require_once(str_replace("/test/", "/src/", __FILE__));
 
 $xml = '
 <xml>

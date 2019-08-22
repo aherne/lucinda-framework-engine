@@ -1,17 +1,20 @@
 <?php
 namespace Lucinda\Framework;
+
 /**
  * Implements an abstract converter from an XML line (child of loggers.{environment}) to a Logger instance @ LoggingAPI
  */
-abstract class AbstractLoggerWrapper {
+abstract class AbstractLoggerWrapper
+{
     protected $logger;
     
     /**
      * Calls children to return a \Lucinda\Logger instance from matching "logger" XML tag
-     * 
+     *
      * @param \SimpleXMLElement $xml XML tag that is child of loggers.(environment)
      */
-    public function __construct(\SimpleXMLElement $xml) {
+    public function __construct(\SimpleXMLElement $xml)
+    {
         $this->logger = $this->setLogger($xml);
     }
     
@@ -30,7 +33,8 @@ abstract class AbstractLoggerWrapper {
      *
      * @return \Lucinda\Logging\Logger
      */
-    public function getLogger() {
+    public function getLogger()
+    {
         return $this->logger;
     }
 }

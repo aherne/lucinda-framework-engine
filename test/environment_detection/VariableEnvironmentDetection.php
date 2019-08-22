@@ -1,5 +1,5 @@
 <?php
-require_once(str_replace("/test/","/src/",__FILE__));
+require_once(str_replace("/test/", "/src/", __FILE__));
 
 // create test environment
 $xml = '
@@ -19,4 +19,4 @@ putenv("ENVIRONMENT=live");
 $test = new Lucinda\Framework\VariableEnvironmentDetection(simplexml_load_string($xml));
 
 // run tests
-echo ($test->getEnvironment()=="live"?"OK":"NOK");
+echo($test->getEnvironment()=="live"?"OK":"NOK");

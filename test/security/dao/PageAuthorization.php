@@ -1,5 +1,6 @@
 <?php
-class PageAuthorization extends Lucinda\WebSecurity\PageAuthorizationDAO {
+class PageAuthorization extends Lucinda\WebSecurity\PageAuthorizationDAO
+{
     const PAGE_IDS = array(
         array("id"=>1, "path"=>"index", "public"=>0),
         array("id"=>2, "path"=>"login", "public"=>1),
@@ -9,8 +10,8 @@ class PageAuthorization extends Lucinda\WebSecurity\PageAuthorizationDAO {
     
     public function isPublic()
     {
-        foreach(self::PAGE_IDS as $info) {
-            if($info["id"]==$this->pageID) {
+        foreach (self::PAGE_IDS as $info) {
+            if ($info["id"]==$this->pageID) {
                 return $info["public"];
             }
         }
@@ -18,12 +19,10 @@ class PageAuthorization extends Lucinda\WebSecurity\PageAuthorizationDAO {
     
     protected function detectID($path)
     {
-        foreach(self::PAGE_IDS as $info) {
-            if($info["path"]==$path) {
+        foreach (self::PAGE_IDS as $info) {
+            if ($info["path"]==$path) {
                 return $info["id"];
             }
         }
     }
-
-    
 }

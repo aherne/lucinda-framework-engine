@@ -1,7 +1,9 @@
 <?php
-class UserAuthentication implements Lucinda\WebSecurity\UserAuthenticationDAO, Lucinda\WebSecurity\UserAuthorizationRoles {
+class UserAuthentication implements Lucinda\WebSecurity\UserAuthenticationDAO, Lucinda\WebSecurity\UserAuthorizationRoles
+{
     public function logout($userID)
-    {}
+    {
+    }
 
     public function login($username, $password)
     {

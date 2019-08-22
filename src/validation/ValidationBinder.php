@@ -6,7 +6,8 @@ require_once("vendor/lucinda/request-validator/src/Validator.php");
 /**
  * Binds Parameters Validation API with MVC STDOUT API (aka Servlets API) and stdout.xml in order to perform validation of path/request parameters
  */
-class ValidationBinder {
+class ValidationBinder
+{
     private $results;
     
     /**
@@ -16,12 +17,14 @@ class ValidationBinder {
      * @throws \Lucinda\RequestValidator\Exception If XML is misconfigured
      * @throws \Lucinda\RequestValidator\MethodNotSupportedException If http method used to retrieve resource is not supported.
      */
-    public function __construct(\Lucinda\MVC\STDOUT\Request $request) {
+    public function __construct(\Lucinda\MVC\STDOUT\Request $request)
+    {
         $validator = new \Lucinda\RequestValidator\Validator(
             "stdout.xml",
             $request->getValidator()->getPage(),
             $request->getMethod(),
-            $this->getParameters($request));
+            $this->getParameters($request)
+        );
         $this->results = $validator->getResults();
     }
     
@@ -31,7 +34,8 @@ class ValidationBinder {
      * @param \Lucinda\MVC\STDOUT\Request $request
      * @return string[mixed] Parameters by name and value
      */
-    private function getParameters(\Lucinda\MVC\STDOUT\Request $request) {
+    private function getParameters(\Lucinda\MVC\STDOUT\Request $request)
+    {
         $output = array();
         
         // get path parameters
@@ -40,8 +44,10 @@ class ValidationBinder {
         
         // appends request parameters
         $requestParameters = $request->parameters();
-        foreach($requestParameters as $name=>$value) {
-            if(isset($output[$name])) continue;
+        foreach ($requestParameters as $name=>$value) {
+            if (isset($output[$name])) {
+                continue;
+            }
             $output[$name] = $value;
         }
         
@@ -53,7 +59,8 @@ class ValidationBinder {
      *
      * @return \Lucinda\RequestValidator\ResultsList
      */
-    public function getResults() {
+    public function getResults()
+    {
         return $this->results;
     }
 }

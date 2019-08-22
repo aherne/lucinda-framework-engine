@@ -4,7 +4,8 @@ namespace Lucinda\Framework;
 /**
  * Encapsulates login request data. Inner class of FormRequestValidator!
  */
-class LoginRequest {
+class LoginRequest
+{
     private $sourcePage;
     private $targetPage;
     private $username;
@@ -16,7 +17,8 @@ class LoginRequest {
      *
      * @param string $username
      */
-    public function setUsername($username) {
+    public function setUsername($username)
+    {
         $this->username = $username;
     }
     
@@ -25,7 +27,8 @@ class LoginRequest {
      *
      * @param string $password
      */
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         $this->password= $password;
     }
     
@@ -34,7 +37,8 @@ class LoginRequest {
      *
      * @param boolean $rememberMe
      */
-    public function setRememberMe($rememberMe) {
+    public function setRememberMe($rememberMe)
+    {
         $this->rememberMe= $rememberMe;
     }
     
@@ -43,7 +47,8 @@ class LoginRequest {
      *
      * @param string $sourcePage
      */
-    public function setSourcePage($sourcePage) {
+    public function setSourcePage($sourcePage)
+    {
         $this->sourcePage= $sourcePage;
     }
     
@@ -52,7 +57,8 @@ class LoginRequest {
      *
      * @param string $targetPage
      */
-    public function setDestinationPage($targetPage) {
+    public function setDestinationPage($targetPage)
+    {
         $this->targetPage= $targetPage;
     }
     
@@ -61,7 +67,8 @@ class LoginRequest {
      *
      * @return string
      */
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
     
@@ -70,7 +77,8 @@ class LoginRequest {
      *
      * @return string
      */
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
     
@@ -79,7 +87,8 @@ class LoginRequest {
      *
      * @return boolean|null
      */
-    public function getRememberMe() {
+    public function getRememberMe()
+    {
         return $this->rememberMe;
     }
     
@@ -88,7 +97,8 @@ class LoginRequest {
      *
      * @return string
      */
-    public function getSourcePage() {
+    public function getSourcePage()
+    {
         return $this->sourcePage;
     }
     
@@ -97,7 +107,8 @@ class LoginRequest {
      *
      * @return string
      */
-    public function getDestinationPage() {
+    public function getDestinationPage()
+    {
         return $this->targetPage;
     }
 }

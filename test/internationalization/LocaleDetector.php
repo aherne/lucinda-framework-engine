@@ -1,5 +1,5 @@
 <?php
-require_once(str_replace("/test/","/src/",__FILE__));
+require_once(str_replace("/test/", "/src/", __FILE__));
 require_once(dirname(__DIR__)."/request.php");
 
 $xml = '

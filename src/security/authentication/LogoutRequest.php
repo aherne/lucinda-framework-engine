@@ -4,7 +4,8 @@ namespace Lucinda\Framework;
 /**
  * Encapsulates logout request data. Inner class of FormRequestValidator!
  */
-class LogoutRequest {
+class LogoutRequest
+{
     private $sourcePage;
     private $targetPage;
     
@@ -13,7 +14,8 @@ class LogoutRequest {
      *
      * @param string $sourcePage
      */
-    public function setSourcePage($sourcePage) {
+    public function setSourcePage($sourcePage)
+    {
         $this->sourcePage= $sourcePage;
     }
     
@@ -22,7 +24,8 @@ class LogoutRequest {
      *
      * @param string $targetPage
      */
-    public function setDestinationPage($targetPage) {
+    public function setDestinationPage($targetPage)
+    {
         $this->targetPage= $targetPage;
     }
     
@@ -31,7 +34,8 @@ class LogoutRequest {
      *
      * @return string
      */
-    public function getSourcePage() {
+    public function getSourcePage()
+    {
         return $this->sourcePage;
     }
     
@@ -40,7 +44,8 @@ class LogoutRequest {
      *
      * @return string
      */
-    public function getDestinationPage() {
+    public function getDestinationPage()
+    {
         return $this->targetPage;
     }
 }

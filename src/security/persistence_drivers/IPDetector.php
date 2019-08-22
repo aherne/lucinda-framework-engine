@@ -1,22 +1,26 @@
 <?php
 namespace Lucinda\Framework;
+
 /**
  * Detects client IP based on contents of $_SERVER superglobal
  */
-class IPDetector {
+class IPDetector
+{
     private $ip;
     
     /**
      * Kick starts ip detection process
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->setIP();
     }
     
     /**
      * Performs IP detection and saves result.
      */
-    private function setIP() {
+    private function setIP()
+    {
         $ip_keys = array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED');
         foreach ($ip_keys as $key) {
             if (array_key_exists($key, $_SERVER) === true) {
@@ -37,10 +41,11 @@ class IPDetector {
     
     /**
      * Gets detected client IP address
-     * 
+     *
      * @return string
      */
-    public function getIP() {
+    public function getIP()
+    {
         return $this->ip;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 set_include_path(dirname(dirname(__DIR__)));
-require_once(str_replace("/test/","/src/",__FILE__));
+require_once(str_replace("/test/", "/src/", __FILE__));
 require_once(dirname(dirname(__DIR__))."/src/security/PersistenceDriversDetector.php");
 
 // create test environment

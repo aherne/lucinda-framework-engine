@@ -14,28 +14,29 @@ class LoggingBinder
     
     /**
      * Performs loggers detection based on XML and execution environment then aggregates results into a MultiLogger for cascading logs
-     * 
+     *
      * @param \SimpleXMLElement $xml
      * @param string $developmentEnvironment
-	 * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
      * @throws \Lucinda\MVC\STDOUT\ServletException If referenced resources in XML do not exist on disk or are invalid.
      */
-    public function __construct(\SimpleXMLElement $xml, $developmentEnvironment) {        
+    public function __construct(\SimpleXMLElement $xml, $developmentEnvironment)
+    {
         // finds loggers and return a global wrapper
         $finder = new LoggingWrapper($xml, $developmentEnvironment);
         $loggers = $finder->getLoggers();
-        if(!empty($loggers)) {
+        if (!empty($loggers)) {
             $this->logger = new MultiLogger($loggers);
-        }	
+        }
     }
     
     /**
      * Gets detected logger
-     * 
+     *
      * @return MultiLogger Allows you to log message to multiple providers at once
      */
-    public function getLogger() {
+    public function getLogger()
+    {
         return $this->logger;
     }
 }
-

@@ -1,15 +1,17 @@
 <?php
 namespace Lucinda\Framework;
+
 require_once(dirname(__DIR__)."/ClassLoader.php");
 require_once("SecurityPacket.php");
 
 /**
  * Performs user authentication based on mechanism chosen by developmer in XML (eg: from database via login form, from an oauth2 provider, etc)
  */
-class Authentication {
+class Authentication
+{
     /**
-     * Runs authentication logic. 
-     * 
+     * Runs authentication logic.
+     *
      * @param \SimpleXMLElement $xml XML holding information relevant to authentication (above all via security.authentication tag)
      * @param string $developmentEnvironment
      * @param string $page Route requested by client
@@ -19,14 +21,15 @@ class Authentication {
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
      * @throws SecurityPacket If authentication encounters a situation where execution cannot continue and redirection is required
      */
-    public function __construct(\SimpleXMLElement $xml, $developmentEnvironment, $page, $contextPath, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers) {
+    public function __construct(\SimpleXMLElement $xml, $developmentEnvironment, $page, $contextPath, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
+    {
         $wrapper = $this->getWrapper($xml, $developmentEnvironment, $page, $csrfTokenDetector, $persistenceDrivers);
         $this->authenticate($wrapper, $contextPath, $persistenceDrivers);
     }
     
     /**
      * Gets driver that performs authentication from security.authentication XML tag.
-     * 
+     *
      * @param \SimpleXMLElement $xmlRoot XML holding information relevant to authentication (above all via security.authentication tag)
      * @param string $developmentEnvironment
      * @param string $page Route requested by client
@@ -35,53 +38,60 @@ class Authentication {
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
      * @return AuthenticationWrapper
      */
-    private function getWrapper(\SimpleXMLElement $xmlRoot, $developmentEnvironment, $page, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers) {
+    private function getWrapper(\SimpleXMLElement $xmlRoot, $developmentEnvironment, $page, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
+    {
         $xml = $xmlRoot->authentication;
-        if(empty($xml)) {
+        if (empty($xml)) {
             throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'authentication' child of 'security' is empty or missing");
         }
         
         $wrapper = null;
-        if($xml->form) {
-            if((string) $xml->form["dao"]) {
+        if ($xml->form) {
+            if ((string) $xml->form["dao"]) {
                 require_once("authentication/DAOAuthenticationWrapper.php");
                 $wrapper = new DAOAuthenticationWrapper(
                     $xmlRoot,
                     $page,
                     $persistenceDrivers,
-                    $csrfTokenDetector);
+                    $csrfTokenDetector
+                );
             } else {
                 require_once("authentication/XMLAuthenticationWrapper.php");
                 $wrapper = new XMLAuthenticationWrapper(
                     $xmlRoot,
                     $page,
                     $persistenceDrivers,
-                    $csrfTokenDetector);
+                    $csrfTokenDetector
+                );
             }
         }
-        if($xml->oauth2) {
+        if ($xml->oauth2) {
             require_once("authentication/OAuth2AuthenticationWrapper.php");
             $wrapper = new OAuth2AuthenticationWrapper(
                 $xmlRoot,
                 $developmentEnvironment,
                 $page,
                 $persistenceDrivers,
-                $csrfTokenDetector);
+                $csrfTokenDetector
+            );
         }
-        if(!$wrapper) throw new \Lucinda\MVC\STDOUT\XMLException("No authentication method chosen!");
+        if (!$wrapper) {
+            throw new \Lucinda\MVC\STDOUT\XMLException("No authentication method chosen!");
+        }
         return $wrapper;
     }
     
     /**
      * Calls authentication driver detected to perform user authentication.
-     * 
+     *
      * @param AuthenticationWrapper $wrapper Driver that performs authentication (eg: via form & database).
      * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
      * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers Drivers where authenticated state is persisted (eg: session, remember me cookie).
      * @throws SecurityPacket If authentication encounters a situation where execution cannot continue and redirection is required
      */
-    private function authenticate(AuthenticationWrapper $wrapper, $contextPath, $persistenceDrivers) {
-        if(!$wrapper->getResult()) {
+    private function authenticate(AuthenticationWrapper $wrapper, $contextPath, $persistenceDrivers)
+    {
+        if (!$wrapper->getResult()) {
             // no authentication was requested
             return;
         } else {
