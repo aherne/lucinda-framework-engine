@@ -81,6 +81,7 @@ class CachingBinder
         $cacheable = $policy->getCacheableDriver();
         
         $cacheResponse = new \Lucinda\Caching\CacheResponse();
+        $cacheResponse->setPublic(); // fix against session usage
         if ($cacheable->getEtag()) {
             $cacheResponse->setEtag($cacheable->getEtag());
         }
