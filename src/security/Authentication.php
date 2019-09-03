@@ -23,8 +23,10 @@ class Authentication
      */
     public function __construct(\SimpleXMLElement $xml, $developmentEnvironment, $page, $contextPath, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
     {
-        $wrapper = $this->getWrapper($xml, $developmentEnvironment, $page, $csrfTokenDetector, $persistenceDrivers);
-        $this->authenticate($wrapper, $contextPath, $persistenceDrivers);
+        $wrappers = $this->getWrappers($xml, $developmentEnvironment, $page, $csrfTokenDetector, $persistenceDrivers);
+        foreach ($wrappers as $wrapper) {
+            $this->authenticate($wrapper, $contextPath, $persistenceDrivers);
+        }
     }
     
     /**
@@ -36,10 +38,11 @@ class Authentication
      * @param CsrfTokenDetector $csrfTokenDetector Driver performing CSRF validation
      * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers Drivers where authenticated state is persisted (eg: session, remember me cookie).
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
-     * @return AuthenticationWrapper
+     * @return AuthenticationWrapper[]
      */
-    private function getWrapper(\SimpleXMLElement $xmlRoot, $developmentEnvironment, $page, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
+    private function getWrappers(\SimpleXMLElement $xmlRoot, $developmentEnvironment, $page, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
     {
+        $wrappers = array();
         $xml = $xmlRoot->authentication;
         if (empty($xml)) {
             throw new \Lucinda\MVC\STDOUT\XMLException("Tag 'authentication' child of 'security' is empty or missing");
@@ -49,36 +52,36 @@ class Authentication
         if ($xml->form) {
             if ((string) $xml->form["dao"]) {
                 require_once("authentication/DAOAuthenticationWrapper.php");
-                $wrapper = new DAOAuthenticationWrapper(
+                $wrappers[] = new DAOAuthenticationWrapper(
                     $xmlRoot,
                     $page,
                     $persistenceDrivers,
                     $csrfTokenDetector
-                );
+                    );
             } else {
                 require_once("authentication/XMLAuthenticationWrapper.php");
-                $wrapper = new XMLAuthenticationWrapper(
+                $wrappers[] = new XMLAuthenticationWrapper(
                     $xmlRoot,
                     $page,
                     $persistenceDrivers,
                     $csrfTokenDetector
-                );
+                    );
             }
         }
         if ($xml->oauth2) {
             require_once("authentication/OAuth2AuthenticationWrapper.php");
-            $wrapper = new OAuth2AuthenticationWrapper(
+            $wrappers[] = new OAuth2AuthenticationWrapper(
                 $xmlRoot,
                 $developmentEnvironment,
                 $page,
                 $persistenceDrivers,
                 $csrfTokenDetector
-            );
+                );
         }
-        if (!$wrapper) {
+        if (empty($wrappers)) {
             throw new \Lucinda\MVC\STDOUT\XMLException("No authentication method chosen!");
         }
-        return $wrapper;
+        return $wrappers;
     }
     
     /**
