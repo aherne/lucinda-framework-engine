@@ -70,12 +70,12 @@ class OAuth2XMLParser
     private function getAPIDriver($driverName, \OAuth2\ClientInformation $clientInformation)
     {
         $driverClass = $driverName."Driver";
-        $driverFilePath = __DIR__."/oauth2/".strtolower($driverName)."/".$driverClass.".php";
+        $driverFilePath = dirname(dirname(dirname(dirname(__DIR__))))."/oauth2-client/drivers/".strtolower($driverName)."/".$driverClass.".php";
         if (!file_exists($driverFilePath)) {
             throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
         }
         require_once($driverFilePath);
-        $tmpClass = "\\Lucinda\\Framework\\".$driverClass;
+        $tmpClass = "\\OAuth2\\".$driverClass;
         return new $tmpClass($clientInformation);
     }
     
