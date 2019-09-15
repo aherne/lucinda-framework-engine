@@ -1,8 +1,8 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("oauth2/AbstractSecurityDriver.php");
-require_once("oauth2/AbstractUserInformation.php");
+require_once("AbstractSecurityDriver.php");
+require_once("AbstractUserInformation.php");
 
 /**
  * Detects oauth2 drivers and DAO based on contents of <oauth2> XML tag
@@ -119,13 +119,12 @@ class OAuth2XMLParser
     public function getLoginDriver($driverName)
     {
         $driverClass = $driverName."SecurityDriver";
-        $driverFilePath = __DIR__."/oauth2/".strtolower($driverName)."/".$driverClass.".php";
+        $driverFilePath = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__))))))."/application/models/oauth2/".strtolower($driverName)."/".$driverClass.".php";
         if (!file_exists($driverFilePath)) {
             throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
         }
         require_once($driverFilePath);
-        $tmpClass = "\\Lucinda\\Framework\\".$driverClass;
-        return new $tmpClass($this->drivers[$driverName]);
+        return new $driverClass($this->drivers[$driverName]);
     }
     
     /**
