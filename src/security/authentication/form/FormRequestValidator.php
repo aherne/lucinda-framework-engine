@@ -1,7 +1,6 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("AuthenticationWrapper.php");
 require_once("LoginRequest.php");
 require_once("LogoutRequest.php");
 
@@ -23,7 +22,6 @@ class FormRequestValidator
      * Creates an object.
      *
      * @param \SimpleXMLElement $xml Contents of security.authentication.form tag @ configuration.xml.
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
      */
     public function __construct(\SimpleXMLElement $xml)
     {
@@ -33,12 +31,14 @@ class FormRequestValidator
     /**
      * Sets up login data, if operation was requested
      *
-     * @throws \Lucinda\MVC\STDOUT\ServletException If request doesn't come with mandatory parameters.
-     * @param string $currentPage Current page requested.
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated client request data.
+     * @throws \Lucinda\WebSecurity\AuthenticationException If POST parameters are not provided when logging in.
      * @return LoginRequest|null
      */
-    public function login($currentPage)
+    public function login(\Lucinda\MVC\STDOUT\Request $request)
     {
+        $currentPage = $request->getValidator()->getPage();
+        
         $loginRequest = new LoginRequest();
         
         // set source page;
@@ -46,7 +46,7 @@ class FormRequestValidator
         if (!$sourcePage) {
             $sourcePage = self::DEFAULT_LOGIN_PAGE;
         }
-        if ($sourcePage != $currentPage || empty($_POST)) {
+        if ($sourcePage != $currentPage || $request->getMethod()!="POST") {
             return null;
         }
         $loginRequest->setSourcePage($sourcePage);
@@ -73,19 +73,19 @@ class FormRequestValidator
         }
         
         // get parameter values
-        $username = (!empty($_POST[$parameterUsername])?$_POST[$parameterUsername]:"");
+        $username = $request->parameters($parameterUsername);
         if (!$username) {
-            throw new  \Lucinda\MVC\STDOUT\ServletException("POST parameter missing: ".$parameterUsername);
+            throw new  \Lucinda\WebSecurity\AuthenticationException("POST parameter missing: ".$parameterUsername);
         }
         $loginRequest->setUsername($username);
         
-        $password = (!empty($_POST[$parameterPassword])?$_POST[$parameterPassword]:"");
+        $password = $request->parameters($parameterPassword);
         if (!$password) {
-            throw new  \Lucinda\MVC\STDOUT\ServletException("POST parameter missing: ".$parameterPassword);
+            throw new  \Lucinda\WebSecurity\AuthenticationException("POST parameter missing: ".$parameterPassword);
         }
         $loginRequest->setPassword($password);
         
-        $loginRequest->setRememberMe(!empty($_POST[$parameterRememberMe])?true:false);
+        $loginRequest->setRememberMe($request->parameters($parameterRememberMe)?true:false);
         
         return $loginRequest;
     }
@@ -93,12 +93,13 @@ class FormRequestValidator
     /**
      * Sets up logout data, if operation was requested
      *
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
-     * @param string $currentPage Current page requested.
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated client request data.
      * @return LogoutRequest|null
      */
-    public function logout($currentPage)
+    public function logout(\Lucinda\MVC\STDOUT\Request $request)
     {
+        $currentPage = $request->getValidator()->getPage();
+        
         $logoutRequest = new LogoutRequest();
         
         // set source page

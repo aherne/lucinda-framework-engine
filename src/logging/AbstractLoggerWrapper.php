@@ -23,8 +23,8 @@ abstract class AbstractLoggerWrapper
      *
      * @param \SimpleXMLElement $xml XML tag that is child of loggers.(environment)
      * @return \Lucinda\Logging\Logger
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid.
-     * @throws \Lucinda\MVC\STDOUT\ServletException If referenced resources do not exist.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      */
     abstract protected function setLogger(\SimpleXMLElement $xml);
     

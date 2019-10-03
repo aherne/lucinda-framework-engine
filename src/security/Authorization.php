@@ -13,27 +13,30 @@ class Authorization
      * Runs authorization logic.
      *
      * @param \SimpleXMLElement $xml XML holding information relevant to authorization (above all via security.authorization tag)
-     * @param string $page Route requested by client
-     * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated request made by client
      * @param integer|string $userID Unique logged in user identifier (generally a number) or null (if user performing request isn't authenticated)
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
+     * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+     * @throws \Lucinda\SQL\StatementException If query to database server fails.
      * @throws SecurityPacket If authorization encounters a situation where execution cannot continue and redirection is required
      */
-    public function __construct(\SimpleXMLElement $xml, $page, $contextPath, $userID)
+    public function __construct(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Request $request, $userID)
     {
-        $wrapper = $this->getWrapper($xml, $page, $userID);
-        $this->authorize($wrapper, $contextPath);
+        $wrapper = $this->getWrapper($xml, $request, $userID);
+        $this->authorize($wrapper, $request);
     }
     /**
      * Gets driver that performs authorization from security.authorization XML tag.
      *
      * @param \SimpleXMLElement $xmlRoot XML holding information relevant to authorization (above all via security.authorization tag)
-     * @param string $page Route requested by client
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated request made by client
      * @param mixed $userID Unique logged in user identifier (generally a number) or null (if user performing request isn't authenticated)
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
+     * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+     * @throws \Lucinda\SQL\StatementException If query to database server fails.
      * @return AuthorizationWrapper
      */
-    private function getWrapper(\SimpleXMLElement $xmlRoot, $page, $userID)
+    private function getWrapper(\SimpleXMLElement $xmlRoot, \Lucinda\MVC\STDOUT\Request $request, $userID)
     {
         $xml = $xmlRoot->authorization;
         if (empty($xml)) {
@@ -45,7 +48,7 @@ class Authorization
             require_once("authorization/XMLAuthorizationWrapper.php");
             $wrapper = new XMLAuthorizationWrapper(
                 $xmlRoot,
-                $page,
+                $request,
                 $userID
             );
         }
@@ -53,7 +56,7 @@ class Authorization
             require_once("authorization/DAOAuthorizationWrapper.php");
             $wrapper = new DAOAuthorizationWrapper(
                 $xmlRoot,
-                $page,
+                $request,
                 $userID
             );
         }
@@ -67,10 +70,10 @@ class Authorization
      * Calls authorization driver detected to perform user authorization to requested route.
      *
      * @param AuthenticationWrapper $wrapper Driver that performs authentication (eg: via form & database).
-     * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated request made by client
      * @throws SecurityPacket If authorization encounters a situation where execution cannot continue and redirection is required
      */
-    private function authorize(AuthorizationWrapper $wrapper, $contextPath)
+    private function authorize(AuthorizationWrapper $wrapper, \Lucinda\MVC\STDOUT\Request $request)
     {
         if ($wrapper->getResult()->getStatus() == \Lucinda\WebSecurity\AuthorizationResultStatus::OK) {
             // authorization was successful
@@ -78,7 +81,7 @@ class Authorization
         } else {
             // authorization failed
             $transport = new SecurityPacket();
-            $transport->setCallback($contextPath."/".$wrapper->getResult()->getCallbackURI());
+            $transport->setCallback($request->getURI()->getContextPath()."/".$wrapper->getResult()->getCallbackURI());
             $transport->setStatus($wrapper->getResult()->getStatus());
             throw $transport;
         }

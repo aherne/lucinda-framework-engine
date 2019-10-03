@@ -3,6 +3,7 @@ namespace Lucinda\Framework;
 
 require_once("vendor/lucinda/security/src/authentication/AuthenticationResultStatus.php");
 require_once("vendor/lucinda/security/src/authorization/AuthorizationResultStatus.php");
+
 /**
  * Holds information about authentication/authorization outcomes incompatible with continuing execution (requiring a redirection).
  */
@@ -11,6 +12,7 @@ class SecurityPacket extends \Exception
     private $callback;
     private $status;
     private $accessToken;
+    private $timePenalty;
     
     /**
      * Sets path to redirect to.
@@ -108,5 +110,25 @@ class SecurityPacket extends \Exception
     public function getAccessToken()
     {
         return $this->accessToken;
+    }
+    
+    /**
+     * Sets number of seconds client will be banned from authenticating
+     *
+     * @param integer $timePenalty
+     */
+    public function setTimePenalty($timePenalty)
+    {
+        $this->timePenalty = $timePenalty;
+    }
+    
+    /**
+     * Gets number of seconds client will be banned from authenticating
+     *
+     * @return integer|null
+     */
+    public function getTimePenalty()
+    {
+        return $this->timePenalty;
     }
 }

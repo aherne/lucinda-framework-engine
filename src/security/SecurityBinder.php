@@ -1,6 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
+require_once("IPDetector.php");
 require_once("PersistenceDriversDetector.php");
 require_once("UserIdDetector.php");
 require_once("CsrfTokenDetector.php");
@@ -14,43 +15,54 @@ require_once("oauth2/OAuth2ResourcesDriver.php");
  */
 class SecurityBinder
 {
+    private $ipAddress;
     private $persistenceDrivers = array();
     private $oauth2Driver;
     private $userID;
     private $csrfToken;
     private $accessToken;
-
+    
     /**
      * Binds APIs based on XML to perform authentication/authorization on a request
      *
      * @param \Lucinda\MVC\STDOUT\Application $application
      * @param \Lucinda\MVC\STDOUT\Request $request
      * @param string $developmentEnvironment
+     * @param boolean $highSecurity
+     * @throws \Lucinda\WebSecurity\AuthenticationException If POST parameters are not provided when logging in.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
+     * @throws \Lucinda\WebSecurity\TokenException If CSRF checks fail.
      * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
      * @throws \Lucinda\SQL\StatementException If query to database server fails.
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
-     * @throws \Lucinda\WebSecurity\AuthenticationException If one or more persistence drivers are not instanceof PersistenceDriver
-     * @throws \Lucinda\WebSecurity\TokenException If CSRF checks fail
-     * @throws \Lucinda\MVC\STDOUT\ServletException If request doesn't come with mandatory parameters.
      * @throws \OAuth2\ClientException When oauth2 local client sends malformed requests to oauth2 server.
      * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
+     * @throws SecurityPacket If authentication encounters a situation where execution cannot continue and redirection is required
      */
-    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment)
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment, $highSecurity = false)
     {
         // detects relevant data
         $xml = $application->getTag("security");
-        $page = $request->getValidator()->getPage();
-        $contextPath = $request->getURI()->getContextPath();
         
         // applies web security on request
+        $this->setIpAddress($request, $highSecurity);
         $this->setPersistenceDrivers($xml);
         $this->setUserID();
         $this->setCsrfToken($xml);
         $this->setAccessToken();
-        $this->authenticate($xml, $developmentEnvironment, $page, $contextPath);
-        $this->authorize($xml, $page, $contextPath);
+        $this->authenticate($xml, $request, $developmentEnvironment);
+        $this->authorize($xml, $request);
     }
-
+    
+    private function setIpAddress(\Lucinda\MVC\STDOUT\Request $request, $highSecurity) {
+        if ($highSecurity) {
+            $this->ipAddress = $request->getClient()->getIP();
+        } else {
+            $detector = new IPDetector($request);
+            $this->ipAddress = $detector->getIP();
+        }
+    }
+    
     /**
      * Sets drivers in which authenticated state will be persisted based on contents of security.persistence_driver XML tag. Supported:
      * - session: authenticated state is persisted via a secured user_id session id protected against replay through a synchronizer token bound to IP and time
@@ -59,21 +71,24 @@ class SecurityBinder
      * - json web token:  authenticated state is persisted in a json web token by which all future requests will be able to authenticate
      *
      * @param \SimpleXMLElement $mainXML XML holding relevant information (above all via security.persistence_driver tag content)
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      */
     private function setPersistenceDrivers($mainXML)
     {
-        $pdd = new PersistenceDriversDetector($mainXML);
+        $pdd = new PersistenceDriversDetector($mainXML, $this->ipAddress);
         $this->persistenceDrivers = $pdd->getPersistenceDrivers();
     }
-
+    
     /**
      * Sets a driver able to generate or validate CSRF token required to be sent when using insecure form authentication.
      *
      * @param \SimpleXMLElement $mainXML XML holding relevant information (above all via security.csrf tag content)
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
      */
     private function setCsrfToken(\SimpleXMLElement $mainXML)
     {
-        $this->csrfToken = new CsrfTokenDetector($mainXML);
+        $this->csrfToken = new CsrfTokenDetector($mainXML, $this->ipAddress);
     }
     
     /**
@@ -87,7 +102,7 @@ class SecurityBinder
             }
         }
     }
-
+    
     /**
      * Detects logged in unique user identifier from persistence drivers.
      */
@@ -96,18 +111,26 @@ class SecurityBinder
         $udd = new UserIdDetector($this->persistenceDrivers);
         $this->userID = $udd->getUserID();
     }
-
+    
     /**
      * Performs user authentication based on mechanism chosen by developmer in XML (eg: from database via login form, from an oauth2 provider, etc)
      *
      * @param \SimpleXMLElement $mainXML XML holding relevant information (above all via security.authentication tag content)
+     * @param \Lucinda\MVC\STDOUT\Request $request
      * @param string $developmentEnvironment
-     * @param string $page Route requested by client
-     * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @throws \Lucinda\WebSecurity\AuthenticationException If POST parameters are not provided when logging in.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
+     * @throws \Lucinda\WebSecurity\TokenException If CSRF checks fail.
+     * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+     * @throws \Lucinda\SQL\StatementException If query to database server fails.
+     * @throws \OAuth2\ClientException When oauth2 local client sends malformed requests to oauth2 server.
+     * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
+     * @throws SecurityPacket If authentication encounters a situation where execution cannot continue and redirection is required
      */
-    private function authenticate(\SimpleXMLElement $mainXML, $developmentEnvironment, $page, $contextPath)
+    private function authenticate(\SimpleXMLElement $mainXML, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment)
     {
-        new Authentication($mainXML, $developmentEnvironment, $page, $contextPath, $this->csrfToken, $this->persistenceDrivers);
+        new Authentication($mainXML, $request, $developmentEnvironment, $this->ipAddress, $this->csrfToken, $this->persistenceDrivers);
         $this->oauth2Driver = new Oauth2ResourcesDriver($mainXML, $this->userID);
     }
     
@@ -115,14 +138,27 @@ class SecurityBinder
      * Performs request authorization based on mechanism chosen by developmer in XML (eg: from database)
      *
      * @param \SimpleXMLElement $mainXML XML holding relevant information (above all via security.authorization tag content)
-     * @param string $page Route requested by client
-     * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @param \Lucinda\MVC\STDOUT\Request $request
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
+     * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+     * @throws \Lucinda\SQL\StatementException If query to database server fails.
+     * @throws SecurityPacket If authorization encounters a situation where execution cannot continue and redirection is required
      */
-    private function authorize(\SimpleXMLElement $mainXML, $page, $contextPath)
+    private function authorize(\SimpleXMLElement $mainXML, \Lucinda\MVC\STDOUT\Request $request)
     {
-        new Authorization($mainXML, $page, $contextPath, $this->userID);
+        new Authorization($mainXML, $request, $this->userID);
     }
-
+    
+    /**
+     * Gets IP address detected from HTTP headers sent by client or REMOTE_ADDR header received from server.
+     *
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ipAddress;
+    }
+    
     /**
      * Gets detected logged in unique user identifier
      *
@@ -132,7 +168,7 @@ class SecurityBinder
     {
         return $this->userID;
     }
-
+    
     /**
      * Gets detected CSRF token generator / validator.
      *

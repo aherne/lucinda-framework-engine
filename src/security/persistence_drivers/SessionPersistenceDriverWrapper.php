@@ -3,7 +3,6 @@ namespace Lucinda\Framework;
 
 require_once("vendor/lucinda/security/src/persistence_drivers/SessionPersistenceDriver.php");
 require_once("PersistenceDriverWrapper.php");
-require_once("IPDetector.php");
 
 /**
  * Binds SessionPersistenceDriver @ SECURITY API with settings from configuration.xml @ SERVLETS-API and sets up an object on which one can
@@ -18,7 +17,7 @@ class SessionPersistenceDriverWrapper extends PersistenceDriverWrapper
      * {@inheritDoc}
      * @see PersistenceDriverWrapper::setDriver()
      */
-    protected function setDriver(\SimpleXMLElement $xml)
+    protected function setDriver(\SimpleXMLElement $xml, $ipAddress)
     {
         $parameterName = (string) $xml["parameter_name"];
         if (!$parameterName) {
@@ -33,9 +32,6 @@ class SessionPersistenceDriverWrapper extends PersistenceDriverWrapper
         if ($handler) {
             session_set_save_handler($this->getHandlerInstance($handler), true);
         }
-                
-        $ipDetector = new IPDetector();
-        $ipAddress = $ipDetector->getIP();
         
         $this->driver = new \Lucinda\WebSecurity\SessionPersistenceDriver($parameterName, $expirationTime, $isHttpOnly, $isHttpsOnly, $ipAddress);
     }
@@ -44,7 +40,7 @@ class SessionPersistenceDriverWrapper extends PersistenceDriverWrapper
      * Gets instance of handler based on handler name
      *
      * @param string $handlerName Name of handler class
-     * @throws  \Lucinda\MVC\STDOUT\ServletException If handler file/class not found or latter is not instanceof SessionHandlerInterface
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      * @return \SessionHandlerInterface
      */
     private function getHandlerInstance($handlerName)

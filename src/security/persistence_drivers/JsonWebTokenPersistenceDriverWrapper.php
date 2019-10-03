@@ -17,7 +17,7 @@ class JsonWebTokenPersistenceDriverWrapper extends PersistenceDriverWrapper
      * {@inheritDoc}
      * @see PersistenceDriverWrapper::setDriver()
      */
-    protected function setDriver(\SimpleXMLElement $xml)
+    protected function setDriver(\SimpleXMLElement $xml, $ipAddress)
     {
         $secret = (string) $xml["secret"];
         if (!$secret) {

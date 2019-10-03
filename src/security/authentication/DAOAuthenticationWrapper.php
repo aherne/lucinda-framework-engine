@@ -5,7 +5,8 @@ require_once("vendor/lucinda/security/src/authentication/DAOAuthentication.php")
 require_once("vendor/lucinda/security/src/authorization/UserAuthorizationRoles.php");
 require_once("vendor/lucinda/security/src/token/TokenException.php");
 require_once("AuthenticationWrapper.php");
-require_once("FormRequestValidator.php");
+require_once("form/FormRequestValidator.php");
+require_once("form/LoginThrottlerHandler.php");
 
 /**
  * Binds DAOAuthentication @ SECURITY-API to settings from configuration.xml @ SERVLETS-API then performs login/logout if it matches paths @ xml via database.
@@ -17,44 +18,58 @@ class DAOAuthenticationWrapper extends AuthenticationWrapper
     /**
      * Creates an object.
      *
-     * @param \SimpleXMLElement $xml Contents of security.authentication.form tag @ configuration.xml.
-     * @param string $currentPage Current page requested.
-     * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers List of drivers to persist information across requests.
-     * @param CsrfTokenDetector $csrf Object that performs CSRF token checks.
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
-     * @throws \Lucinda\WebSecurity\AuthenticationException If one or more persistence drivers are not instanceof PersistenceDriver
+     * @param \SimpleXMLElement $xml XML holding information relevant to authentication (above all via security.authentication tag)
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated client request data.
+     * @param string $ipAddress Client ip address resolved from headers
+     * @param CsrfTokenDetector $csrfTokenDetector Driver performing CSRF validation
+     * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers Drivers where authenticated state is persisted (eg: session, remember me cookie).
+     * @throws \Lucinda\WebSecurity\AuthenticationException If POST parameters are not provided when logging in.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      * @throws \Lucinda\WebSecurity\TokenException If CSRF checks fail
      * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
      * @throws \Lucinda\SQL\StatementException If query to database server fails.
      */
-    public function __construct(\SimpleXMLElement $xml, $currentPage, $persistenceDrivers, CsrfTokenDetector $csrf)
+    public function __construct(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Request $request, $ipAddress, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
     {
         // loads and instances DAO object
         $className = (string) $xml->authentication->form["dao"];
         load_class((string) $xml["dao_path"], $className);
-        $daoObject = new $className();
-        if (!($daoObject instanceof \Lucinda\WebSecurity\UserAuthenticationDAO)) {
-            throw new  \Lucinda\MVC\STDOUT\ServletException("Class must be instance of UserAuthenticationDAO!");
+        $authenticationDaoObject = new $className();
+        if (!($authenticationDaoObject instanceof \Lucinda\WebSecurity\UserAuthenticationDAO)) {
+            throw new  \Lucinda\MVC\STDOUT\ServletException("Class must be instance of UserAuthenticationDAO: ".$className);
         }
 
         // starts dao-based form authentication
-        $this->driver = new \Lucinda\WebSecurity\DAOAuthentication($daoObject, $persistenceDrivers);
+        $this->driver = new \Lucinda\WebSecurity\DAOAuthentication($authenticationDaoObject, $persistenceDrivers);
 
         // setup class properties
         $validator = new FormRequestValidator($xml);
         
         // checks if a login action was requested, in which case it forwards object to driver
-        if ($request = $validator->login($currentPage)) {
+        if ($loginRequest = $validator->login($request)) {
             // check csrf token
-            if (empty($_POST['csrf']) || !$csrf->isValid($_POST['csrf'], 0)) {
+            if (!$request->parameters("csrf") || !$csrfTokenDetector->isValid($request->parameters("csrf"), 0)) {
                 throw new \Lucinda\WebSecurity\TokenException("CSRF token is invalid or missing!");
             }
-            $this->login($request);
+            
+            // performs login, using throttler if defined
+            $className = (string) $xml->authentication->form["throttler"];
+            if ($className) {
+                $loginThrottlerHandler = new LoginThrottlerHandler($className, $request, $ipAddress, $loginRequest->getUsername());
+                $this->result = $loginThrottlerHandler->start($request);
+                if ($this->result) {
+                    return;
+                }                
+                $this->login($loginRequest);
+                $loginThrottlerHandler->end($this->result);
+            } else {
+                $this->login($loginRequest);
+            }            
         }
         
         // checks if a logout action was requested, in which case it forwards object to driver
-        if ($request = $validator->logout($currentPage)) {
-            $this->logout($request);
+        if ($logoutRequest = $validator->logout($request)) {
+            $this->logout($logoutRequest);
         }
     }
 
@@ -67,12 +82,15 @@ class DAOAuthenticationWrapper extends AuthenticationWrapper
      */
     private function login(LoginRequest $request)
     {
+        $result = null;
+        
         // set result
         $result = $this->driver->login(
             $request->getUsername(),
             $request->getPassword(),
             $request->getRememberMe()
-                );
+            );
+                
         $this->setResult($result, $request->getSourcePage(), $request->getDestinationPage());
     }
 

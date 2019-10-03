@@ -32,7 +32,7 @@ class LocaleDetector
      * Sets detection method based on "method" attribute of <internationalization> tag.
      *
      * @param \SimpleXMLElement $xml Internationalization tag content.
-     * @throws \Lucinda\MVC\STDOUT\XMLException If "method" attribute is missing or empty.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
      */
     private function setDetectionMethod(\SimpleXMLElement $xml)
     {
@@ -51,7 +51,7 @@ class LocaleDetector
      * Sets default locale based on "locale" attribute of <internationalization> tag.
      *
      * @param \SimpleXMLElement $xml Internationalization tag content.
-     * @throws \Lucinda\MVC\STDOUT\XMLException If "locale" attribute is missing or empty.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
      */
     private function setDefaultLocale(\SimpleXMLElement $xml)
     {
@@ -67,7 +67,6 @@ class LocaleDetector
      *
      * @param \SimpleXMLElement $xml  Internationalization tag content.
      * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
-     * @throws \Lucinda\MVC\STDOUT\XMLException If "method" attribute contains a wrong value.
      */
     private function setDetectedLocale(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Request $request)
     {

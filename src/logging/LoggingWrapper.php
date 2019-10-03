@@ -15,7 +15,7 @@ class LoggingWrapper
      *
      * @param \SimpleXMLElement $xml XML containing logger settings.
      * @param string $developmentEnvironment Development environment server is running into (eg: local, dev, live)
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
      * @throws  \Lucinda\MVC\STDOUT\ServletException If pointed file doesn't exist or is invalid
      */
     public function __construct(\SimpleXMLElement $xml, $developmentEnvironment)
@@ -32,7 +32,7 @@ class LoggingWrapper
      *
      * @param string $loggersPath Path to logger classes.
      * @param \SimpleXMLElement $xml XML containing individual logger settings.
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
      * @throws  \Lucinda\MVC\STDOUT\ServletException If pointed file doesn't exist or is invalid
      */
     private function setLoggers($loggersPath, \SimpleXMLElement $xml)

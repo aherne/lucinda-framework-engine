@@ -15,11 +15,11 @@ class XMLAuthorizationWrapper extends AuthorizationWrapper
      * Creates an object.
      *
      * @param \SimpleXMLElement $xml Contents of root @ configuration.xml
-     * @param string $currentPage Current page requested.
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated request made by client
      * @param integer $userID Unique user identifier
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      */
-    public function __construct(\SimpleXMLElement $xml, $currentPage, $userID)
+    public function __construct(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Request $request, $userID)
     {
         $xmlRoot = $xml->xpath("..")[0];
         
@@ -38,6 +38,7 @@ class XMLAuthorizationWrapper extends AuthorizationWrapper
         
         // authorize and save result
         $authorization = new \Lucinda\WebSecurity\XMLAuthorization($loggedInCallback, $loggedOutCallback);
+        $currentPage = $request->getValidator()->getPage();
         if ((string) $xml->authentication->form["dao"]) {
             $daoClass = (string) $xml->authentication->form["dao"];
             $dao = new $daoClass($userID);

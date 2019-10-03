@@ -15,12 +15,13 @@ class DAOAuthorizationWrapper extends AuthorizationWrapper
      * Creates an object
      *
      * @param \SimpleXMLElement $xml Contents of security.authorization.by_dao tag @ configuration.xml
-     * @param string $currentPage Current page requested.
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated request made by client
      * @param mixed $userID Unique user identifier (usually an integer)
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
      * @throws \Lucinda\SQL\StatementException If query to database server fails.
      */
-    public function __construct(\SimpleXMLElement $xml, $currentPage, $userID)
+    public function __construct(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Request $request, $userID)
     {
         // create dao object
         $xmlTag = $xml->authorization->by_dao;
@@ -40,7 +41,7 @@ class DAOAuthorizationWrapper extends AuthorizationWrapper
         // loads and instances page DAO object
         $className = (string) $xmlTag["page_dao"];
         load_class((string) $xml["dao_path"], $className);
-        $pageDAO = new $className($currentPage);
+        $pageDAO = new $className($request->getValidator()->getPage());
         if (!($pageDAO instanceof \Lucinda\WebSecurity\PageAuthorizationDAO)) {
             throw new  \Lucinda\MVC\STDOUT\ServletException("Class must be instance of PageAuthorizationDAO!");
         }
@@ -55,6 +56,6 @@ class DAOAuthorizationWrapper extends AuthorizationWrapper
 
         // performs authorization
         $authorization = new \Lucinda\WebSecurity\DAOAuthorization($loggedInCallback, $loggedOutCallback);
-        $this->setResult($authorization->authorize($pageDAO, $userDAO, $_SERVER["REQUEST_METHOD"]));
+        $this->setResult($authorization->authorize($pageDAO, $userDAO, $request->getMethod()));
     }
 }

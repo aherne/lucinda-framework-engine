@@ -14,8 +14,8 @@ class SQLDataSourceBinder
      *
      * @param \SimpleXMLElement $xml
      * @param string $developmentEnvironment
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is malformed.
-     * @throws \Lucinda\MVC\STDOUT\ServletException If referenced resources in XML do not exist on disk or are invalid.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      */
     public function __construct(\SimpleXMLElement $xml, $developmentEnvironment)
     {

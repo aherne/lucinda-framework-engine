@@ -16,7 +16,7 @@ class ViewLanguageBinder
      *
      * @param \SimpleXMLElement $xml XML file holding compiler settings.
      * @param string $viewFile View file location (without extension, optionally including views folder path)
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is misconfigured
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
      * @throws \Lucinda\Templating\ViewException If compilation failed due to a developer error.
      */
     public function __construct(\SimpleXMLElement $xml, $viewFile)
@@ -29,7 +29,8 @@ class ViewLanguageBinder
      *
      * @param \SimpleXMLElement $xml XML file holding compiler settings.
      * @param string $viewFile View file location (without extension, optionally including views folder path)
-     * @throws \Lucinda\MVC\STDOUT\XMLException
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\Templating\ViewException If compilation failed due to a developer error.
      */
     private function setCompilationFile(\SimpleXMLElement $xml, $viewFile)
     {

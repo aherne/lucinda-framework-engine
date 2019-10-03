@@ -17,6 +17,8 @@ class CachingPolicyLocator
      * @param \Lucinda\MVC\STDOUT\Application $application Encapsulates application settings @ ServletsAPI.
      * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
      * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is incorrect formatted.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      */
     public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response)
     {
@@ -29,7 +31,8 @@ class CachingPolicyLocator
      * @param \Lucinda\MVC\STDOUT\Application $application Encapsulates application settings @ ServletsAPI.
      * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
      * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is incorrect formatted.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      */
     private function setPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response)
     {
@@ -55,6 +58,7 @@ class CachingPolicyLocator
      * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
      * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is incorrect formatted.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      */
     private function getGlobalPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response)
     {
@@ -72,7 +76,7 @@ class CachingPolicyLocator
      * @param \Lucinda\MVC\STDOUT\Application $application Encapsulates application settings @ ServletsAPI.
      * @param \Lucinda\MVC\STDOUT\Request $request Encapsulates request information.
      * @param \Lucinda\MVC\STDOUT\Response $response Encapsulates response information.
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is incorrect formatted.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
      */
     private function getSpecificPolicy(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response)
     {

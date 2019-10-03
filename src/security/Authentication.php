@@ -13,19 +13,26 @@ class Authentication
      * Runs authentication logic.
      *
      * @param \SimpleXMLElement $xml XML holding information relevant to authentication (above all via security.authentication tag)
-     * @param string $developmentEnvironment
-     * @param string $page Route requested by client
-     * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated request made by client
+     * @param string $developmentEnvironment Current development environment (eg: local)
+     * @param string $ipAddress Client ip address resolved from headers
      * @param CsrfTokenDetector $csrfTokenDetector Driver performing CSRF validation
      * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers Drivers where authenticated state is persisted (eg: session, remember me cookie).
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
+     * @throws \Lucinda\WebSecurity\AuthenticationException If POST parameters are not provided when logging in.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
+     * @throws \Lucinda\WebSecurity\TokenException If CSRF checks fail.
+     * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+     * @throws \Lucinda\SQL\StatementException If query to database server fails.
+     * @throws \OAuth2\ClientException When oauth2 local client sends malformed requests to oauth2 server.
+     * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
      * @throws SecurityPacket If authentication encounters a situation where execution cannot continue and redirection is required
      */
-    public function __construct(\SimpleXMLElement $xml, $developmentEnvironment, $page, $contextPath, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
+    public function __construct(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment, $ipAddress, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
     {
-        $wrappers = $this->getWrappers($xml, $developmentEnvironment, $page, $csrfTokenDetector, $persistenceDrivers);
+        $wrappers = $this->getWrappers($xml, $request, $developmentEnvironment, $ipAddress, $csrfTokenDetector, $persistenceDrivers);
         foreach ($wrappers as $wrapper) {
-            $this->authenticate($wrapper, $contextPath, $persistenceDrivers);
+            $this->authenticate($wrapper, $request, $persistenceDrivers);
         }
     }
     
@@ -33,14 +40,22 @@ class Authentication
      * Gets driver that performs authentication from security.authentication XML tag.
      *
      * @param \SimpleXMLElement $xmlRoot XML holding information relevant to authentication (above all via security.authentication tag)
-     * @param string $developmentEnvironment
-     * @param string $page Route requested by client
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated request made by client
+     * @param string $developmentEnvironment Current development environment (eg: local)
+     * @param string $ipAddress Client ip address resolved from headers
      * @param CsrfTokenDetector $csrfTokenDetector Driver performing CSRF validation
      * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers Drivers where authenticated state is persisted (eg: session, remember me cookie).
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
+     * @throws \Lucinda\WebSecurity\AuthenticationException If POST parameters are not provided when logging in.
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
+     * @throws \Lucinda\WebSecurity\TokenException If CSRF checks fail.
+     * @throws \Lucinda\SQL\ConnectionException If connection to database server fails.
+     * @throws \Lucinda\SQL\StatementException If query to database server fails.
+     * @throws \OAuth2\ClientException When oauth2 local client sends malformed requests to oauth2 server.
+     * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
      * @return AuthenticationWrapper[]
      */
-    private function getWrappers(\SimpleXMLElement $xmlRoot, $developmentEnvironment, $page, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
+    private function getWrappers(\SimpleXMLElement $xmlRoot, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment, $ipAddress, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
     {
         $wrappers = array();
         $xml = $xmlRoot->authentication;
@@ -54,17 +69,19 @@ class Authentication
                 require_once("authentication/DAOAuthenticationWrapper.php");
                 $wrappers[] = new DAOAuthenticationWrapper(
                     $xmlRoot,
-                    $page,
-                    $persistenceDrivers,
-                    $csrfTokenDetector
+                    $request,
+                    $ipAddress,
+                    $csrfTokenDetector,
+                    $persistenceDrivers
                     );
             } else {
                 require_once("authentication/XMLAuthenticationWrapper.php");
                 $wrappers[] = new XMLAuthenticationWrapper(
                     $xmlRoot,
-                    $page,
-                    $persistenceDrivers,
-                    $csrfTokenDetector
+                    $request,
+                    $ipAddress,
+                    $csrfTokenDetector,
+                    $persistenceDrivers
                     );
             }
         }
@@ -72,10 +89,10 @@ class Authentication
             require_once("authentication/OAuth2AuthenticationWrapper.php");
             $wrappers[] = new OAuth2AuthenticationWrapper(
                 $xmlRoot,
+                $request,
                 $developmentEnvironment,
-                $page,
-                $persistenceDrivers,
-                $csrfTokenDetector
+                $csrfTokenDetector,
+                $persistenceDrivers
                 );
         }
         if (empty($wrappers)) {
@@ -88,11 +105,11 @@ class Authentication
      * Calls authentication driver detected to perform user authentication.
      *
      * @param AuthenticationWrapper $wrapper Driver that performs authentication (eg: via form & database).
-     * @param string $contextPath \Lucinda\MVC\STDOUT\Application context path (default "/") necessary if multiple applications are deployed under same hostname
+     * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated request made by client
      * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers Drivers where authenticated state is persisted (eg: session, remember me cookie).
      * @throws SecurityPacket If authentication encounters a situation where execution cannot continue and redirection is required
      */
-    private function authenticate(AuthenticationWrapper $wrapper, $contextPath, $persistenceDrivers)
+    private function authenticate(AuthenticationWrapper $wrapper, \Lucinda\MVC\STDOUT\Request $request, $persistenceDrivers)
     {
         if (!$wrapper->getResult()) {
             // no authentication was requested
@@ -100,9 +117,14 @@ class Authentication
         } else {
             // authentication was requested
             $transport = new SecurityPacket();
-            $transport->setCallback($wrapper->getResult()->getStatus()==\Lucinda\WebSecurity\AuthenticationResultStatus::DEFERRED?$wrapper->getResult()->getCallbackURI():$contextPath."/".$wrapper->getResult()->getCallbackURI());
+            if ($wrapper->getResult()->getStatus()==\Lucinda\WebSecurity\AuthenticationResultStatus::DEFERRED) {
+                $transport->setCallback($wrapper->getResult()->getCallbackURI());
+            } else {
+                $transport->setCallback($request->getURI()->getContextPath()."/".$wrapper->getResult()->getCallbackURI());
+            }
             $transport->setStatus($wrapper->getResult()->getStatus());
             $transport->setAccessToken($wrapper->getResult()->getUserID(), $persistenceDrivers);
+            $transport->setTimePenalty($wrapper->getResult()->getTimePenalty());
             throw $transport;
         }
     }

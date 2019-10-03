@@ -3,7 +3,6 @@ namespace Lucinda\Framework;
 
 require_once("vendor/lucinda/security/src/persistence_drivers/RememberMePersistenceDriver.php");
 require_once("PersistenceDriverWrapper.php");
-require_once("IPDetector.php");
 
 /**
  * Binds RememberMePersistenceDriver @ SECURITY API with settings from configuration.xml @ SERVLETS-API and sets up an object on which one can
@@ -18,7 +17,7 @@ class RememberMePersistenceDriverWrapper extends PersistenceDriverWrapper
      * {@inheritDoc}
      * @see PersistenceDriverWrapper::setDriver()
      */
-    protected function setDriver(\SimpleXMLElement $xml)
+    protected function setDriver(\SimpleXMLElement $xml, $ipAddress)
     {
         $secret = (string) $xml["secret"];
         if (!$secret) {
@@ -37,9 +36,6 @@ class RememberMePersistenceDriverWrapper extends PersistenceDriverWrapper
 
         $isHttpOnly = (integer) $xml["is_http_only"];
         $isHttpsOnly = (integer) $xml["is_https_only"];
-        
-        $ipDetector = new IPDetector();
-        $ipAddress = $ipDetector->getIP();
         
         $this->driver = new \Lucinda\WebSecurity\RememberMePersistenceDriver($secret, $parameterName, $expirationTime, $isHttpOnly, $isHttpsOnly, $ipAddress);
     }

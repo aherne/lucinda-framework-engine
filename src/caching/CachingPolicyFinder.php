@@ -18,6 +18,8 @@ class CachingPolicyFinder
      * @param \Lucinda\MVC\STDOUT\Application $application
      * @param \Lucinda\MVC\STDOUT\Request $request
      * @param \Lucinda\MVC\STDOUT\Response $response
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      */
     public function __construct(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response)
     {
@@ -31,6 +33,8 @@ class CachingPolicyFinder
      * @param \Lucinda\MVC\STDOUT\Application $application
      * @param \Lucinda\MVC\STDOUT\Request $request
      * @param \Lucinda\MVC\STDOUT\Response $response
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      */
     private function setPolicy(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response)
     {
@@ -81,8 +85,8 @@ class CachingPolicyFinder
      * @param \Lucinda\MVC\STDOUT\Request $request
      * @param \Lucinda\MVC\STDOUT\Response $response
      * @return CacheableDriver|NULL
-     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is invalid
-     * @throws \Lucinda\MVC\STDOUT\ServletException If pointed file doesn't exist or is invalid
+     * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
+     * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      */
     private function getCacheableDriver(\SimpleXMLElement $xml, \Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, \Lucinda\MVC\STDOUT\Response $response)
     {
