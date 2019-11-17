@@ -1,13 +1,13 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/oauth2-client/loader.php");
-require_once("vendor/lucinda/security/src/authentication/OAuth2Authentication.php");
+require("vendor/lucinda/oauth2-client/src/Driver.php");
+require("vendor/lucinda/security/src/authentication/OAuth2Authentication.php");
 require_once("vendor/lucinda/security/src/token/TokenException.php");
 require_once("AuthenticationWrapper.php");
-require_once("oauth2/OAuth2XMLParser.php");
-require_once("oauth2/AbstractSecurityDriver.php");
-require_once("oauth2/AbstractUserInformation.php");
+require("oauth2/OAuth2XMLParser.php");
+require("oauth2/AbstractSecurityDriver.php");
+require("oauth2/AbstractUserInformation.php");
 
 /**
  * Binds OAuth2Authentication @ SECURITY-API and Driver @ OAUTH2-CLIENT-API with settings from configuration.xml @ SERVLETS-API and vendor-specific
@@ -153,7 +153,7 @@ class OAuth2AuthenticationWrapper extends AuthenticationWrapper
         if (!file_exists($driverFilePath)) {
             throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
         }
-        require_once($driverFilePath);
+        require($driverFilePath);
         $tmpClass = "\\OAuth2\\".$driverClass;
         $object = new $tmpClass($clientInformation);
         if (!($object instanceof \OAuth2\Driver)) {
@@ -180,7 +180,7 @@ class OAuth2AuthenticationWrapper extends AuthenticationWrapper
         if (!file_exists($driverFilePath)) {
             throw new  \Lucinda\MVC\STDOUT\ServletException("Driver class not found: ".$driverFilePath);
         }
-        require_once($driverFilePath);
+        require($driverFilePath);
         $object = new $driverClass($driverInstance);
         if (!($object instanceof \Lucinda\WebSecurity\OAuth2Driver)) {
             throw new  \Lucinda\MVC\STDOUT\ServletException("Class must be instance of \Lucinda\WebSecurity\OAuth2Driver: ".$className);

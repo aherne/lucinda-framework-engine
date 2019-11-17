@@ -28,7 +28,7 @@ class NoSQLDataSourceDetection extends DataSourceDetection
                     throw new \Lucinda\MVC\STDOUT\XMLException("For COUCHBASE driver following attributes are mandatory: host, username, password, bucket_name");
                 }
                 
-                require_once("vendor/lucinda/nosql-data-access/src/CouchbaseDriver.php");
+                require("vendor/lucinda/nosql-data-access/src/CouchbaseDriver.php");
                 
                 $dataSource = new \Lucinda\NoSQL\CouchbaseDataSource();
                 $dataSource->setHost($host);
@@ -37,33 +37,33 @@ class NoSQLDataSourceDetection extends DataSourceDetection
                 $this->dataSource = $dataSource;
                 break;
             case "memcache":
-                require_once("vendor/lucinda/nosql-data-access/src/MemcacheDriver.php");
+                require("vendor/lucinda/nosql-data-access/src/MemcacheDriver.php");
                 
                 $dataSource = new \Lucinda\NoSQL\MemcacheDataSource();
                 $this->setServerInfo($databaseInfo, $dataSource);
                 $this->dataSource = $dataSource;
                 break;
             case "memcached":
-                require_once("vendor/lucinda/nosql-data-access/src/MemcachedDriver.php");
+                require("vendor/lucinda/nosql-data-access/src/MemcachedDriver.php");
                 
                 $dataSource = new \Lucinda\NoSQL\MemcachedDataSource();
                 $this->setServerInfo($databaseInfo, $dataSource);
                 $this->dataSource = $dataSource;
                 break;
             case "redis":
-                require_once("vendor/lucinda/nosql-data-access/src/RedisDriver.php");
+                require("vendor/lucinda/nosql-data-access/src/RedisDriver.php");
                 
                 $dataSource = new \Lucinda\NoSQL\RedisDataSource();
                 $this->setServerInfo($databaseInfo, $dataSource);
                 $this->dataSource = $dataSource;
                 break;
             case "apc":
-                require_once("vendor/lucinda/nosql-data-access/src/APCDriver.php");
+                require("vendor/lucinda/nosql-data-access/src/APCDriver.php");
                 
                 $this->dataSource = new \Lucinda\NoSQL\APCDataSource();
                 break;
             case "apcu":
-                require_once("vendor/lucinda/nosql-data-access/src/APCuDriver.php");
+                require("vendor/lucinda/nosql-data-access/src/APCuDriver.php");
                 
                 $this->dataSource = new \Lucinda\NoSQL\APCuDataSource();
                 break;

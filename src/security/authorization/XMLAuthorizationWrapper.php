@@ -1,8 +1,9 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/security/src/authorization/XMLAuthorization.php");
+require("vendor/lucinda/security/src/authorization/XMLAuthorization.php");
 require_once("AuthorizationWrapper.php");
+
 /**
  * Binds XMLAuthorization @ SECURITY-API to settings from configuration.xml @ SERVLETS-API then performs request authorization via contents of configuration.xml.
  */

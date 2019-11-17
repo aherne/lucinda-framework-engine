@@ -1,9 +1,9 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/internationalization/src/Reader.php");
-require_once("LocaleDetector.php");
-require_once("SettingsDetector.php");
+require("vendor/lucinda/internationalization/src/Reader.php");
+require("LocaleDetector.php");
+require("SettingsDetector.php");
 
 /**
  * Binds Internationalization API with MVC STDOUT API (aka Servlets API) in order to be able to produce a localizable response

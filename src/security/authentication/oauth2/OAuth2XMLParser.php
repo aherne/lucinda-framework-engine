@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("OAuth2DriverInformation.php");
+require("OAuth2DriverInformation.php");
 
 /**
  * Detects oauth2 information based on contents of <oauth2> XML tag

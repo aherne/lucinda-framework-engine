@@ -1,8 +1,8 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/sql-data-access/loader.php");
-require_once("SQLDataSourceDetection.php");
+require("vendor/lucinda/sql-data-access/loader.php");
+require("SQLDataSourceDetection.php");
 
 /**
  * Binds SQL Data Access API with MVC STDOUT API (aka Servlets API) in order to detect a DataSource that will be automatically used later on when SQL server is queried

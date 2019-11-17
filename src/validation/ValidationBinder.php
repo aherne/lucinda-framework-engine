@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/request-validator/src/Validator.php");
+require("vendor/lucinda/request-validator/src/Validator.php");
 
 /**
  * Binds Parameters Validation API with MVC STDOUT API (aka Servlets API) and stdout.xml in order to perform validation of path/request parameters

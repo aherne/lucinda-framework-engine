@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("CacheableDriver.php");
+require("CacheableDriver.php");
 
 /**
  * Encapsulates basic HTTP caching policies rules.

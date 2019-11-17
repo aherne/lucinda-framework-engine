@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/security/src/authentication/XMLAuthentication.php");
+require("vendor/lucinda/security/src/authentication/XMLAuthentication.php");
 require_once("vendor/lucinda/security/src/token/TokenException.php");
 require_once("AuthenticationWrapper.php");
 require_once("form/FormRequestValidator.php");

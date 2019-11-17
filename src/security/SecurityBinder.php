@@ -1,13 +1,13 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("IPDetector.php");
-require_once("PersistenceDriversDetector.php");
-require_once("UserIdDetector.php");
-require_once("CsrfTokenDetector.php");
-require_once("Authentication.php");
-require_once("Authorization.php");
-require_once("oauth2/OAuth2ResourcesDriver.php");
+require("IPDetector.php");
+require("PersistenceDriversDetector.php");
+require("UserIdDetector.php");
+require("CsrfTokenDetector.php");
+require("Authentication.php");
+require("Authorization.php");
+require("oauth2/OAuth2ResourcesDriver.php");
 
 /**
  * Binds HTTP Security API & OAuth2 Client API with MVC STDOUT API (aka Servlets API) in order to apply web security operations

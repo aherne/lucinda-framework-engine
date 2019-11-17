@@ -66,7 +66,7 @@ class Authentication
         $wrapper = null;
         if ($xml->form) {
             if ((string) $xml->form["dao"]) {
-                require_once("authentication/DAOAuthenticationWrapper.php");
+                require("authentication/DAOAuthenticationWrapper.php");
                 $wrappers[] = new DAOAuthenticationWrapper(
                     $xmlRoot,
                     $request,
@@ -75,7 +75,7 @@ class Authentication
                     $persistenceDrivers
                     );
             } else {
-                require_once("authentication/XMLAuthenticationWrapper.php");
+                require("authentication/XMLAuthenticationWrapper.php");
                 $wrappers[] = new XMLAuthenticationWrapper(
                     $xmlRoot,
                     $request,
@@ -86,7 +86,7 @@ class Authentication
             }
         }
         if ($xml->oauth2) {
-            require_once("authentication/OAuth2AuthenticationWrapper.php");
+            require("authentication/OAuth2AuthenticationWrapper.php");
             $wrappers[] = new OAuth2AuthenticationWrapper(
                 $xmlRoot,
                 $request,

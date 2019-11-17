@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once(dirname(dirname(dirname(__DIR__)))."/view-language/loader.php");
+require(dirname(dirname(dirname(__DIR__)))."/view-language/loader.php");
 
 /**
  * Binds contents of <application> XML tag with detected environment then uses ViewLanguageAPI to produce a PHP file where templating logic in view

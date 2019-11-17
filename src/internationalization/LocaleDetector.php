@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("XMLSessionSetup.php");
+require("XMLSessionSetup.php");
 
 /**
  * Detects locale based on contents of internationalization tag:

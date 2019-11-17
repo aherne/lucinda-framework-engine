@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/security/src/token/SynchronizerToken.php");
+require("vendor/lucinda/security/src/token/SynchronizerToken.php");
 
 /**
  * Binds SynchronizerToken @ SECURITY-API with settings from configuration.xml @ SERVLETS-API  then sets up an object based on which one can perform

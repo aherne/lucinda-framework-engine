@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("AbstractLoggerWrapper.php");
+require("AbstractLoggerWrapper.php");
 require_once(dirname(__DIR__)."/ClassLoader.php");
 /**
  * Locates and instances loggers based on XML content.

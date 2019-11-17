@@ -2,8 +2,8 @@
 namespace Lucinda\Framework;
 
 require_once("vendor/lucinda/logging/loader.php");
-require_once("LoggingWrapper.php");
-require_once("MultiLogger.php");
+require("LoggingWrapper.php");
+require("MultiLogger.php");
 
 /**
  * Binds Logging API with MVC STDOUT API (aka Servlets API) in order to be able to log a message later on (eg: in a file or syslog)

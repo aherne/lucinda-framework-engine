@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("CachingPolicy.php");
+require("CachingPolicy.php");
 require_once(dirname(__DIR__)."/ClassLoader.php");
 
 /**

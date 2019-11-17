@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("CachingPolicyFinder.php");
+require("CachingPolicyFinder.php");
 
 /**
  * Locates CachingPolicy in XML based on contents of http_caching tag. Binds route-based settings (if any) with

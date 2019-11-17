@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/security/src/persistence_drivers/JsonWebTokenPersistenceDriver.php");
+require("vendor/lucinda/security/src/persistence_drivers/JsonWebTokenPersistenceDriver.php");
 require_once("PersistenceDriverWrapper.php");
 
 /**

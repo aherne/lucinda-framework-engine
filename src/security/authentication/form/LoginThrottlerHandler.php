@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("LoginThrottler.php");
+require("LoginThrottler.php");
 
 /**
  * Encapsulates communication between LoginThrottler and \Lucinda\WebSecurity\AuthenticationResult instances

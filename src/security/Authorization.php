@@ -45,7 +45,7 @@ class Authorization
         
         $wrapper = null;
         if ($xml->by_route) {
-            require_once("authorization/XMLAuthorizationWrapper.php");
+            require("authorization/XMLAuthorizationWrapper.php");
             $wrapper = new XMLAuthorizationWrapper(
                 $xmlRoot,
                 $request,
@@ -53,7 +53,7 @@ class Authorization
             );
         }
         if ($xml->by_dao) {
-            require_once("authorization/DAOAuthorizationWrapper.php");
+            require("authorization/DAOAuthorizationWrapper.php");
             $wrapper = new DAOAuthorizationWrapper(
                 $xmlRoot,
                 $request,

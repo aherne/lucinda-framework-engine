@@ -1,8 +1,8 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("OAuth2ResourcesDAO.php");
-require_once("OAuth2ResourcesException.php");
+require("OAuth2ResourcesDAO.php");
+require("OAuth2ResourcesException.php");
 
 /**
  * Driver to use in querying OAuth2 providers for resources

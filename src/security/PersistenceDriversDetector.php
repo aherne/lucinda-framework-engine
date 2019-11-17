@@ -37,25 +37,25 @@ class PersistenceDriversDetector
         } // it is allowed for elements to not persist
         
         if ($xml->session) {
-            require_once("persistence_drivers/SessionPersistenceDriverWrapper.php");
+            require("persistence_drivers/SessionPersistenceDriverWrapper.php");
             $wrapper = new SessionPersistenceDriverWrapper($xml->session, $ipAddress);
             $this->persistenceDrivers[] = $wrapper->getDriver();
         }
         
         if ($xml->remember_me) {
-            require_once("persistence_drivers/RememberMePersistenceDriverWrapper.php");
+            require("persistence_drivers/RememberMePersistenceDriverWrapper.php");
             $wrapper = new RememberMePersistenceDriverWrapper($xml->remember_me, $ipAddress);
             $this->persistenceDrivers[] = $wrapper->getDriver();
         }
         
         if ($xml->synchronizer_token) {
-            require_once("persistence_drivers/SynchronizerTokenPersistenceDriverWrapper.php");
+            require("persistence_drivers/SynchronizerTokenPersistenceDriverWrapper.php");
             $wrapper = new SynchronizerTokenPersistenceDriverWrapper($xml->synchronizer_token, $ipAddress);
             $this->persistenceDrivers[] = $wrapper->getDriver();
         }
         
         if ($xml->json_web_token) {
-            require_once("persistence_drivers/JsonWebTokenPersistenceDriverWrapper.php");
+            require("persistence_drivers/JsonWebTokenPersistenceDriverWrapper.php");
             $wrapper = new JsonWebTokenPersistenceDriverWrapper($xml->json_web_token, $ipAddress);
             $this->persistenceDrivers[] = $wrapper->getDriver();
         }

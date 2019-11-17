@@ -1,8 +1,8 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/http-caching/loader.php");
-require_once("CachingPolicyLocator.php");
+require("vendor/lucinda/http-caching/loader.php");
+require("CachingPolicyLocator.php");
 
 /**
  * Binds HTTP Caching API with MVC STDOUT API (aka Servlets API) in order to perform cache validation to a HTTP GET request and produce a response accordingly

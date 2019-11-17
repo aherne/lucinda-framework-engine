@@ -1,8 +1,8 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("vendor/lucinda/nosql-data-access/loader.php");
-require_once("NoSQLDataSourceDetection.php");
+require("vendor/lucinda/nosql-data-access/loader.php");
+require("NoSQLDataSourceDetection.php");
 
 /**
  * Binds NoSQL Data Access API with MVC STDOUT API (aka Servlets API) in order to detect a DataSource that will be automatically used later on when NoSQL server is queried

@@ -1,8 +1,8 @@
 <?php
 namespace Lucinda\Framework;
 
-require_once("LoginRequest.php");
-require_once("LogoutRequest.php");
+require("LoginRequest.php");
+require("LogoutRequest.php");
 
 /**
  * Validates authentication requests in configuration.xml and encapsulates them into objects
