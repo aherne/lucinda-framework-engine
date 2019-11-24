@@ -94,15 +94,17 @@ class OAuth2AuthenticationWrapper extends AuthenticationWrapper
         
         // detect parameters from xml
         if ($request->parameters("code")) {
+            $authorizationCodeResponse = new \OAuth2\AuthorizationCodeResponse($request->parameters());
+            
             // check state
             if ($driverInfo->getDriverName() != "VK") { // hardcoding: VK sends wrong state
-                if (!$request->parameters("state") || !$csrf->isValid($request->parameters("state"), 0)) {
+                if (!$authorizationCodeResponse->getState() || !$csrf->isValid($authorizationCodeResponse->getState(), 0)) {
                     throw new \Lucinda\WebSecurity\TokenException("CSRF token is invalid or missing!");
                 }
             }
             
             // get access token
-            $accessTokenResponse = $oauth2Driver->getAccessToken($request->parameters("code"));
+            $accessTokenResponse = $oauth2Driver->getAccessToken($authorizationCodeResponse->getCode());
             $result = $this->driver->login($loginDriver, $accessTokenResponse->getAccessToken());
             $this->setResult($result, $this->xmlParser->getLoginCallback(), $this->xmlParser->getTargetCallback());
         } elseif ($request->parameters("error")) {
