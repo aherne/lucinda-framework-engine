@@ -16,7 +16,7 @@ class UserInformation extends AbstractUserInformation
     public function __construct(array $info)
     {
         $this->id = $info["profile"]["guid"];
-        $this->name = $info["profile"]["familyName"]." ".$info["profile"]["givenName"];
+        $this->name = $info["profile"]["givenName"]." ".$info["profile"]["familyName"];
         $this->email = $info["profile"]["emails"]["handle"];
     }
 }

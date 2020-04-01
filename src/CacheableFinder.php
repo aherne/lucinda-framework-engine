@@ -39,6 +39,9 @@ class CacheableFinder
         $finder = new \Lucinda\STDOUT\Locators\ClassFinder($cacheablesFolder);
         $className = $finder->find($cacheableClass);
         $this->result = new $className($request, $response);
+        if (!($this->result instanceof AbstractCacheable)) {
+            throw new \Lucinda\STDOUT\Exception("Class must implement: \\Lucinda\\Framework\\AbstractCacheable");
+        }
     }
     
     /**

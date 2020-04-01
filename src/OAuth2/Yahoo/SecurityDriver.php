@@ -1,12 +1,12 @@
 <?php
 namespace Lucinda\Framework\OAuth2\Yahoo;
 
-use Lucinda\Framework\OAuth2\AbstractUserInformation;
+use Lucinda\Framework\OAuth2\AbstractSecurityDriver;
 
 /**
  * Encapsulates operations necessary to authenticate via Yahoo and extract logged in user data
  */
-class SecurityDriver extends AbstractUserInformation
+class SecurityDriver extends AbstractSecurityDriver
 {
     const RESOURCE_URL = "https://social.yahooapis.com/v1/user/me/profile";
     
@@ -14,17 +14,8 @@ class SecurityDriver extends AbstractUserInformation
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\OAuth2\Driver::getUserInformation()
      */
-    public function getUserInformation(string $accessToken): UserInformation
+    public function getUserInformation(string $accessToken): \Lucinda\WebSecurity\Authentication\OAuth2\UserInformation
     {
         return new UserInformation($this->driver->getResource($accessToken, self::RESOURCE_URL));
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\OAuth2\Driver::getVendorName()
-     */
-    public function getVendorName(): string
-    {
-        return "Yahoo";
     }
 }

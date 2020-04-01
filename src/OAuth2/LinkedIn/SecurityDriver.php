@@ -15,19 +15,10 @@ class SecurityDriver extends AbstractSecurityDriver
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\OAuth2\Driver::getUserInformation()
      */
-    public function getUserInformation(string $accessToken): UserInformation
+    public function getUserInformation(string $accessToken): \Lucinda\WebSecurity\Authentication\OAuth2\UserInformation
     {
         $info = $this->driver->getResource($accessToken, self::RESOURCE_URL);
         $info["email"] = $this->driver->getResource($accessToken, self::RESOURCE_URL_EMAIL);
         return new UserInformation($info);
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\OAuth2\Driver::getVendorName()
-     */
-    public function getVendorName(): string
-    {
-        return "LinkedIn";
     }
 }

@@ -35,8 +35,7 @@ class DriverDetector
         if ($currentVendor && $accessToken) {
             $this->accessToken = $accessToken;
             foreach($oauth2Drivers as $driver) {
-                $className = "\\Lucinda\\OAuth2\\Vendor\\".$currentVendor."\\Driver";
-                if (get_class($driver) == $className) {
+                if (get_class($driver) == "Lucinda\\OAuth2\\Vendor\\".$currentVendor."\\Driver") {
                     $this->driver = $driver;
                 }
             }

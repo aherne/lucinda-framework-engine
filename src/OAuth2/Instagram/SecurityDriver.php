@@ -1,5 +1,5 @@
 <?php
-namespace Lucinda\Framework\OAuth2\VK;
+namespace Lucinda\Framework\OAuth2\Instagram;
 
 use Lucinda\Framework\OAuth2\AbstractSecurityDriver;
 
@@ -8,7 +8,7 @@ use Lucinda\Framework\OAuth2\AbstractSecurityDriver;
  */
 class SecurityDriver extends AbstractSecurityDriver
 {
-    const RESOURCE_URL = "https://api.vk.com/method/users.get";
+    const RESOURCE_URL = "https://api.instagram.com/v1/users/self/";
     
     /**
      * {@inheritDoc}

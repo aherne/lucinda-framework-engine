@@ -49,5 +49,16 @@ abstract class AbstractSecurityDriver implements \Lucinda\WebSecurity\Authentica
         // TODO: store when it expires
         return $accessTokenResponse->getAccessToken();
     }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Lucinda\WebSecurity\Authentication\OAuth2\Driver::getVendorName()
+     */
+    public function getVendorName(): string
+    {
+        $matches = [];
+        preg_match('/Lucinda\\\\Framework\\\\OAuth2\\\\([a-zA-Z0-9]+)\\\\SecurityDriver/', get_class($this), $matches);
+        return $matches[1];
+    }
 }
 

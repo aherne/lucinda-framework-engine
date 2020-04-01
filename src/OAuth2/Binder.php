@@ -22,7 +22,7 @@ class Binder
      * 
      * @param \Lucinda\OAuth2\Driver[string] $drivers
      */
-    private function setDrivers(array $drivers): void
+    private function setResults(array $drivers): void
     {
         foreach($drivers as $callback=>$driver) {
             $className = str_replace(["Lucinda\\OAuth2\\Vendor\\","\\Driver"],["Lucinda\\Framework\\OAuth2\\", "\\SecurityDriver"], get_class($driver));

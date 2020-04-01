@@ -1,6 +1,5 @@
 # Lucinda Framework Engine API
 
-This an API, part of [Lucinda Framework 2.0](http://www.lucinda-framework.com), that encapsulates the way in which framework loads and configures referenced APIs based on framework or developer defined settings from matching tags @  stdout.xml/stderr.xml. 
- 
-Read more here:<br/> 
-http://www.lucinda-framework.com/framework-engine
+This API implements components of [Lucinda Framework 3.0](http://www.lucinda-framework.com) that are owned by framework, open for composer update but not open for change by developers.
+
+API is fully PSR-4 compliant, only requiring PHP7.1+ interpreter and SimpleXML extension. It has 100% Unit Test coverage, using [UnitTest API](https://github.com/aherne/unit-testing) instead of PHPUnit for greater flexibility.
