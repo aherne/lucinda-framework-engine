@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Framework\OAuth2;
-    
+
 use Lucinda\Framework\OAuth2\DriverDetector;
 use Lucinda\UnitTest\Result;
 
@@ -32,6 +32,4 @@ class DriverDetectorTest
     {
         return new Result($this->object->getDriver() instanceof \Lucinda\OAuth2\Driver);
     }
-        
-
 }

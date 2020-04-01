@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Framework;
-    
+
 use Lucinda\STDOUT\Application;
 use Lucinda\STDOUT\Request;
 use Lucinda\STDOUT\Response;
@@ -10,7 +10,6 @@ use Lucinda\Framework\AbstractCacheable;
 
 class CacheableFinderTest
 {
-
     public function getResult()
     {
         $application = new Application(__DIR__."/configuration.xml");
@@ -39,7 +38,7 @@ class CacheableFinderTest
             'DOCUMENT_ROOT' => '/var/www/html/documentation',
             'SCRIPT_FILENAME' => '/var/www/html/documentation/index.php',
             'QUERY_STRING' =>'asd=fgh'
-        ];        
+        ];
         $request = new Request();
         
         $response = new Response("application/json", "");
@@ -47,6 +46,4 @@ class CacheableFinderTest
         $cacheableFinder = new CacheableFinder($application, $request, $response);
         return new Result($cacheableFinder->getResult() instanceof AbstractCacheable);
     }
-        
-
 }

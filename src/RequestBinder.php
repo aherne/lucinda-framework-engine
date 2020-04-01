@@ -10,7 +10,7 @@ class RequestBinder
     
     /**
      * Kick-starts binding process based on arguments
-     * 
+     *
      * @param \Lucinda\STDOUT\Request $request
      * @param string $validPage
      * @param bool $headerIpDetection
@@ -24,7 +24,7 @@ class RequestBinder
     /**
      * Gets access token based on Authorization request header received from client. Eg:
      * Authorization Bearer asdadasdasdasdasdasdasd
-     * 
+     *
      * @param \Lucinda\STDOUT\Request $request
      * @return string
      */
@@ -40,7 +40,7 @@ class RequestBinder
     
     /**
      * Performs binding process between \Lucinda\STDOUT\Request and \Lucinda\WebSecurity\Request
-     * 
+     *
      * @param \Lucinda\STDOUT\Request $request
      * @param string $validPage
      * @param string $accessToken
@@ -53,7 +53,7 @@ class RequestBinder
         $requestBound->setMethod($request->getMethod());
         $requestBound->setParameters($request->parameters());
         $requestBound->setContextPath($request->getURI()->getContextPath());
-        $requestBound->setAccessToken($accessToken);        
+        $requestBound->setAccessToken($accessToken);
         if ($headerIpDetection) {
             $ipDetector = new IPDetector($request);
             $requestBound->setIpAddress($ipDetector->getIP());
@@ -65,7 +65,7 @@ class RequestBinder
     
     /**
      * Gets binding result
-     * 
+     *
      * @return \Lucinda\WebSecurity\Request
      */
     public function getResult(): \Lucinda\WebSecurity\Request
@@ -73,4 +73,3 @@ class RequestBinder
         return $this->result;
     }
 }
-

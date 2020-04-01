@@ -5,7 +5,7 @@ namespace Lucinda\Framework;
  * Binds Lucinda\Headers\Cacheable to Lucinda\STDOUT\Request and Lucinda\STDOUT\Response
  */
 abstract class AbstractCacheable implements \Lucinda\Headers\Cacheable
-{    
+{
     /**
      * @var \Lucinda\STDOUT\Request
      */
@@ -27,7 +27,7 @@ abstract class AbstractCacheable implements \Lucinda\Headers\Cacheable
     protected $last_modified_time = 0;
     
     /**
-     * 
+     *
      * @param \Lucinda\STDOUT\Request $request
      * @param \Lucinda\STDOUT\Response $response
      */

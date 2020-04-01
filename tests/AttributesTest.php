@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Framework;
-    
+
 use Lucinda\Framework\Attributes;
 use Lucinda\UnitTest\Result;
 
@@ -56,7 +56,7 @@ class AttributesTest
     public function setUserId()
     {
         $this->object->setUserId(1);
-        return new Result(true);        
+        return new Result(true);
     }
         
 
@@ -67,7 +67,7 @@ class AttributesTest
         
 
     public function setCsrfToken()
-    {    
+    {
         $this->object->setCsrfToken("qwerty");
         return new Result(true);
     }
@@ -90,6 +90,4 @@ class AttributesTest
     {
         return new Result($this->object->getAccessToken()=="qwerty");
     }
-        
-
 }

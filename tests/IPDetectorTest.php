@@ -1,13 +1,12 @@
 <?php
 namespace Test\Lucinda\Framework;
-    
+
 use Lucinda\Framework\IPDetector;
 use Lucinda\STDOUT\Request;
 use Lucinda\UnitTest\Result;
 
 class IPDetectorTest
 {
-
     public function getIP()
     {
         $output = [];
@@ -44,8 +43,5 @@ class IPDetectorTest
         $ipDetector = new IPDetector(new Request());
         $output[] = new Result($ipDetector->getIP()=="23.114.55.66", "detection by headers");
         return $output;
-        
     }
-        
-
 }

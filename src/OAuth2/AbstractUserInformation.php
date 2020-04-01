@@ -39,4 +39,3 @@ abstract class AbstractUserInformation implements UserInformation
         return $this->id;
     }
 }
-

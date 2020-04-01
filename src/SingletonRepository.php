@@ -10,7 +10,7 @@ class SingletonRepository
     
     /**
      * Sets object by unique identifier
-     * 
+     *
      * @param string $key
      * @param object $object
      */
@@ -21,7 +21,7 @@ class SingletonRepository
     
     /**
      * Gets object by unique identifier
-     * 
+     *
      * @param string $key
      * @return object
      */

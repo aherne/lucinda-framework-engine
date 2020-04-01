@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Framework;
-    
+
 use Lucinda\Framework\Json;
 use Lucinda\UnitTest\Result;
 
@@ -24,6 +24,4 @@ class JsonTest
     {
         return new Result($this->object->decode($this->object->encode(["asd"=>"fgh"]))==["asd"=>"fgh"]);
     }
-        
-
 }

@@ -35,8 +35,8 @@ abstract class AbstractReporter extends \Lucinda\STDERR\Reporter
     
     /**
      * Gets instance of logger that will report error to a medium
-     * 
+     *
      * @return \Lucinda\Logging\Logger
      */
-    abstract protected function getLogger(): \Lucinda\Logging\Logger;    
+    abstract protected function getLogger(): \Lucinda\Logging\Logger;
 }

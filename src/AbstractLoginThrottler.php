@@ -50,4 +50,3 @@ abstract class AbstractLoginThrottler extends \Lucinda\WebSecurity\Authenticatio
      */
     abstract protected function persist(): void;
 }
-

@@ -1,13 +1,12 @@
 <?php
 namespace Test\Lucinda\Framework;
-    
+
 use Lucinda\Framework\RequestBinder;
 use Lucinda\STDOUT\Request;
 use Lucinda\UnitTest\Result;
 
 class RequestBinderTest
 {
-
     public function getResult()
     {
         $_GET = ["asd"=>"fgh"];
@@ -50,8 +49,5 @@ class RequestBinderTest
         $output[] = new Result($requestBinder->getResult()->getAccessToken()=="asdfgh", "getAccessToken");
         
         return $output;
-        
     }
-        
-
 }

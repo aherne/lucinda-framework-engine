@@ -8,17 +8,17 @@ interface UserDAO
 {
     /**
      * Gets current access token from DB for current logged in user
-     * 
+     *
      * @param integer|string $userID
      * @return string|NULL
      */
-    function getAccessToken($userID): ?string;
+    public function getAccessToken($userID): ?string;
     
     /**
      * Gets name of OAuth2 vendor from DB for current logged in user
-     * 
+     *
      * @param integer|string $userID
      * @return string|NULL
      */
-    function getVendor($userID): ?string;
+    public function getVendor($userID): ?string;
 }

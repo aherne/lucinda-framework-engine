@@ -15,4 +15,3 @@ class MockUserDAO implements UserDAO
         return "qwerty";
     }
 }
-

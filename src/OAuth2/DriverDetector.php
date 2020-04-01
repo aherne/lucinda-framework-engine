@@ -16,14 +16,14 @@ class DriverDetector
     
     /**
      * Starts detection process
-     * 
+     *
      * @param \SimpleXMLElement $xml
      * @param array $oauth2Drivers
      * @param string|integer $userID
      * @throws \Lucinda\STDOUT\Exception
      */
     public function __construct(\SimpleXMLElement $xml, array $oauth2Drivers, $userID)
-    {        
+    {
         $classFinder = new ClassFinder((string) $xml->security["dao_path"]);
         $className = $classFinder->find((string) $xml->security->authentication->oauth2["dao"]);
         $daoObject = new $className();
@@ -34,7 +34,7 @@ class DriverDetector
         $accessToken = $daoObject->getAccessToken($userID);
         if ($currentVendor && $accessToken) {
             $this->accessToken = $accessToken;
-            foreach($oauth2Drivers as $driver) {
+            foreach ($oauth2Drivers as $driver) {
                 if (get_class($driver) == "Lucinda\\OAuth2\\Vendor\\".$currentVendor."\\Driver") {
                     $this->driver = $driver;
                 }
@@ -44,7 +44,7 @@ class DriverDetector
     
     /**
      * Gets access token detected for current user
-     * 
+     *
      * @return string|NULL
      */
     public function getAccessToken(): ?string
@@ -54,7 +54,7 @@ class DriverDetector
     
     /**
      * Gets OAuth2 driver detected for current user
-     * 
+     *
      * @return \Lucinda\OAuth2\Driver|NULL
      */
     public function getDriver(): ?\Lucinda\OAuth2\Driver
@@ -62,4 +62,3 @@ class DriverDetector
         return $this->driver;
     }
 }
-

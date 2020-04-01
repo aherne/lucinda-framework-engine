@@ -11,7 +11,7 @@ abstract class AbstractSecurityDriver implements \Lucinda\WebSecurity\Authentica
     
     /**
      * Registers information necessary to produce a driver later on
-     * 
+     *
      * @param \Lucinda\OAuth2\Driver $driver
      * @param string $callbackURL
      */
@@ -61,4 +61,3 @@ abstract class AbstractSecurityDriver implements \Lucinda\WebSecurity\Authentica
         return $matches[1];
     }
 }
-

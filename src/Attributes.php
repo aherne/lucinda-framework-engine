@@ -17,7 +17,7 @@ class Attributes extends \Lucinda\STDOUT\Attributes
     
     /**
      * Sets pointer to query HTTP headers with
-     * 
+     *
      * @param HeadersWrapper $wrapper
      */
     public function setHeaders(HeadersWrapper $wrapper): void
@@ -27,7 +27,7 @@ class Attributes extends \Lucinda\STDOUT\Attributes
     
     /**
      * Gets pointer to query HTTP headers with
-     * 
+     *
      * @return HeadersWrapper|NULL
      */
     public function getHeaders(): ?HeadersWrapper
@@ -37,7 +37,7 @@ class Attributes extends \Lucinda\STDOUT\Attributes
     
     /**
      * Sets pointer to log messages with
-     * 
+     *
      * @param Logger $logger
      */
     public function setLogger(Logger $logger): void
@@ -57,7 +57,7 @@ class Attributes extends \Lucinda\STDOUT\Attributes
     
     /**
      * Sets logged in user id
-     * 
+     *
      * @param string|integer $userID
      */
     public function setUserId($userID): void
@@ -67,7 +67,7 @@ class Attributes extends \Lucinda\STDOUT\Attributes
     
     /**
      * Gets logged in user id
-     * 
+     *
      * @return string|integer
      */
     public function getUserId()
@@ -77,7 +77,7 @@ class Attributes extends \Lucinda\STDOUT\Attributes
     
     /**
      * Sets token to sign logins with in order to fight Cross-Site-Requests-Forgery
-     * 
+     *
      * @param string $token
      */
     public function setCsrfToken(string $token): void
@@ -87,7 +87,7 @@ class Attributes extends \Lucinda\STDOUT\Attributes
     
     /**
      * Gets token to sign logins with in order to fight Cross-Site-Requests-Forgery
-     * 
+     *
      * @return string|NULL
      */
     public function getCsrfToken(): ?string
@@ -98,7 +98,7 @@ class Attributes extends \Lucinda\STDOUT\Attributes
     /**
      * Sets token to be presented by client for stateless authentication as header:
      * Authorization Bearer VALUE
-     * 
+     *
      * @param string $token
      */
     public function setAccessToken(string $token): void
@@ -109,12 +109,11 @@ class Attributes extends \Lucinda\STDOUT\Attributes
     /**
      * Gets token to be presented by client for stateless authentication as header:
      * Authorization Bearer VALUE
-     * 
+     *
      * @return string|NULL
      */
     public function getAccessToken(): ?string
     {
         return $this->accessToken;
-    }    
+    }
 }
-
