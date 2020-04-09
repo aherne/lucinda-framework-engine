@@ -2,7 +2,7 @@
 <!DOCTYPE xml>
 <xml>
   <application default_format="html" default_page="index" version="1.0.0">
-    <paths controllers="mocks/controllers" views="mocks/views" resolvers="mocks/resolvers" validators="mocks/validators" cacheables="tests/mocks"/>
+    <paths controllers="mocks/controllers" views="mocks/views" resolvers="mocks/resolvers" validators="mocks/validators"/>
   </application>
   <formats>
     <format name="json" content_type="application/json" class="JsonResolver" charset="UTF-8"/>
@@ -13,5 +13,5 @@
   		<parameter name="name" validator="UserNameValidator" mandatory="1"/>
   	</route>
   </routes>
-  <headers cache_expiration="10" cacheable="EtagCacheable"/>
+  <headers cache_expiration="10" cacheable="tests/mocks/EtagCacheable"/>
 </xml>

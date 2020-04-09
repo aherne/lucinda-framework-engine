@@ -14,7 +14,7 @@ class SingletonRepository
      * @param string $key
      * @param object $object
      */
-    public static function set(string $key, $object)
+    public static function set(string $key, $object): void
     {
         self::$instances[$key] = $object;
     }

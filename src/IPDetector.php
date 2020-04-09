@@ -23,7 +23,7 @@ class IPDetector
      *
      * @param \Lucinda\STDOUT\Request $request
      */
-    private function setIP(\Lucinda\STDOUT\Request $request)
+    private function setIP(\Lucinda\STDOUT\Request $request): void
     {
         $headers = $request->headers();
         $ip_keys = array('Client-Ip', 'X-Forwarded-For', 'X-Forwarded', 'X-Cluster-Client-Ip', 'Forwarded-For', 'Forwarded');
@@ -47,7 +47,7 @@ class IPDetector
      *
      * @return string
      */
-    public function getIP()
+    public function getIP(): string
     {
         return $this->ip;
     }

@@ -46,7 +46,7 @@ class RequestBinder
      * @param string $accessToken
      * @param bool $headerIpDetection
      */
-    private function setResult(\Lucinda\STDOUT\Request $request, string $validPage, string $accessToken, bool $headerIpDetection)
+    private function setResult(\Lucinda\STDOUT\Request $request, string $validPage, string $accessToken, bool $headerIpDetection): void
     {
         $requestBound = new \Lucinda\WebSecurity\Request();
         $requestBound->setUri($validPage);
