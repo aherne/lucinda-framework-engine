@@ -12,6 +12,11 @@
             "role": "Developer"
         }
     ],
+    "autoload": {
+    	"psr-4": {
+        	"Lucinda\\Framework\\": "src/"
+    	}
+    },
     "require": {
         "php": "^7.1",
         "ext-simplexml": "*",  
