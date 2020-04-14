@@ -99,9 +99,9 @@ class Attributes extends \Lucinda\STDOUT\Attributes
      * Sets token to be presented by client for stateless authentication as header:
      * Authorization Bearer VALUE
      *
-     * @param string $token
+     * @param string|NULL $token
      */
-    public function setAccessToken(string $token): void
+    public function setAccessToken(?string $token): void
     {
         $this->accessToken = $token;
     }
