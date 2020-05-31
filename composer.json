@@ -1,7 +1,7 @@
 {
     "name": "lucinda/framework-engine",
     "type": "library",
-    "description": "Engine behind Lucinda Framework 2.0",
+    "description": "Engine behind Lucinda Framework 3.0",
     "keywords": ["framework","engine"],
     "homepage": "http://www.lucinda-framework.com/framework-engine",
     "license": "MIT",
@@ -12,20 +12,26 @@
             "role": "Developer"
         }
     ],
+    "autoload": {
+    	"psr-4": {
+        	"Lucinda\\Framework\\": "src/"
+    	}
+    },
     "require": {
+        "php": "^7.1",
         "ext-simplexml": "*",  
-        "lucinda/http-caching": "~2.0",
-        "lucinda/logging": "~2.0",
-        "lucinda/nosql-data-access": "~2.0",
-        "lucinda/oauth2-client": "~1.0",
-        "lucinda/security": "~2.0",
-        "lucinda/mvc": "~2.0",
-        "lucinda/errors-mvc": "~1.0",
-        "lucinda/sql-data-access": "~2.0",
-        "lucinda/view-language": "~2.0",
-        "lucinda/internationalization": "~2.0",
-        "lucinda/request-validator": "~1.0"
+        "lucinda/logging": "~3.0",
+        "lucinda/nosql-data-access": "~3.0",
+        "lucinda/oauth2-client": "~2.0",
+        "lucinda/security": "~3.0",
+        "lucinda/mvc": "~3.0",
+        "lucinda/sql-data-access": "~3.0",
+        "lucinda/view-language": "~3.0",
+        "lucinda/internationalization": "~3.0",
+        "lucinda/errors-mvc": "~2.0",
+        "lucinda/headers": "~1.0"
     },
     "require-dev": {
+        "lucinda/unit-testing": "^1.0"
     }
 }
