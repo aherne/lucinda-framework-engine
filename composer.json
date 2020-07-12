@@ -1,9 +1,8 @@
 {
     "name": "lucinda/framework-engine",
     "type": "library",
-    "description": "Engine behind Lucinda Framework 3.0",
-    "keywords": ["framework","engine"],
-    "homepage": "http://www.lucinda-framework.com/framework-engine",
+    "description": "API integration engine for Lucinda Framework 3.0",
+    "homepage": "https://github.com/aherne/lucinda-framework-engine",
     "license": "MIT",
     "authors": [
         {
