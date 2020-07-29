@@ -65,7 +65,6 @@ class CachingBinder
                     $response->getOutputStream()->clear();
                 } elseif ($httpStatusCode==412) {
                     $response->setStatus(412);
-                    $response->getOutputStream()->clear();
                 }
             }
             $this->appendHeaders($policy, $response);
