@@ -14,13 +14,14 @@ class ValidationBinder
      * Binds APIs to XML in order to perform request parameters validation based on contents of <route> tag.
      *
      * @param \Lucinda\MVC\STDOUT\Request $request
+     * @param string $xmlFilePath
      * @throws \Lucinda\RequestValidator\Exception If XML is misconfigured
      * @throws \Lucinda\RequestValidator\MethodNotSupportedException If http method used to retrieve resource is not supported.
      */
-    public function __construct(\Lucinda\MVC\STDOUT\Request $request)
+    public function __construct(\Lucinda\MVC\STDOUT\Request $request, $xmlFilePath = "stdout.xml")
     {
         $validator = new \Lucinda\RequestValidator\Validator(
-            "stdout.xml",
+            $xmlFilePath,
             $request->getValidator()->getPage(),
             $request->getMethod(),
             $this->getParameters($request)
