@@ -36,7 +36,7 @@ class Authorization
      * @throws \Lucinda\SQL\StatementException If query to database server fails.
      * @return AuthorizationWrapper
      */
-    private function getWrapper(\SimpleXMLElement $xmlRoot, \Lucinda\MVC\STDOUT\Request $request, $userID)
+    protected function getWrapper(\SimpleXMLElement $xmlRoot, \Lucinda\MVC\STDOUT\Request $request, $userID)
     {
         $xml = $xmlRoot->authorization;
         if (empty($xml)) {
@@ -73,7 +73,7 @@ class Authorization
      * @param \Lucinda\MVC\STDOUT\Request $request Encapsulated request made by client
      * @throws SecurityPacket If authorization encounters a situation where execution cannot continue and redirection is required
      */
-    private function authorize(AuthorizationWrapper $wrapper, \Lucinda\MVC\STDOUT\Request $request)
+    protected function authorize(AuthorizationWrapper $wrapper, \Lucinda\MVC\STDOUT\Request $request)
     {
         if ($wrapper->getResult()->getStatus() == \Lucinda\WebSecurity\AuthorizationResultStatus::OK) {
             // authorization was successful

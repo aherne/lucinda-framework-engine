@@ -15,12 +15,12 @@ require("oauth2/OAuth2ResourcesDriver.php");
  */
 class SecurityBinder
 {
-    private $ipAddress;
-    private $persistenceDrivers = array();
-    private $oauth2Driver;
-    private $userID;
-    private $csrfToken;
-    private $accessToken;
+    protected $ipAddress;
+    protected $persistenceDrivers = array();
+    protected $oauth2Driver;
+    protected $userID;
+    protected $csrfToken;
+    protected $accessToken;
     
     /**
      * Binds APIs based on XML to perform authentication/authorization on a request
@@ -54,7 +54,7 @@ class SecurityBinder
         $this->authorize($xml, $request);
     }
     
-    private function setIpAddress(\Lucinda\MVC\STDOUT\Request $request, $highSecurity) {
+    protected function setIpAddress(\Lucinda\MVC\STDOUT\Request $request, $highSecurity) {
         if ($highSecurity) {
             $this->ipAddress = $request->getClient()->getIP();
         } else {
@@ -74,7 +74,7 @@ class SecurityBinder
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
      * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
      */
-    private function setPersistenceDrivers($mainXML)
+    protected function setPersistenceDrivers($mainXML)
     {
         $pdd = new PersistenceDriversDetector($mainXML, $this->ipAddress);
         $this->persistenceDrivers = $pdd->getPersistenceDrivers();
@@ -86,7 +86,7 @@ class SecurityBinder
      * @param \SimpleXMLElement $mainXML XML holding relevant information (above all via security.csrf tag content)
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
      */
-    private function setCsrfToken(\SimpleXMLElement $mainXML)
+    protected function setCsrfToken(\SimpleXMLElement $mainXML)
     {
         $this->csrfToken = new CsrfTokenDetector($mainXML, $this->ipAddress);
     }
@@ -94,7 +94,7 @@ class SecurityBinder
     /**
      * Detects access token for REST-ful sites from persistence drivers
      */
-    private function setAccessToken()
+    protected function setAccessToken()
     {
         foreach ($this->persistenceDrivers as $driver) {
             if ($driver instanceof \Lucinda\WebSecurity\TokenPersistenceDriver) {
@@ -106,7 +106,7 @@ class SecurityBinder
     /**
      * Detects logged in unique user identifier from persistence drivers.
      */
-    private function setUserID()
+    protected function setUserID()
     {
         $udd = new UserIdDetector($this->persistenceDrivers);
         $this->userID = $udd->getUserID();
@@ -128,7 +128,7 @@ class SecurityBinder
      * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
      * @throws SecurityPacket If authentication encounters a situation where execution cannot continue and redirection is required
      */
-    private function authenticate(\SimpleXMLElement $mainXML, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment)
+    protected function authenticate(\SimpleXMLElement $mainXML, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment)
     {
         new Authentication($mainXML, $request, $developmentEnvironment, $this->ipAddress, $this->csrfToken, $this->persistenceDrivers);
         $this->oauth2Driver = new Oauth2ResourcesDriver($mainXML, $this->userID);
@@ -144,7 +144,7 @@ class SecurityBinder
      * @throws \Lucinda\SQL\StatementException If query to database server fails.
      * @throws SecurityPacket If authorization encounters a situation where execution cannot continue and redirection is required
      */
-    private function authorize(\SimpleXMLElement $mainXML, \Lucinda\MVC\STDOUT\Request $request)
+    protected function authorize(\SimpleXMLElement $mainXML, \Lucinda\MVC\STDOUT\Request $request)
     {
         new Authorization($mainXML, $request, $this->userID);
     }

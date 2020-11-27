@@ -55,7 +55,7 @@ class Authentication
      * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
      * @return AuthenticationWrapper[]
      */
-    private function getWrappers(\SimpleXMLElement $xmlRoot, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment, $ipAddress, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
+    protected function getWrappers(\SimpleXMLElement $xmlRoot, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment, $ipAddress, CsrfTokenDetector $csrfTokenDetector, $persistenceDrivers)
     {
         $wrappers = array();
         $xml = $xmlRoot->authentication;
@@ -109,7 +109,7 @@ class Authentication
      * @param \Lucinda\WebSecurity\PersistenceDriver[] $persistenceDrivers Drivers where authenticated state is persisted (eg: session, remember me cookie).
      * @throws SecurityPacket If authentication encounters a situation where execution cannot continue and redirection is required
      */
-    private function authenticate(AuthenticationWrapper $wrapper, \Lucinda\MVC\STDOUT\Request $request, $persistenceDrivers)
+    protected function authenticate(AuthenticationWrapper $wrapper, \Lucinda\MVC\STDOUT\Request $request, $persistenceDrivers)
     {
         if (!$wrapper->getResult()) {
             // no authentication was requested
