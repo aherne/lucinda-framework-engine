@@ -20,7 +20,7 @@ class DriverDetector
      * @param \SimpleXMLElement $xml
      * @param array $oauth2Drivers
      * @param string|integer $userID
-     * @throws \Lucinda\STDOUT\Exception
+     * @throws \Lucinda\MVC\ConfigurationException
      */
     public function __construct(\SimpleXMLElement $xml, array $oauth2Drivers, $userID)
     {
@@ -28,7 +28,7 @@ class DriverDetector
         $className = $classFinder->find((string) $xml->security->authentication->oauth2["dao"]);
         $daoObject = new $className();
         if (!($daoObject instanceof UserDAO)) {
-            throw new \Lucinda\STDOUT\Exception("Class must be instance of \\Lucinda\\Framework\\OAuth2\\UserDAO: ".$className);
+            throw new \Lucinda\MVC\ConfigurationException("Class must be instance of \\Lucinda\\Framework\\OAuth2\\UserDAO: ".$className);
         }
         $currentVendor = $daoObject->getVendor($userID);
         $accessToken = $daoObject->getAccessToken($userID);

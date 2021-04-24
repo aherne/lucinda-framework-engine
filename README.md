@@ -29,7 +29,7 @@ By virtue of binding to STDOUT MVC API, classes implementing above will have acc
 | Field | Type | Description |
 | --- | --- | --- |
 | $request | [\Lucinda\STDOUT\Request](https://github.com/aherne/php-servlets-api/#class-request) | Request received from client. |
-| $response | [\Lucinda\STDOUT\Response](https://github.com/aherne/php-servlets-api/#class-response) | Response to send back to caller. |
+| $response | [\Lucinda\MVC\Response](https://github.com/aherne/mvc/#class-response) | Response to send back to caller. |
 
 ## AbstractLoginThrottler
 

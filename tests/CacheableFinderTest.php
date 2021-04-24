@@ -3,7 +3,7 @@ namespace Test\Lucinda\Framework;
 
 use Lucinda\STDOUT\Application;
 use Lucinda\STDOUT\Request;
-use Lucinda\STDOUT\Response;
+use Lucinda\MVC\Response;
 use Lucinda\Framework\CacheableFinder;
 use Lucinda\UnitTest\Result;
 use Lucinda\Framework\AbstractCacheable;

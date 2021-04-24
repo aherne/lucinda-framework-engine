@@ -2,7 +2,7 @@
 namespace Lucinda\Framework;
 
 /**
- * Binds Lucinda\Headers\Cacheable to Lucinda\STDOUT\Request and Lucinda\STDOUT\Response
+ * Binds Lucinda\Headers\Cacheable to Lucinda\STDOUT\Request and Lucinda\MVC\Response
  */
 abstract class AbstractCacheable implements \Lucinda\Headers\Cacheable
 {
@@ -12,7 +12,7 @@ abstract class AbstractCacheable implements \Lucinda\Headers\Cacheable
     protected $request;
     
     /**
-     * @var \Lucinda\STDOUT\Response
+     * @var \Lucinda\MVC\Response
      */
     protected $response;
     
@@ -29,9 +29,9 @@ abstract class AbstractCacheable implements \Lucinda\Headers\Cacheable
     /**
      *
      * @param \Lucinda\STDOUT\Request $request
-     * @param \Lucinda\STDOUT\Response $response
+     * @param \Lucinda\MVC\Response $response
      */
-    public function __construct(\Lucinda\STDOUT\Request $request, \Lucinda\STDOUT\Response $response)
+    public function __construct(\Lucinda\STDOUT\Request $request, \Lucinda\MVC\Response $response)
     {
         $this->request = $request;
         $this->response = $response;
