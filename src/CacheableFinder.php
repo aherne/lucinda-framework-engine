@@ -11,11 +11,11 @@ class CacheableFinder
     /**
      * Starts location process
      *
-     * @param \Lucinda\STDOUT\Application $application
+     * @param \Lucinda\MVC\Application $application
      * @param \Lucinda\STDOUT\Request $request
      * @param \Lucinda\MVC\Response $response
      */
-    public function __construct(\Lucinda\STDOUT\Application $application, \Lucinda\STDOUT\Request $request, \Lucinda\MVC\Response $response)
+    public function __construct(\Lucinda\MVC\Application $application, \Lucinda\STDOUT\Request $request, \Lucinda\MVC\Response $response)
     {
         $this->setResult($application, $request, $response);
     }
@@ -23,12 +23,12 @@ class CacheableFinder
     /**
      * Locates and instances a \Lucinda\Headers\Cacheable based on XML
      *
-     * @param \Lucinda\STDOUT\Application $application
+     * @param \Lucinda\MVC\Application $application
      * @param \Lucinda\STDOUT\Request $request
      * @param \Lucinda\MVC\Response $response
      * @throws \Lucinda\MVC\ConfigurationException
      */
-    private function setResult(\Lucinda\STDOUT\Application $application, \Lucinda\STDOUT\Request $request, \Lucinda\MVC\Response $response): void
+    private function setResult(\Lucinda\MVC\Application $application, \Lucinda\STDOUT\Request $request, \Lucinda\MVC\Response $response): void
     {
         $cacheableClass = (string) $application->getTag("headers")["cacheable"];
         if (!$cacheableClass) {
