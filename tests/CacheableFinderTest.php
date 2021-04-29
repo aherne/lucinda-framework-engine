@@ -1,18 +1,20 @@
 <?php
 namespace Test\Lucinda\Framework;
 
-use Lucinda\STDOUT\Application;
+use Lucinda\MVC\Application;
 use Lucinda\STDOUT\Request;
-use Lucinda\STDOUT\Response;
+use Lucinda\MVC\Response;
 use Lucinda\Framework\CacheableFinder;
 use Lucinda\UnitTest\Result;
 use Lucinda\Framework\AbstractCacheable;
+
+require_once("mocks/ApplicationMock.php");
 
 class CacheableFinderTest
 {
     public function getResult()
     {
-        $application = new Application(__DIR__."/configuration.xml");
+        $application = new \ApplicationMock(__DIR__."/configuration.xml");
                 
         $_GET = ["asd"=>"fgh"];
         $_SERVER = [

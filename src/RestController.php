@@ -8,7 +8,7 @@ abstract class RestController extends \Lucinda\STDOUT\Controller
 {
     /**
      * {@inheritDoc}
-     * @see \Lucinda\STDOUT\Runnable::run()
+     * @see \Lucinda\MVC\Runnable::run()
      */
     public function run(): void
     {

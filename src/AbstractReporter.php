@@ -8,7 +8,7 @@ abstract class AbstractReporter extends \Lucinda\STDERR\Reporter
 {
     /**
      * {@inheritDoc}
-     * @see \Lucinda\STDERR\Runnable::run()
+     * @see \Lucinda\MVC\Runnable::run()
      */
     public function run(): void
     {
