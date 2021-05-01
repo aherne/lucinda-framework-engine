@@ -34,7 +34,7 @@ class CacheableFinder
         if (!$cacheableClass) {
             throw new \Lucinda\MVC\ConfigurationException("No 'cacheable' attribute was found in 'headers' tag");
         }
-        $finder = new \Lucinda\STDOUT\Locators\ClassFinder("");
+        $finder = new \Lucinda\MVC\Locators\ClassFinder("");
         $className = $finder->find($cacheableClass);
         $this->result = new $className($request, $response);
         if (!($this->result instanceof AbstractCacheable)) {
