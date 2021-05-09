@@ -1,4 +1,6 @@
 <?php
+namespace Test\Lucinda\Framework\mocks;
+
 use Lucinda\MVC\Application;
 
 class ApplicationMock extends Application

@@ -7,14 +7,13 @@ use Lucinda\MVC\Response;
 use Lucinda\Framework\CacheableFinder;
 use Lucinda\UnitTest\Result;
 use Lucinda\Framework\AbstractCacheable;
-
-require_once("mocks/ApplicationMock.php");
+use Test\Lucinda\Framework\mocks\ApplicationMock;
 
 class CacheableFinderTest
 {
     public function getResult()
     {
-        $application = new \ApplicationMock(__DIR__."/configuration.xml");
+        $application = new ApplicationMock(__DIR__."/configuration.xml");
                 
         $_GET = ["asd"=>"fgh"];
         $_SERVER = [

@@ -1,4 +1,6 @@
 <?php
+namespace Test\Lucinda\Framework\mocks;
+
 /**
  * CacheableDriver that generates an ETAG based on host, response body & headers.
  */

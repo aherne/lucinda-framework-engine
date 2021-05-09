@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xml>
 <xml>
-  <application default_format="html" default_route="index" version="1.0.0">
-    <paths controllers="mocks/controllers" views="mocks/views" resolvers="mocks/resolvers" validators="mocks/validators"/>
-  </application>
+  <application default_format="json" default_route="index" version="1.0.0"/>
   <resolvers>
-    <resolver format="json" content_type="application/json" class="JsonResolver" charset="UTF-8"/>
+    <resolver format="json" content_type="application/json" class="foo/bar" charset="UTF-8"/>
   </resolvers>
   <routes>
-  	<route id="users" controller="UsersController" view="users" format="html" method="GET"/>
-  	<route id="user/(name)" controller="BlogController" view="blog" format="json" method="GET">
-  		<parameter name="name" validator="UserNameValidator" mandatory="1"/>
-  	</route>
+  	<route id="index" controller="foo/bar"/>
   </routes>
-  <headers cache_expiration="10" cacheable="tests/mocks/EtagCacheable"/>
+  <headers cache_expiration="10" cacheable="Test\Lucinda\Framework\mocks\EtagCacheable"/>
 </xml>
