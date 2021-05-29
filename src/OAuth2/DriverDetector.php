@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Framework\OAuth2;
 
-use Lucinda\WebSecurity\ClassFinder;
+use Lucinda\MVC\ConfigurationException;
 
 /**
  * Detects current \Lucinda\OAuth2\Driver and access token for logged in user, to be used in querying provider for resources later on
@@ -20,16 +20,15 @@ class DriverDetector
      * @param \SimpleXMLElement $xml
      * @param array $oauth2Drivers
      * @param string|integer $userID
-     * @throws \Lucinda\MVC\ConfigurationException
+     * @throws ConfigurationException
      */
     public function __construct(\SimpleXMLElement $xml, array $oauth2Drivers, $userID)
     {
-        $classFinder = new ClassFinder((string) $xml->security["dao_path"]);
-        $className = $classFinder->find((string) $xml->security->authentication->oauth2["dao"]);
-        $daoObject = new $className();
-        if (!($daoObject instanceof UserDAO)) {
-            throw new \Lucinda\MVC\ConfigurationException("Class must be instance of \\Lucinda\\Framework\\OAuth2\\UserDAO: ".$className);
+        $className = (string) $xml->security->authentication->oauth2["dao"];
+        if (!$className) {
+            throw new ConfigurationException("Attribute 'dao' is mandatory for 'oauth2' tag");
         }
+        $daoObject = new $className();
         $currentVendor = $daoObject->getVendor($userID);
         $accessToken = $daoObject->getAccessToken($userID);
         if ($currentVendor && $accessToken) {

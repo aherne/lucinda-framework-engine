@@ -1,6 +1,8 @@
 <?php
 namespace Lucinda\Framework;
 
+use Lucinda\MVC\ConfigurationException;
+
 /**
  * Locates and instances a \Lucinda\Headers\Cacheable class based on XML
  */
@@ -30,16 +32,11 @@ class CacheableFinder
      */
     private function setResult(\Lucinda\MVC\Application $application, \Lucinda\STDOUT\Request $request, \Lucinda\MVC\Response $response): void
     {
-        $cacheableClass = (string) $application->getTag("headers")["cacheable"];
-        if (!$cacheableClass) {
-            throw new \Lucinda\MVC\ConfigurationException("No 'cacheable' attribute was found in 'headers' tag");
+        $className = (string) $application->getTag("headers")["cacheable"];
+        if (!$className) {
+            throw new ConfigurationException("Attribute 'cacheable' is mandatory for 'headers' tag");
         }
-        $finder = new \Lucinda\MVC\Locators\ClassFinder("");
-        $className = $finder->find($cacheableClass);
         $this->result = new $className($request, $response);
-        if (!($this->result instanceof AbstractCacheable)) {
-            throw new \Lucinda\MVC\ConfigurationException("Class must implement: \\Lucinda\\Framework\\AbstractCacheable");
-        }
     }
     
     /**
