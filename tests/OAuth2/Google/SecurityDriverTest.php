@@ -8,7 +8,7 @@ class SecurityDriverTest
 {
     public function getUserInformation()
     {
-        $userInformation = new UserInformation(["id"=>1, "displayName"=>"John Doe", "emails"=>[["value"=>"a@a.com"]]]);
+        $userInformation = new UserInformation(["id"=>1, "name"=>"John Doe", "email"=>"a@a.com"]);
         return new Result($userInformation->getId()==1 && $userInformation->getName()=="John Doe" && $userInformation->getEmail()=="a@a.com");
     }
 }

@@ -8,7 +8,7 @@ use Lucinda\Framework\OAuth2\AbstractSecurityDriver;
  */
 class SecurityDriver extends AbstractSecurityDriver
 {
-    const RESOURCE_URL = "https://www.googleapis.com/plus/v1/people/me";
+    const RESOURCE_URL = "https://www.googleapis.com/oauth2/v1/userinfo";
     
     /**
      * {@inheritDoc}
