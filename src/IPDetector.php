@@ -1,19 +1,21 @@
 <?php
 namespace Lucinda\Framework;
 
+use Lucinda\STDOUT\Request;
+
 /**
  * Detects client IP based on contents of STDOUT Request object
  */
 class IPDetector
 {
-    private $ip;
+    private string $ip;
     
     /**
-     * Kick starts ip detection process
+     * Kick-starts ip detection process
      *
-     * @param \Lucinda\STDOUT\Request $request
+     * @param Request $request
      */
-    public function __construct(\Lucinda\STDOUT\Request $request)
+    public function __construct(Request $request)
     {
         $this->setIP($request);
     }
@@ -21,9 +23,9 @@ class IPDetector
     /**
      * Performs IP detection and saves result.
      *
-     * @param \Lucinda\STDOUT\Request $request
+     * @param Request $request
      */
-    private function setIP(\Lucinda\STDOUT\Request $request): void
+    private function setIP(Request $request): void
     {
         $headers = $request->headers();
         $ip_keys = array('Client-Ip', 'X-Forwarded-For', 'X-Forwarded', 'X-Cluster-Client-Ip', 'Forwarded-For', 'Forwarded');

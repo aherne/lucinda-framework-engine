@@ -1,17 +1,19 @@
 <?php
 namespace Lucinda\Framework\OAuth2;
 
+use Lucinda\OAuth2\Driver;
+
 /**
  * Binds list of \Lucinda\OAuth2\Driver instances to a list of \Lucinda\WebSecurity\Authentication\OAuth2\Driver instances
  */
 class Binder
 {
-    private $results = [];
-    
+    private array $results = [];
+
     /**
      * Kick-starts binding process
      *
-     * @param \Lucinda\OAuth2\Driver[string] $drivers
+     * @param Driver[string] $drivers
      */
     public function __construct(array $drivers)
     {
@@ -21,7 +23,7 @@ class Binder
     /**
      * Performs binding process
      *
-     * @param \Lucinda\OAuth2\Driver[string] $drivers
+     * @param Driver[string] $drivers
      */
     private function setResults(array $drivers): void
     {
@@ -34,7 +36,7 @@ class Binder
     /**
      * Gets drivers found
      *
-     * @return \Lucinda\Framework\OAuth2\AbstractSecurityDriver[]
+     * @return AbstractSecurityDriver[]
      */
     public function getResults(): array
     {

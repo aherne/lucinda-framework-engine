@@ -17,6 +17,6 @@ class UserInformation extends AbstractUserInformation
     {
         $this->id = $info["data"]["id"];
         $this->name = $info["data"]["full_name"];
-        $this->email = null; // driver doesn't send email
+        $this->email = ""; // driver doesn't send email
     }
 }

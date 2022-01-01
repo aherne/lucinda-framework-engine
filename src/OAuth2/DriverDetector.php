@@ -2,27 +2,25 @@
 namespace Lucinda\Framework\OAuth2;
 
 use Lucinda\MVC\ConfigurationException;
+use Lucinda\OAuth2\Driver;
 
 /**
  * Detects current \Lucinda\OAuth2\Driver and access token for logged in user, to be used in querying provider for resources later on
  */
 class DriverDetector
 {
-    private $accessToken;
-    /**
-     * @var \Lucinda\OAuth2\Driver
-     */
-    private $driver;
+    private ?string $accessToken = null;
+    private ?Driver $driver = null;
     
     /**
      * Starts detection process
      *
      * @param \SimpleXMLElement $xml
      * @param array $oauth2Drivers
-     * @param string|integer $userID
+     * @param string|int $userID
      * @throws ConfigurationException
      */
-    public function __construct(\SimpleXMLElement $xml, array $oauth2Drivers, $userID)
+    public function __construct(\SimpleXMLElement $xml, array $oauth2Drivers, string|int $userID)
     {
         $className = (string) $xml->security->authentication->oauth2["dao"];
         if (!$className) {
@@ -54,9 +52,9 @@ class DriverDetector
     /**
      * Gets OAuth2 driver detected for current user
      *
-     * @return \Lucinda\OAuth2\Driver|NULL
+     * @return Driver|NULL
      */
-    public function getDriver(): ?\Lucinda\OAuth2\Driver
+    public function getDriver(): ?Driver
     {
         return $this->driver;
     }

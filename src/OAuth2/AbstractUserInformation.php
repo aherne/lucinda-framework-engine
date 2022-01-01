@@ -8,13 +8,13 @@ use Lucinda\WebSecurity\Authentication\OAuth2\UserInformation;
  */
 abstract class AbstractUserInformation implements UserInformation
 {
-    protected $id;
-    protected $name;
-    protected $email;
+    protected string|int $id;
+    protected string $name;
+    protected string $email;
     
     /**
      * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\OAuth2\UserInformation::getName()
+     * @see UserInformation::getName()
      */
     public function getName(): string
     {
@@ -23,7 +23,7 @@ abstract class AbstractUserInformation implements UserInformation
 
     /**
      * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\OAuth2\UserInformation::getEmail()
+     * @see UserInformation::getEmail()
      */
     public function getEmail(): string
     {
@@ -32,9 +32,9 @@ abstract class AbstractUserInformation implements UserInformation
 
     /**
      * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\OAuth2\UserInformation::getId()
+     * @see UserInformation::getId()
      */
-    public function getId()
+    public function getId(): int|string
     {
         return $this->id;
     }

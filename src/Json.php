@@ -13,13 +13,11 @@ class Json
      *
      * @param mixed $data
      * @return string
-     * @throws Exception If encoding of mixed data into json failed
+     * @throws \JsonException If encoding of mixed data into json failed
      */
-    public function encode($data): string
+    public function encode(mixed $data): string
     {
-        $result = json_encode($data, JSON_UNESCAPED_UNICODE);
-        $this->checkError();
-        return $result;
+        return json_encode($data, JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);
     }
     
     /**
@@ -27,30 +25,11 @@ class Json
      *
      * @param string $json
      * @param boolean $assoc
-     * @return array
-     * @throws Exception If decoding of json into array failed
+     * @return mixed
+     * @throws \JsonException If decoding of json into array failed
      */
-    public function decode(string $json, bool $assoc=true): array
+    public function decode(string $json, bool $assoc=true): mixed
     {
-        $result = json_decode($json, $assoc);
-        $this->checkError();
-        return $result;
-    }
-    
-    /**
-     * Checks if encoding/decoding went without error. If error, throws JsonException.
-     *
-     * @throws Exception If decoding/encoding of json failed.
-     */
-    private function checkError(): void
-    {
-        $errorID = json_last_error();
-        
-        // everything went well
-        if ($errorID == JSON_ERROR_NONE) {
-            return;
-        }
-        
-        throw new Exception(json_last_error_msg());
+        return json_decode($json, $assoc, 512, JSON_THROW_ON_ERROR);
     }
 }

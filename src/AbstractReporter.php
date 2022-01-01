@@ -1,30 +1,35 @@
 <?php
 namespace Lucinda\Framework;
 
+use Lucinda\Logging\Logger;
+use Lucinda\MVC\Runnable;
+use Lucinda\STDERR\ErrorType;
+use Lucinda\STDERR\Reporter;
+
 /**
  * Encapsulates blueprint of reporting to a Lucinda\Logging\Logger
  */
-abstract class AbstractReporter extends \Lucinda\STDERR\Reporter
+abstract class AbstractReporter extends Reporter
 {
     /**
      * {@inheritDoc}
-     * @see \Lucinda\MVC\Runnable::run()
+     * @see Runnable::run()
      */
     public function run(): void
     {
         $logger = $this->getLogger();
         $exception = $this->request->getException();
         switch ($this->request->getRoute()->getErrorType()) {
-            case \Lucinda\STDERR\ErrorType::NONE:
-            case \Lucinda\STDERR\ErrorType::CLIENT:
+            case ErrorType::NONE:
+            case ErrorType::CLIENT:
                 break;
-            case \Lucinda\STDERR\ErrorType::SERVER:
+            case ErrorType::SERVER:
                 $logger->emergency($exception);
                 break;
-            case \Lucinda\STDERR\ErrorType::SYNTAX:
+            case ErrorType::SYNTAX:
                 $logger->alert($exception);
                 break;
-            case \Lucinda\STDERR\ErrorType::LOGICAL:
+            case ErrorType::LOGICAL:
                 $logger->critical($exception);
                 break;
             default:
@@ -36,7 +41,7 @@ abstract class AbstractReporter extends \Lucinda\STDERR\Reporter
     /**
      * Gets instance of logger that will report error to a medium
      *
-     * @return \Lucinda\Logging\Logger
+     * @return Logger
      */
-    abstract protected function getLogger(): \Lucinda\Logging\Logger;
+    abstract protected function getLogger(): Logger;
 }

@@ -1,22 +1,24 @@
 <?php
 namespace Lucinda\Framework;
 
+use Lucinda\WebSecurity\Authentication\Form\LoginThrottler;
+
 /**
  * Basic time based throttler against serial failed login attempts:
  * - unit of verification is ip address and username
  * - each failed login is penalized for two power attempts number seconds penalty
  * - if another login comes in penalty period, user automatically gets LOGIN_FAILED status
  */
-abstract class AbstractLoginThrottler extends \Lucinda\WebSecurity\Authentication\Form\LoginThrottler
+abstract class AbstractLoginThrottler extends LoginThrottler
 {
     const PENALTY_QUOTIENT = 2;
     
-    protected $attempts = 0;
-    protected $penaltyExpiration;
+    protected int $attempts = 0;
+    protected string $penaltyExpiration = "";
     
     /**
      * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\Form\LoginThrottler::getTimePenalty()
+     * @see LoginThrottler::getTimePenalty()
      */
     public function getTimePenalty(): int
     {
@@ -25,7 +27,7 @@ abstract class AbstractLoginThrottler extends \Lucinda\WebSecurity\Authenticatio
     
     /**
      * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\Form\LoginThrottler::setFailure()
+     * @see LoginThrottler::setFailure()
      */
     public function setFailure(): void
     {
@@ -36,7 +38,7 @@ abstract class AbstractLoginThrottler extends \Lucinda\WebSecurity\Authenticatio
     
     /**
      * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\Form\LoginThrottler::setSuccess()
+     * @see LoginThrottler::setSuccess()
      */
     public function setSuccess(): void
     {

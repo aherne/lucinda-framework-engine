@@ -9,16 +9,16 @@ interface UserDAO
     /**
      * Gets current access token from DB for current logged in user
      *
-     * @param integer|string $userID
+     * @param int|string $userID
      * @return string|NULL
      */
-    public function getAccessToken($userID): ?string;
+    public function getAccessToken(int|string $userID): ?string;
     
     /**
      * Gets name of OAuth2 vendor from DB for current logged in user
      *
-     * @param integer|string $userID
+     * @param int|string $userID
      * @return string|NULL
      */
-    public function getVendor($userID): ?string;
+    public function getVendor(int|string $userID): ?string;
 }

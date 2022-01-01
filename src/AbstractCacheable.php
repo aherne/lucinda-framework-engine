@@ -1,37 +1,26 @@
 <?php
 namespace Lucinda\Framework;
 
+use Lucinda\Headers\Cacheable;
+use Lucinda\MVC\Response;
+use Lucinda\STDOUT\Request;
+
 /**
  * Binds Lucinda\Headers\Cacheable to Lucinda\STDOUT\Request and Lucinda\MVC\Response
  */
-abstract class AbstractCacheable implements \Lucinda\Headers\Cacheable
+abstract class AbstractCacheable implements Cacheable
 {
-    /**
-     * @var \Lucinda\STDOUT\Request
-     */
-    protected $request;
-    
-    /**
-     * @var \Lucinda\MVC\Response
-     */
-    protected $response;
-    
-    /**
-     * @var string
-     */
-    protected $etag = "";
-    
-    /**
-     * @var integer
-     */
-    protected $last_modified_time = 0;
+    protected Request $request;
+    protected Response $response;
+    protected string $etag = "";
+    protected int $last_modified_time = 0;
     
     /**
      *
-     * @param \Lucinda\STDOUT\Request $request
-     * @param \Lucinda\MVC\Response $response
+     * @param Request $request
+     * @param Response $response
      */
-    public function __construct(\Lucinda\STDOUT\Request $request, \Lucinda\MVC\Response $response)
+    public function __construct(Request $request, Response $response)
     {
         $this->request = $request;
         $this->response = $response;
@@ -47,7 +36,7 @@ abstract class AbstractCacheable implements \Lucinda\Headers\Cacheable
     
     /**
      * {@inheritDoc}
-     * @see \Lucinda\Headers\Cacheable::getTime()
+     * @see Cacheable::getTime()
      */
     public function getTime(): int
     {
@@ -61,7 +50,7 @@ abstract class AbstractCacheable implements \Lucinda\Headers\Cacheable
     
     /**
      * {@inheritDoc}
-     * @see \Lucinda\Headers\Cacheable::getEtag()
+     * @see Cacheable::getEtag()
      */
     public function getEtag(): string
     {

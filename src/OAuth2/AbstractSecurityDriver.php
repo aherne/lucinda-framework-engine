@@ -1,21 +1,25 @@
 <?php
 namespace Lucinda\Framework\OAuth2;
 
+use Lucinda\OAuth2\Client\Exception;
+use Lucinda\OAuth2\Driver;
+use Lucinda\WebSecurity\Authentication\OAuth2\Driver as WebSecurityDriver;
+
 /**
- * Binds \Lucinda\OAuth2\Driver to \Lucinda\WebSecurity\Authentication\OAuth2\Driver for OAuth2 authentication
+ * Binds \Lucinda\OAuth2\Driver to WebSecurityDriver for OAuth2 authentication
  */
-abstract class AbstractSecurityDriver implements \Lucinda\WebSecurity\Authentication\OAuth2\Driver
+abstract class AbstractSecurityDriver implements WebSecurityDriver
 {
-    protected $driver;
-    protected $callbackURL;
+    protected Driver $driver;
+    protected string $callbackURL;
     
     /**
      * Registers information necessary to produce a driver later on
      *
-     * @param \Lucinda\OAuth2\Driver $driver
+     * @param Driver $driver
      * @param string $callbackURL
      */
-    public function __construct(\Lucinda\OAuth2\Driver $driver, string $callbackURL)
+    public function __construct(Driver $driver, string $callbackURL)
     {
         $this->driver = $driver;
         $this->callbackURL = $callbackURL;
@@ -23,16 +27,17 @@ abstract class AbstractSecurityDriver implements \Lucinda\WebSecurity\Authentica
     
     /**
      * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\OAuth2\Driver::getCallbackUrl()
+     * @see WebSecurityDriver::getCallbackUrl()
      */
     public function getCallbackUrl(): string
     {
         return $this->callbackURL;
     }
-    
+
     /**
      * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\OAuth2\Driver::getAuthorizationCode()
+     * @throws Exception
+     * @see WebSecurityDriver::getAuthorizationCode()
      */
     public function getAuthorizationCode(string $state): string
     {
@@ -41,7 +46,7 @@ abstract class AbstractSecurityDriver implements \Lucinda\WebSecurity\Authentica
     
     /**
      * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\OAuth2\Driver::getAccessToken()
+     * @see WebSecurityDriver::getAccessToken()
      */
     public function getAccessToken(string $authorizationCode): string
     {
@@ -52,7 +57,7 @@ abstract class AbstractSecurityDriver implements \Lucinda\WebSecurity\Authentica
     
     /**
      * {@inheritDoc}
-     * @see \Lucinda\WebSecurity\Authentication\OAuth2\Driver::getVendorName()
+     * @see WebSecurityDriver::getVendorName()
      */
     public function getVendorName(): string
     {

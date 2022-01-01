@@ -1,21 +1,24 @@
 <?php
 namespace Lucinda\Framework;
 
+use Lucinda\STDOUT\Request;
+use Lucinda\WebSecurity\Request as WebSecurityRequest;
+
 /**
  * Binds Lucinda\STDOUT\Request to Lucinda\WebSecurity\Request
  */
 class RequestBinder
 {
-    private $result;
+    private WebSecurityRequest $result;
     
     /**
      * Kick-starts binding process based on arguments
      *
-     * @param \Lucinda\STDOUT\Request $request
+     * @param Request $request
      * @param string $validPage
      * @param bool $headerIpDetection
      */
-    public function __construct(\Lucinda\STDOUT\Request $request, string $validPage, bool $headerIpDetection)
+    public function __construct(Request $request, string $validPage, bool $headerIpDetection)
     {
         $accessToken = $this->getAccessToken($request);
         $this->setResult($request, $validPage, $accessToken, $headerIpDetection);
@@ -25,10 +28,10 @@ class RequestBinder
      * Gets access token based on Authorization request header received from client. Eg:
      * Authorization Bearer asdadasdasdasdasdasdasd
      *
-     * @param \Lucinda\STDOUT\Request $request
+     * @param Request $request
      * @return string
      */
-    private function getAccessToken(\Lucinda\STDOUT\Request $request): string
+    private function getAccessToken(Request $request): string
     {
         $accessToken = "";
         $header = $request->headers("Authorization");
@@ -41,16 +44,16 @@ class RequestBinder
     /**
      * Performs binding process between \Lucinda\STDOUT\Request and \Lucinda\WebSecurity\Request
      *
-     * @param \Lucinda\STDOUT\Request $request
+     * @param Request $request
      * @param string $validPage
      * @param string $accessToken
      * @param bool $headerIpDetection
      */
-    private function setResult(\Lucinda\STDOUT\Request $request, string $validPage, string $accessToken, bool $headerIpDetection): void
+    private function setResult(Request $request, string $validPage, string $accessToken, bool $headerIpDetection): void
     {
-        $requestBound = new \Lucinda\WebSecurity\Request();
+        $requestBound = new WebSecurityRequest();
         $requestBound->setUri($validPage);
-        $requestBound->setMethod($request->getMethod());
+        $requestBound->setMethod($request->getMethod()->value);
         $requestBound->setParameters($request->parameters());
         $requestBound->setContextPath($request->getURI()->getContextPath());
         $requestBound->setAccessToken($accessToken);
@@ -66,9 +69,9 @@ class RequestBinder
     /**
      * Gets binding result
      *
-     * @return \Lucinda\WebSecurity\Request
+     * @return WebSecurityRequest
      */
-    public function getResult(): \Lucinda\WebSecurity\Request
+    public function getResult(): WebSecurityRequest
     {
         return $this->result;
     }
