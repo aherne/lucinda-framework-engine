@@ -14,7 +14,7 @@ abstract class AbstractLoginThrottler extends LoginThrottler
     const PENALTY_QUOTIENT = 2;
     
     protected int $attempts = 0;
-    protected string $penaltyExpiration = "";
+    protected ?string $penaltyExpiration = null;
     
     /**
      * {@inheritDoc}
