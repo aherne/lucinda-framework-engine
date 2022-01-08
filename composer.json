@@ -19,7 +19,7 @@
     	}
     },
     "require": {
-        "php": "^7.1",
+        "php": "^7.1|^8.0",
         "ext-simplexml": "*",  
         "lucinda/logging": "~3.0",
         "lucinda/nosql-data-access": "~3.0",
