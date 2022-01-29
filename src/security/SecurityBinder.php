@@ -1,7 +1,6 @@
 <?php
 namespace Lucinda\Framework;
 
-require("IPDetector.php");
 require("PersistenceDriversDetector.php");
 require("UserIdDetector.php");
 require("CsrfTokenDetector.php");
@@ -28,7 +27,6 @@ class SecurityBinder
      * @param \Lucinda\MVC\STDOUT\Application $application
      * @param \Lucinda\MVC\STDOUT\Request $request
      * @param string $developmentEnvironment
-     * @param boolean $highSecurity
      * @throws \Lucinda\WebSecurity\AuthenticationException If POST parameters are not provided when logging in.
      * @throws \Lucinda\MVC\STDOUT\XMLException If XML is improperly configured.
      * @throws \Lucinda\MVC\STDOUT\ServletException If resources referenced in XML do not exist or do not extend/implement required blueprint.
@@ -39,13 +37,13 @@ class SecurityBinder
      * @throws \OAuth2\ServerException When oauth2 remote server answers with an error.
      * @throws SecurityPacket If authentication encounters a situation where execution cannot continue and redirection is required
      */
-    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment, $highSecurity = false)
+    public function __construct(\Lucinda\MVC\STDOUT\Application $application, \Lucinda\MVC\STDOUT\Request $request, $developmentEnvironment)
     {
         // detects relevant data
         $xml = $application->getTag("security");
         
         // applies web security on request
-        $this->setIpAddress($request, $highSecurity);
+        $this->setIpAddress($request);
         $this->setPersistenceDrivers($xml);
         $this->setUserID();
         $this->setCsrfToken($xml);
@@ -54,13 +52,8 @@ class SecurityBinder
         $this->authorize($xml, $request);
     }
     
-    protected function setIpAddress(\Lucinda\MVC\STDOUT\Request $request, $highSecurity) {
-        if ($highSecurity) {
-            $this->ipAddress = $request->getClient()->getIP();
-        } else {
-            $detector = new IPDetector($request);
-            $this->ipAddress = $detector->getIP();
-        }
+    protected function setIpAddress(\Lucinda\MVC\STDOUT\Request $request) {
+        $this->ipAddress = $request->getClient()->getIP();
     }
     
     /**
