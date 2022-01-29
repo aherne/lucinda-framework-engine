@@ -16,12 +16,11 @@ class RequestBinder
      *
      * @param Request $request
      * @param string $validPage
-     * @param bool $headerIpDetection
      */
-    public function __construct(Request $request, string $validPage, bool $headerIpDetection)
+    public function __construct(Request $request, string $validPage)
     {
         $accessToken = $this->getAccessToken($request);
-        $this->setResult($request, $validPage, $accessToken, $headerIpDetection);
+        $this->setResult($request, $validPage, $accessToken);
     }
     
     /**
@@ -47,9 +46,8 @@ class RequestBinder
      * @param Request $request
      * @param string $validPage
      * @param string $accessToken
-     * @param bool $headerIpDetection
      */
-    private function setResult(Request $request, string $validPage, string $accessToken, bool $headerIpDetection): void
+    private function setResult(Request $request, string $validPage, string $accessToken): void
     {
         $requestBound = new WebSecurityRequest();
         $requestBound->setUri($validPage);
@@ -57,12 +55,7 @@ class RequestBinder
         $requestBound->setParameters($request->parameters());
         $requestBound->setContextPath($request->getURI()->getContextPath());
         $requestBound->setAccessToken($accessToken);
-        if ($headerIpDetection) {
-            $ipDetector = new IPDetector($request);
-            $requestBound->setIpAddress($ipDetector->getIP());
-        } else {
-            $requestBound->setIpAddress($request->getClient()->getIP());
-        }
+        $requestBound->setIpAddress($request->getClient()->getIP());
         $this->result = $requestBound;
     }
     
