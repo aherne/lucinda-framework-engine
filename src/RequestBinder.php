@@ -17,7 +17,7 @@ class RequestBinder
     public function __construct(\Lucinda\STDOUT\Request $request, string $validPage)
     {
         $accessToken = $this->getAccessToken($request);
-        $this->setResult($request, $validPage, $accessToken, $headerIpDetection);
+        $this->setResult($request, $validPage, $accessToken);
     }
     
     /**
