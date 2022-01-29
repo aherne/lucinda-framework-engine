@@ -13,9 +13,8 @@ class RequestBinder
      *
      * @param \Lucinda\STDOUT\Request $request
      * @param string $validPage
-     * @param bool $headerIpDetection
      */
-    public function __construct(\Lucinda\STDOUT\Request $request, string $validPage, bool $headerIpDetection)
+    public function __construct(\Lucinda\STDOUT\Request $request, string $validPage)
     {
         $accessToken = $this->getAccessToken($request);
         $this->setResult($request, $validPage, $accessToken, $headerIpDetection);
@@ -44,9 +43,8 @@ class RequestBinder
      * @param \Lucinda\STDOUT\Request $request
      * @param string $validPage
      * @param string $accessToken
-     * @param bool $headerIpDetection
      */
-    private function setResult(\Lucinda\STDOUT\Request $request, string $validPage, string $accessToken, bool $headerIpDetection): void
+    private function setResult(\Lucinda\STDOUT\Request $request, string $validPage, string $accessToken): void
     {
         $requestBound = new \Lucinda\WebSecurity\Request();
         $requestBound->setUri($validPage);
@@ -54,12 +52,7 @@ class RequestBinder
         $requestBound->setParameters($request->parameters());
         $requestBound->setContextPath($request->getURI()->getContextPath());
         $requestBound->setAccessToken($accessToken);
-        if ($headerIpDetection) {
-            $ipDetector = new IPDetector($request);
-            $requestBound->setIpAddress($ipDetector->getIP());
-        } else {
-            $requestBound->setIpAddress($request->getClient()->getIP());
-        }
+        $requestBound->setIpAddress($request->getClient()->getIP());
         $this->result = $requestBound;
     }
     
