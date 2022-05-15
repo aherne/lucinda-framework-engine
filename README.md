@@ -7,7 +7,6 @@ This API stores internal components of [Lucinda Framework 3.0](http://www.lucind
 - [Lucinda\Framework\AbstractReporter](#abstractreporter)
 - [Lucinda\Framework\Json](#json)
 - [Lucinda\Framework\RestController](#restcontroller)
-- [Lucinda\Framework\SingletonRepository](#singletonrepository)
 
 API is fully PSR-4 compliant, only requiring PHP7.1+ interpreter and SimpleXML extension. It has 100% Unit Test coverage, using [UnitTest API](https://github.com/aherne/unit-testing) instead of PHPUnit for greater flexibility.
 
@@ -96,12 +95,3 @@ This abstract class is a [\Lucinda\MVC\Controller](https://github.com/aherne/php
 If a route is accessed using a method not covered in its matching controller, a [\Lucinda\STDOUT\MethodNotAllowedException](https://github.com/aherne/php-servlets-api/blob/master/src/MethodNotAllowedException.php) is thrown!
 
 <sub>Unlike other frameworks, Lucinda considers controller "actions" to be an anti-pattern, a recipe for bloated illogical controllers. Only in this particular case are "actions" making a logical sense: a controller that behaves differently depending on HTTP method it's called with.</sub>
-
-## SingletonRepository
-
-This class is static repository of singletons, to be *set* by event listeners and *get* by procedural functions provided by skeleton. Class defines following public static methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| set | string, object | void | Sets a singleton by unique identifier. |
-| get | string | object | Gets a singleton by unique identifier. |

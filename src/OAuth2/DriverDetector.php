@@ -11,7 +11,7 @@ class DriverDetector
 {
     private ?string $accessToken = null;
     private ?Driver $driver = null;
-    
+
     /**
      * Starts detection process
      *
@@ -38,24 +38,18 @@ class DriverDetector
             }
         }
     }
-    
+
     /**
-     * Gets access token detected for current user
+     * Gets resource from OAuth2 vendor
      *
-     * @return string|NULL
+     * @param string $url
+     * @param array $fields
+     * @return array
+     * @throws \Lucinda\OAuth2\Client\Exception
+     * @throws \Lucinda\OAuth2\Server\Exception
      */
-    public function getAccessToken(): ?string
+    public function getResource(string $url, array $fields=[]): array
     {
-        return $this->accessToken;
-    }
-    
-    /**
-     * Gets OAuth2 driver detected for current user
-     *
-     * @return Driver|NULL
-     */
-    public function getDriver(): ?Driver
-    {
-        return $this->driver;
+        return $this->driver->getResource($this->accessToken, $url, $fields);
     }
 }

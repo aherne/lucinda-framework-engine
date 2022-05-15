@@ -22,14 +22,8 @@ class DriverDetectorTest
 '), ["login/facebook"=>$nativeDriver], 1);
     }
 
-    public function getAccessToken()
+    public function getResource()
     {
-        return new Result($this->object->getAccessToken()=="qwerty");
-    }
-        
-
-    public function getDriver()
-    {
-        return new Result($this->object->getDriver() instanceof \Lucinda\OAuth2\Driver);
+        return new Result(false, "Method requires a real oauth2 driver connection for testing");
     }
 }
