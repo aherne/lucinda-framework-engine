@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2;
 
 use Lucinda\MVC\ConfigurationException;
@@ -16,7 +17,7 @@ class DriverDetector
      * Starts detection process
      *
      * @param \SimpleXMLElement $xml
-     * @param array $oauth2Drivers
+     * @param array<string, Driver> $oauth2Drivers
      * @param string|int $userID
      * @throws ConfigurationException
      */
@@ -43,7 +44,7 @@ class DriverDetector
      * Gets resource from OAuth2 vendor
      *
      * @param string $url
-     * @param array $fields
+     * @param string[] $fields
      * @return array
      * @throws \Lucinda\OAuth2\Client\Exception
      * @throws \Lucinda\OAuth2\Server\Exception

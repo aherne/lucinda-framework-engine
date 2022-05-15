@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2\LinkedIn;
 
 use Lucinda\Framework\OAuth2\AbstractSecurityDriver;
@@ -9,9 +10,9 @@ use Lucinda\WebSecurity\Authentication\OAuth2\Driver;
  */
 class SecurityDriver extends AbstractSecurityDriver
 {
-    const RESOURCE_URL = "https://api.linkedin.com/v1/people/~";
-    const RESOURCE_URL_EMAIL = "https://api.linkedin.com/v1/people/~/email-address";
-    
+    public const RESOURCE_URL = "https://api.linkedin.com/v1/people/~";
+    public const RESOURCE_URL_EMAIL = "https://api.linkedin.com/v1/people/~/email-address";
+
     /**
      * {@inheritDoc}
      * @see Driver::getUserInformation()

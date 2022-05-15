@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2\Google;
 
 use Lucinda\Framework\OAuth2\AbstractUserInformation;
@@ -11,7 +12,7 @@ class UserInformation extends AbstractUserInformation
     /**
      * Saves logged in user details received from Google.
      *
-     * @param string[string] $info
+     * @param array<string, string> $info
      */
     public function __construct(array $info)
     {

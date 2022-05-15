@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2\Yandex;
 
 use Lucinda\Framework\OAuth2\AbstractSecurityDriver;
@@ -9,8 +10,8 @@ use Lucinda\WebSecurity\Authentication\OAuth2\Driver;
  */
 class SecurityDriver extends AbstractSecurityDriver
 {
-    const RESOURCE_URL = "https://login.yandex.ru/info";
-    
+    public const RESOURCE_URL = "https://login.yandex.ru/info";
+
     /**
      * {@inheritDoc}
      * @see Driver::getUserInformation()

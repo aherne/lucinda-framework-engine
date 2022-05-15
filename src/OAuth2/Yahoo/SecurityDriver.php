@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2\Yahoo;
 
 use Lucinda\Framework\OAuth2\AbstractSecurityDriver;
@@ -9,8 +10,8 @@ use Lucinda\WebSecurity\Authentication\OAuth2\Driver;
  */
 class SecurityDriver extends AbstractSecurityDriver
 {
-    const RESOURCE_URL = "https://social.yahooapis.com/v1/user/me/profile";
-    
+    public const RESOURCE_URL = "https://social.yahooapis.com/v1/user/me/profile";
+
     /**
      * {@inheritDoc}
      * @see Driver::getUserInformation()

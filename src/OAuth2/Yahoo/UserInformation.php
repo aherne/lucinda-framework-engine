@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2\Yahoo;
 
 use Lucinda\Framework\OAuth2\AbstractUserInformation;
@@ -11,7 +12,7 @@ class UserInformation extends AbstractUserInformation
     /**
      * Saves logged in user details received from Yahoo.
      *
-     * @param array $info
+     * @param array<string, array<string, string>> $info
      */
     public function __construct(array $info)
     {

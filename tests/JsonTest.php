@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Framework;
 
 use Lucinda\Framework\Json;
@@ -7,7 +8,7 @@ use Lucinda\UnitTest\Result;
 class JsonTest
 {
     private $object;
-    
+
     public function __construct()
     {
         $this->object = new Json();
@@ -18,7 +19,7 @@ class JsonTest
         $result = $this->object->encode(["asd"=>"fgh"]);
         return new Result($result);
     }
-        
+
 
     public function decode()
     {

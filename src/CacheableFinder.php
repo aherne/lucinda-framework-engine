@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework;
 
 use Lucinda\Headers\Cacheable;
@@ -26,7 +27,7 @@ class CacheableFinder
     {
         $this->setResult($application, $request, $response);
     }
-    
+
     /**
      * Locates and instances a \Lucinda\Headers\Cacheable based on XML
      *
@@ -43,7 +44,7 @@ class CacheableFinder
         }
         $this->result = new $className($request, $response);
     }
-    
+
     /**
      * Gets \Lucinda\Headers\Cacheable instance found
      *

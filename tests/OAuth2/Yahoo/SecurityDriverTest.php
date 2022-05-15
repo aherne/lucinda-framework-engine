@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Framework\OAuth2\Yahoo;
 
 use Lucinda\Framework\OAuth2\Yahoo\UserInformation;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Framework;
 
 use Lucinda\MVC\Application;
@@ -14,7 +15,7 @@ class CacheableFinderTest
     public function getResult()
     {
         $application = new ApplicationMock(__DIR__."/configuration.xml");
-                
+
         $_GET = ["asd"=>"fgh"];
         $_SERVER = [
             'HTTP_HOST' => 'www.test.local',
@@ -41,9 +42,9 @@ class CacheableFinderTest
             'QUERY_STRING' =>'asd=fgh'
         ];
         $request = new Request();
-        
+
         $response = new Response("application/json", "");
-        
+
         $cacheableFinder = new CacheableFinder($application, $request, $response);
         return new Result($cacheableFinder->getResult() instanceof AbstractCacheable);
     }

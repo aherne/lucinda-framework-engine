@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2\Facebook;
 
 use Lucinda\Framework\OAuth2\AbstractSecurityDriver;
@@ -9,9 +10,9 @@ use Lucinda\WebSecurity\Authentication\OAuth2\Driver;
  */
 class SecurityDriver extends AbstractSecurityDriver
 {
-    const RESOURCE_URL = "https://graph.facebook.com/v2.8/me";
-    const RESOURCE_FIELDS = array("id","name","email");
-    
+    public const RESOURCE_URL = "https://graph.facebook.com/v2.8/me";
+    public const RESOURCE_FIELDS = array("id","name","email");
+
     /**
      * {@inheritDoc}
      * @see Driver::getUserInformation()

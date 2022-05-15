@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework;
 
 use Lucinda\STDOUT\Request;
@@ -10,7 +11,7 @@ use Lucinda\WebSecurity\Request as WebSecurityRequest;
 class RequestBinder
 {
     private WebSecurityRequest $result;
-    
+
     /**
      * Kick-starts binding process based on arguments
      *
@@ -22,7 +23,7 @@ class RequestBinder
         $accessToken = $this->getAccessToken($request);
         $this->setResult($request, $validPage, $accessToken);
     }
-    
+
     /**
      * Gets access token based on Authorization request header received from client. Eg:
      * Authorization Bearer asdadasdasdasdasdasdasd
@@ -39,7 +40,7 @@ class RequestBinder
         }
         return $accessToken;
     }
-    
+
     /**
      * Performs binding process between \Lucinda\STDOUT\Request and \Lucinda\WebSecurity\Request
      *
@@ -58,7 +59,7 @@ class RequestBinder
         $requestBound->setIpAddress($request->getClient()->getIP());
         $this->result = $requestBound;
     }
-    
+
     /**
      * Gets binding result
      *

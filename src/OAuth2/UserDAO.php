@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2;
 
 /**
@@ -13,7 +14,7 @@ interface UserDAO
      * @return string|NULL
      */
     public function getAccessToken(int|string $userID): ?string;
-    
+
     /**
      * Gets name of OAuth2 vendor from DB for current logged in user
      *

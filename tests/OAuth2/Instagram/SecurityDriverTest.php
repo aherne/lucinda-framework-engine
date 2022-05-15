@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Framework\OAuth2\Instagram;
 
 use Lucinda\Framework\OAuth2\Instagram\UserInformation;

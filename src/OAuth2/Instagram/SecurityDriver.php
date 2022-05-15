@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2\Instagram;
 
 use Lucinda\Framework\OAuth2\AbstractSecurityDriver;
@@ -9,8 +10,8 @@ use Lucinda\WebSecurity\Authentication\OAuth2\Driver;
  */
 class SecurityDriver extends AbstractSecurityDriver
 {
-    const RESOURCE_URL = "https://api.instagram.com/v1/users/self/";
-    
+    public const RESOURCE_URL = "https://api.instagram.com/v1/users/self/";
+
     /**
      * {@inheritDoc}
      * @see Driver::getUserInformation()

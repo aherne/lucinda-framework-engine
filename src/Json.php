@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework;
 
 use Lucinda\Framework\Json\Exception;
@@ -19,17 +20,16 @@ class Json
     {
         return json_encode($data, JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);
     }
-    
+
     /**
      * Decodes JSON into original php data type.
      *
      * @param string $json
-     * @param boolean $assoc
      * @return mixed
      * @throws \JsonException If decoding of json into array failed
      */
-    public function decode(string $json, bool $assoc=true): mixed
+    public function decode(string $json): mixed
     {
-        return json_decode($json, $assoc, 512, JSON_THROW_ON_ERROR);
+        return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
     }
 }

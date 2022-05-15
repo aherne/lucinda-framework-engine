@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2;
 
 use Lucinda\OAuth2\Client\Exception;
@@ -12,7 +13,7 @@ abstract class AbstractSecurityDriver implements WebSecurityDriver
 {
     protected Driver $driver;
     protected string $callbackURL;
-    
+
     /**
      * Registers information necessary to produce a driver later on
      *
@@ -24,7 +25,7 @@ abstract class AbstractSecurityDriver implements WebSecurityDriver
         $this->driver = $driver;
         $this->callbackURL = $callbackURL;
     }
-    
+
     /**
      * {@inheritDoc}
      * @see WebSecurityDriver::getCallbackUrl()
@@ -43,7 +44,7 @@ abstract class AbstractSecurityDriver implements WebSecurityDriver
     {
         return $this->driver->getAuthorizationCodeEndpoint();
     }
-    
+
     /**
      * {@inheritDoc}
      * @see WebSecurityDriver::getAccessToken()
@@ -54,7 +55,7 @@ abstract class AbstractSecurityDriver implements WebSecurityDriver
         // TODO: store when it expires
         return $accessTokenResponse->getAccessToken();
     }
-    
+
     /**
      * {@inheritDoc}
      * @see WebSecurityDriver::getVendorName()

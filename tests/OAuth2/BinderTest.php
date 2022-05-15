@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Framework\OAuth2;
 
 use Lucinda\Framework\OAuth2\Binder;

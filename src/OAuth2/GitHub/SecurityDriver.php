@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2\GitHub;
 
 use Lucinda\Framework\OAuth2\AbstractSecurityDriver;
@@ -9,9 +10,9 @@ use Lucinda\WebSecurity\Authentication\OAuth2\Driver;
  */
 class SecurityDriver extends AbstractSecurityDriver
 {
-    const RESOURCE_URL = "https://api.github.com/user";
-    const RESOURCE_URL_EMAIL = "https://api.github.com/user/emails";
-    
+    public const RESOURCE_URL = "https://api.github.com/user";
+    public const RESOURCE_URL_EMAIL = "https://api.github.com/user/emails";
+
     /**
      * {@inheritDoc}
      * @see Driver::getUserInformation()

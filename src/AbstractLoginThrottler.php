@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework;
 
 use Lucinda\WebSecurity\Authentication\Form\LoginThrottler;
@@ -11,20 +12,20 @@ use Lucinda\WebSecurity\Authentication\Form\LoginThrottler;
  */
 abstract class AbstractLoginThrottler extends LoginThrottler
 {
-    const PENALTY_QUOTIENT = 2;
-    
+    public const PENALTY_QUOTIENT = 2;
+
     protected int $attempts = 0;
     protected ?string $penaltyExpiration = null;
-    
+
     /**
      * {@inheritDoc}
      * @see LoginThrottler::getTimePenalty()
      */
     public function getTimePenalty(): int
     {
-        return ($this->penaltyExpiration && strtotime($this->penaltyExpiration) > time()?strtotime($this->penaltyExpiration)-time():0);
+        return ($this->penaltyExpiration && strtotime($this->penaltyExpiration) > time() ? strtotime($this->penaltyExpiration)-time() : 0);
     }
-    
+
     /**
      * {@inheritDoc}
      * @see LoginThrottler::setFailure()
@@ -32,10 +33,10 @@ abstract class AbstractLoginThrottler extends LoginThrottler
     public function setFailure(): void
     {
         $this->attempts++;
-        $this->penaltyExpiration = ($this->attempts>1?date("Y-m-d H:i:s", time() + pow(self::PENALTY_QUOTIENT, $this->attempts-1)):null);
+        $this->penaltyExpiration = ($this->attempts>1 ? date("Y-m-d H:i:s", time() + pow(self::PENALTY_QUOTIENT, $this->attempts-1)) : null);
         $this->persist();
     }
-    
+
     /**
      * {@inheritDoc}
      * @see LoginThrottler::setSuccess()
@@ -46,7 +47,7 @@ abstract class AbstractLoginThrottler extends LoginThrottler
         $this->penaltyExpiration = null;
         $this->persist();
     }
-    
+
     /**
      * Persists throttling info in database
      */

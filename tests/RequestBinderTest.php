@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Framework;
 
 use Lucinda\Framework\RequestBinder;
@@ -34,7 +35,7 @@ class RequestBinderTest
             'SCRIPT_FILENAME' => '/var/www/html/documentation/index.php',
             'QUERY_STRING' =>'asd=fgh'
         ];
-        
+
         $requestBinder = new RequestBinder(new Request(), "user/(name)", true);
         $request = $requestBinder->getResult();
         $output = [];
@@ -43,11 +44,11 @@ class RequestBinderTest
         $output[] = new Result($request->getIpAddress()=="14.123.55.18", "setIpAddress");
         $output[] = new Result($request->getMethod()=="GET", "setMethod");
         $output[] = new Result($request->getParameters()==["asd"=>"fgh"], "getParameters");
-        
+
         $_SERVER["HTTP_AUTHORIZATION"] = "Bearer asdfgh";
         $requestBinder = new RequestBinder(new Request(), "user/(name)", true);
         $output[] = new Result($requestBinder->getResult()->getAccessToken()=="asdfgh", "getAccessToken");
-        
+
         return $output;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Framework\mocks;
 
 /**
@@ -13,7 +14,7 @@ class EtagCacheable extends \Lucinda\Framework\AbstractCacheable
     protected function setTime(): void
     {
     }
-    
+
     /**
      * {@inheritDoc}
      * @see \Lucinda\Framework\AbstractCacheable::setEtag()

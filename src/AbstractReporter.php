@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework;
 
 use Lucinda\Logging\Logger;
@@ -37,7 +38,7 @@ abstract class AbstractReporter extends Reporter
                 break;
         }
     }
-    
+
     /**
      * Gets instance of logger that will report error to a medium
      *

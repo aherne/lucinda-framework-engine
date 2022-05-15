@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2;
 
 use Lucinda\WebSecurity\Authentication\OAuth2\UserInformation;
@@ -11,7 +12,7 @@ abstract class AbstractUserInformation implements UserInformation
     protected string|int $id;
     protected string $name;
     protected string $email;
-    
+
     /**
      * {@inheritDoc}
      * @see UserInformation::getName()

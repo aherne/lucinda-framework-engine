@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework\OAuth2\Google;
 
 use Lucinda\Framework\OAuth2\AbstractSecurityDriver;
@@ -9,8 +10,8 @@ use Lucinda\WebSecurity\Authentication\OAuth2\Driver;
  */
 class SecurityDriver extends AbstractSecurityDriver
 {
-    const RESOURCE_URL = "https://www.googleapis.com/oauth2/v1/userinfo";
-    
+    public const RESOURCE_URL = "https://www.googleapis.com/oauth2/v1/userinfo";
+
     /**
      * {@inheritDoc}
      * @see Driver::getUserInformation()

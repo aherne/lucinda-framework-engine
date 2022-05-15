@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Framework;
 
 use Lucinda\Headers\Cacheable;
@@ -13,8 +14,8 @@ abstract class AbstractCacheable implements Cacheable
     protected Request $request;
     protected Response $response;
     protected string $etag = "";
-    protected int $last_modified_time = 0;
-    
+    protected int $lastModifiedTime = 0;
+
     /**
      *
      * @param Request $request
@@ -24,30 +25,30 @@ abstract class AbstractCacheable implements Cacheable
     {
         $this->request = $request;
         $this->response = $response;
-        
+
         $this->setTime();
         $this->setEtag();
     }
-    
+
     /**
      * Sets value of last modified time of requested resource
      */
     abstract protected function setTime(): void;
-    
+
     /**
      * {@inheritDoc}
      * @see Cacheable::getTime()
      */
     public function getTime(): int
     {
-        return $this->last_modified_time;
+        return $this->lastModifiedTime;
     }
-    
+
     /**
      * Sets value of etag matching requested resource
      */
     abstract protected function setEtag(): void;
-    
+
     /**
      * {@inheritDoc}
      * @see Cacheable::getEtag()

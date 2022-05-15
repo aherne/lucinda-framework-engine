@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Framework\OAuth2\Google;
 
 use Lucinda\Framework\OAuth2\Google\UserInformation;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Framework\OAuth2\Facebook;
 
 use Lucinda\Framework\OAuth2\Facebook\UserInformation;
