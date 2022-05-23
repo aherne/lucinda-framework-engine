@@ -1,6 +1,6 @@
 # Lucinda Framework Engine API
 
-This API stores internal components of [Lucinda Framework 3.0](http://www.lucinda-framework.com) open for update but not open for change by developers. Most of classes inside are dedicated at APIs binding, so only the following are of any interest to developers:
+This API stores internal components of [Lucinda Framework 3.0](http://www.lucinda-framework.com) open for update but not open for change by developers. Most of the classes inside are dedicated at APIs binding, so only the following are of any interest to developers:
 
 - [Lucinda\Framework\AbstractCacheable](#abstractcacheable)
 - [Lucinda\Framework\AbstractLoginThrottler](#abstractloginthrottler)

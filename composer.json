@@ -25,6 +25,7 @@
         "lucinda/oauth2-client": "~3.0",
         "lucinda/security": "~4.0",
         "lucinda/mvc": "~4.0",
+        "lucinda/console-mvc": "~2.0",
         "lucinda/errors-mvc": "~3.0",
         "lucinda/headers": "~2.0"
     },

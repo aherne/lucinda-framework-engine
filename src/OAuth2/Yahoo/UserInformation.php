@@ -12,7 +12,7 @@ class UserInformation extends AbstractUserInformation
     /**
      * Saves logged in user details received from Yahoo.
      *
-     * @param array<string, array<string, string>> $info
+     * @param array<string, mixed> $info
      */
     public function __construct(array $info)
     {

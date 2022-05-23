@@ -45,7 +45,7 @@ class DriverDetector
      *
      * @param string $url
      * @param string[] $fields
-     * @return array
+     * @return array<mixed>
      * @throws \Lucinda\OAuth2\Client\Exception
      * @throws \Lucinda\OAuth2\Server\Exception
      */
