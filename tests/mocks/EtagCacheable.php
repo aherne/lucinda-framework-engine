@@ -9,6 +9,7 @@ class EtagCacheable extends \Lucinda\Framework\AbstractCacheable
 {
     /**
      * {@inheritDoc}
+     *
      * @see \Lucinda\Framework\AbstractCacheable::setTime()
      */
     protected function setTime(): void
@@ -17,6 +18,7 @@ class EtagCacheable extends \Lucinda\Framework\AbstractCacheable
 
     /**
      * {@inheritDoc}
+     *
      * @see \Lucinda\Framework\AbstractCacheable::setEtag()
      */
     protected function setEtag(): void

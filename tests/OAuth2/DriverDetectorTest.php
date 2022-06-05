@@ -12,7 +12,9 @@ class DriverDetectorTest
     public function __construct()
     {
         $nativeDriver = new \Lucinda\OAuth2\Vendor\Facebook\Driver(new \Lucinda\OAuth2\Client\Information("asd", "fgh", "login/facebook"));
-        $this->object = new DriverDetector(simplexml_load_string('
+        $this->object = new DriverDetector(
+            simplexml_load_string(
+                '
 <xml>
     <security dao_path="'.__DIR__.'">
         <authentication>
@@ -20,7 +22,11 @@ class DriverDetectorTest
         </authentication>
     </security>
 </xml>
-'), ["login/facebook"=>$nativeDriver], 1);
+'
+            ),
+            ["login/facebook"=>$nativeDriver],
+            1
+        );
     }
 
     public function getResource()
