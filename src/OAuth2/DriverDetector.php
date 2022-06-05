@@ -16,9 +16,9 @@ class DriverDetector
     /**
      * Starts detection process
      *
-     * @param \SimpleXMLElement $xml
-     * @param array<string, Driver> $oauth2Drivers
-     * @param string|int $userID
+     * @param  \SimpleXMLElement     $xml
+     * @param  array<string, Driver> $oauth2Drivers
+     * @param  string|int            $userID
      * @throws ConfigurationException
      */
     public function __construct(\SimpleXMLElement $xml, array $oauth2Drivers, string|int $userID)
@@ -43,8 +43,8 @@ class DriverDetector
     /**
      * Gets resource from OAuth2 vendor
      *
-     * @param string $url
-     * @param string[] $fields
+     * @param  string   $url
+     * @param  string[] $fields
      * @return array<mixed>
      * @throws \Lucinda\OAuth2\Client\Exception
      * @throws \Lucinda\OAuth2\Server\Exception

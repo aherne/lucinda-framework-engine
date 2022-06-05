@@ -16,7 +16,7 @@ class RequestBinder
      * Kick-starts binding process based on arguments
      *
      * @param Request $request
-     * @param string $validPage
+     * @param string  $validPage
      */
     public function __construct(Request $request, string $validPage)
     {
@@ -28,7 +28,7 @@ class RequestBinder
      * Gets access token based on Authorization request header received from client. Eg:
      * Authorization Bearer asdadasdasdasdasdasdasd
      *
-     * @param Request $request
+     * @param  Request $request
      * @return string
      */
     private function getAccessToken(Request $request): string
@@ -45,8 +45,8 @@ class RequestBinder
      * Performs binding process between \Lucinda\STDOUT\Request and \Lucinda\WebSecurity\Request
      *
      * @param Request $request
-     * @param string $validPage
-     * @param string $accessToken
+     * @param string  $validPage
+     * @param string  $accessToken
      */
     private function setResult(Request $request, string $validPage, string $accessToken): void
     {

@@ -19,6 +19,7 @@ abstract class AbstractLoginThrottler extends LoginThrottler
 
     /**
      * {@inheritDoc}
+     *
      * @see LoginThrottler::getTimePenalty()
      */
     public function getTimePenalty(): int
@@ -28,6 +29,7 @@ abstract class AbstractLoginThrottler extends LoginThrottler
 
     /**
      * {@inheritDoc}
+     *
      * @see LoginThrottler::setFailure()
      */
     public function setFailure(): void
@@ -39,6 +41,7 @@ abstract class AbstractLoginThrottler extends LoginThrottler
 
     /**
      * {@inheritDoc}
+     *
      * @see LoginThrottler::setSuccess()
      */
     public function setSuccess(): void

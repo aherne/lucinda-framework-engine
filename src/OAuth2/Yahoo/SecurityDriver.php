@@ -14,6 +14,7 @@ class SecurityDriver extends AbstractSecurityDriver
 
     /**
      * {@inheritDoc}
+     *
      * @see Driver::getUserInformation()
      */
     public function getUserInformation(string $accessToken): UserInformation

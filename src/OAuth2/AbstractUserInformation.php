@@ -15,6 +15,7 @@ abstract class AbstractUserInformation implements UserInformation
 
     /**
      * {@inheritDoc}
+     *
      * @see UserInformation::getName()
      */
     public function getName(): string
@@ -24,6 +25,7 @@ abstract class AbstractUserInformation implements UserInformation
 
     /**
      * {@inheritDoc}
+     *
      * @see UserInformation::getEmail()
      */
     public function getEmail(): string
@@ -33,6 +35,7 @@ abstract class AbstractUserInformation implements UserInformation
 
     /**
      * {@inheritDoc}
+     *
      * @see UserInformation::getId()
      */
     public function getId(): int|string

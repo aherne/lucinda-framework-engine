@@ -14,8 +14,9 @@ abstract class RestController extends Controller
 {
     /**
      * {@inheritDoc}
+     *
      * @throws MethodNotAllowedException
-     * @see Runnable::run()
+     * @see    Runnable::run()
      */
     public function run(): void
     {

@@ -28,6 +28,7 @@ abstract class AbstractSecurityDriver implements WebSecurityDriver
 
     /**
      * {@inheritDoc}
+     *
      * @see WebSecurityDriver::getCallbackUrl()
      */
     public function getCallbackUrl(): string
@@ -37,8 +38,9 @@ abstract class AbstractSecurityDriver implements WebSecurityDriver
 
     /**
      * {@inheritDoc}
+     *
      * @throws Exception
-     * @see WebSecurityDriver::getAuthorizationCode()
+     * @see    WebSecurityDriver::getAuthorizationCode()
      */
     public function getAuthorizationCode(string $state): string
     {
@@ -47,6 +49,7 @@ abstract class AbstractSecurityDriver implements WebSecurityDriver
 
     /**
      * {@inheritDoc}
+     *
      * @see WebSecurityDriver::getAccessToken()
      */
     public function getAccessToken(string $authorizationCode): string
@@ -58,6 +61,7 @@ abstract class AbstractSecurityDriver implements WebSecurityDriver
 
     /**
      * {@inheritDoc}
+     *
      * @see WebSecurityDriver::getVendorName()
      */
     public function getVendorName(): string

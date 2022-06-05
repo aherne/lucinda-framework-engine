@@ -18,9 +18,9 @@ class CacheableFinder
     /**
      * Starts location process
      *
-     * @param Application $application
-     * @param Request $request
-     * @param Response $response
+     * @param  Application $application
+     * @param  Request     $request
+     * @param  Response    $response
      * @throws ConfigurationException
      */
     public function __construct(Application $application, Request $request, Response $response)
@@ -31,9 +31,9 @@ class CacheableFinder
     /**
      * Locates and instances a \Lucinda\Headers\Cacheable based on XML
      *
-     * @param Application $application
-     * @param Request $request
-     * @param Response $response
+     * @param  Application $application
+     * @param  Request     $request
+     * @param  Response    $response
      * @throws ConfigurationException
      */
     private function setResult(Application $application, Request $request, Response $response): void

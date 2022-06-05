@@ -18,7 +18,7 @@ abstract class AbstractCacheable implements Cacheable
 
     /**
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      */
     public function __construct(Request $request, Response $response)
@@ -37,6 +37,7 @@ abstract class AbstractCacheable implements Cacheable
 
     /**
      * {@inheritDoc}
+     *
      * @see Cacheable::getTime()
      */
     public function getTime(): int
@@ -51,6 +52,7 @@ abstract class AbstractCacheable implements Cacheable
 
     /**
      * {@inheritDoc}
+     *
      * @see Cacheable::getEtag()
      */
     public function getEtag(): string

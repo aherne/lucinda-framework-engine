@@ -12,7 +12,7 @@ class Json
     /**
      * Encodes data into JSON format.
      *
-     * @param mixed $data
+     * @param  mixed $data
      * @return string
      * @throws \JsonException If encoding of mixed data into json failed
      */
@@ -24,7 +24,7 @@ class Json
     /**
      * Decodes JSON into original php data type.
      *
-     * @param string $json
+     * @param  string $json
      * @return mixed
      * @throws \JsonException If decoding of json into array failed
      */
