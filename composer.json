@@ -26,6 +26,7 @@
         "lucinda/oauth2-client": "~2.0",
         "lucinda/security": "~3.0",
         "lucinda/mvc": "~3.0",
+        "lucinda/console-mvc": "~1.0",
         "lucinda/sql-data-access": "~3.0",
         "lucinda/view-language": "~3.0",
         "lucinda/internationalization": "~3.0",
