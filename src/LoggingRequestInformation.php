@@ -34,7 +34,7 @@ class LoggingRequestInformation
             $this->requestInfo->setUri($request->getURI()->getPage());
             $this->requestInfo->setUserAgent($request->headers("User-Agent"));
             $this->requestInfo->setIpAddress($request->getClient()->getIP());
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             $request = new ConsoleRequest();
             $this->requestInfo->setUri($request->getRoute());
         }
