@@ -12,4 +12,24 @@ class SecurityDriverTest
         $userInformation = new UserInformation(["profile"=>["guid"=>1, "givenName"=>"John", "familyName"=>"Doe", "emails"=>["handle"=>"a@a.com"]]]);
         return new Result($userInformation->getId()==1 && $userInformation->getName()=="John Doe" && $userInformation->getEmail()=="a@a.com");
     }
+    public function getCallbackUrl()
+    {
+    }
+        
+
+    public function getAuthorizationCode()
+    {
+    }
+        
+
+    public function getAccessToken()
+    {
+    }
+        
+
+    public function getVendorName()
+    {
+    }
+        
+
 }

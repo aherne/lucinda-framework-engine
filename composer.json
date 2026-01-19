@@ -27,7 +27,9 @@
         "lucinda/mvc": "~4.0",
         "lucinda/console-mvc": "~2.0",
         "lucinda/errors-mvc": "~3.0",
-        "lucinda/headers": "~2.0"
+        "lucinda/headers": "~2.0",
+        "lucinda/nosql-data-access": "~4.0",
+        "lucinda/sql-data-access": "~4.0"
     },
     "require-dev": {
         "lucinda/unit-testing": "^2.0"
