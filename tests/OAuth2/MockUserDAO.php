@@ -8,7 +8,7 @@ class MockUserDAO implements UserDAO
 {
     public function getVendor($userID): ?string
     {
-        return "Facebook";
+        return __CLASS__;
     }
 
     public function getAccessToken($userID): ?string
