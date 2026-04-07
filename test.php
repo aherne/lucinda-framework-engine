@@ -1,8 +1,9 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 try {
-    define("ENVIRONMENT", "local");
-    new Lucinda\UnitTest\ConsoleController("unit-tests.xml", "local");
-} catch (Exception $e) {
-    echo $e->getMessage();
+    define("ENVIRONMENT", (getenv("ENVIRONMENT") ? : "local"));
+    new Lucinda\UnitTest\ConsoleController("unit-tests.xml", "local", ($argv[1] ?? null));
+} catch (\Throwable $e) {
+    echo "ERROR: ".$e->getMessage().PHP_EOL;
+    echo "TRACE: ".$e->getTraceAsString();
 }
