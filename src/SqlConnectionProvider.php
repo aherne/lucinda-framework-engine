@@ -23,6 +23,8 @@ final class SqlConnectionProvider
     private array $connections = [];
 
     /**
+     * Bootstraps the process
+     * 
      * @param \SimpleXMLElement $xml
      * @param string            $environment
      * @throws ConfigurationException
@@ -40,6 +42,8 @@ final class SqlConnectionProvider
     }
 
     /**
+     * Gets driver by server name
+     * 
      * @param string $serverName
      * @return Connection
      * @throws Exception
@@ -59,6 +63,8 @@ final class SqlConnectionProvider
     }
 
     /**
+     * Detects data sources from XML
+     * 
      * @param \SimpleXMLElement $xml
      * @return array<string,DataSource>
      * @throws ConfigurationException
@@ -81,6 +87,9 @@ final class SqlConnectionProvider
         return $output;
     }
 
+    /**
+     * Closes connection to target servers
+     */
     public function __destruct()
     {
         foreach ($this->connections as $connection) {

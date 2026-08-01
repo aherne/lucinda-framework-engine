@@ -7,7 +7,7 @@ use Lucinda\Framework\Json\Exception;
 /**
  * Simple wrapper over json functionality.
  */
-class Json
+final class Json
 {
     /**
      * Encodes data into JSON format.

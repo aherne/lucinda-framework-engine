@@ -3,12 +3,11 @@
 namespace Lucinda\Framework;
 
 use Lucinda\Logging\Logger;
-use Lucinda\MVC\Runnable;
 use Lucinda\STDERR\ErrorType;
 use Lucinda\STDERR\Reporter;
 
 /**
- * Encapsulates blueprint of reporting to a Lucinda\Logging\Logger
+ * Binds STDERR MVC API with Logging API for error reporting
  */
 abstract class AbstractReporter extends Reporter
 {

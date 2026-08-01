@@ -9,7 +9,7 @@ use Lucinda\STDOUT\Request as WebRequest;
 /**
  * Binds Lucinda\(Console_)STDOUT\Request request to Lucinda\Logging\RequestInformation
  */
-class LoggingRequestInformation
+final class LoggingRequestInformation
 {
     private RequestInformation $requestInfo;
 

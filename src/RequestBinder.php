@@ -8,7 +8,7 @@ use Lucinda\WebSecurity\Request as WebSecurityRequest;
 /**
  * Binds Lucinda\STDOUT\Request to Lucinda\WebSecurity\Request
  */
-class RequestBinder
+final class RequestBinder
 {
     private WebSecurityRequest $result;
 

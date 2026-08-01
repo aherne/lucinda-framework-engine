@@ -7,15 +7,12 @@ use Lucinda\NoSQL\ConnectionException;
 use Lucinda\NoSQL\DataSource;
 use Lucinda\NoSQL\Driver;
 use Lucinda\NoSQL\Server;
-use Lucinda\NoSQL\Vendor\APC\DataSource as APCDataSource;
 use Lucinda\NoSQL\Vendor\APCu\DataSource as APCuDataSource;
-use Lucinda\NoSQL\Vendor\Couchbase\DataSource as CouchbaseDataSource;
-use Lucinda\NoSQL\Vendor\Memcache\DataSource as MemcacheDataSource;
 use Lucinda\NoSQL\Vendor\Memcached\DataSource as MemcachedDataSource;
 use Lucinda\NoSQL\Vendor\Redis\DataSource as RedisDataSource;
 
 /**
- * Provides NoSQL drivers based on XML configuration.
+ * Provides NoSQL drivers to query based on XML configuration.
  */
 final class NoSqlDriverProvider
 {
@@ -30,6 +27,8 @@ final class NoSqlDriverProvider
     private array $drivers = [];
 
     /**
+     * Bootstraps the process
+     * 
      * @param \SimpleXMLElement $xml
      * @param string            $environment
      * @throws ConfigurationException
@@ -47,6 +46,8 @@ final class NoSqlDriverProvider
     }
 
     /**
+     * Gets driver by server name
+     * 
      * @param string $serverName
      * @return Driver
      * @throws ConnectionException
@@ -68,6 +69,8 @@ final class NoSqlDriverProvider
     }
 
     /**
+     * Detects data sources from XML
+     * 
      * @param \SimpleXMLElement $xml
      * @return array<string,DataSource>
      * @throws ConfigurationException
@@ -90,6 +93,8 @@ final class NoSqlDriverProvider
     }
 
     /**
+     * Gets data sources detected
+     * 
      * @param \SimpleXMLElement $databaseInfo
      * @return DataSource
      * @throws ConfigurationException
@@ -101,16 +106,16 @@ final class NoSqlDriverProvider
             throw new ConfigurationException("Child tag 'driver' is mandatory for 'server' tags");
         }
         return match ($driver) {
-            "couchbase" => new CouchbaseDataSource($databaseInfo),
-            "memcache" => new MemcacheDataSource($databaseInfo),
             "memcached" => new MemcachedDataSource($databaseInfo),
             "redis" => new RedisDataSource($databaseInfo),
-            "apc" => new APCDataSource(),
             "apcu" => new APCuDataSource(),
             default => throw new ConfigurationException("NoSQL driver not supported: " . $driver)
         };
     }
 
+    /**
+     * Closes connection to target servers
+     */
     public function __destruct()
     {
         foreach ($this->drivers as $driver) {
