@@ -3,20 +3,24 @@
 namespace Lucinda\Framework;
 
 /**
- * Minimal static registry for framework services.
+ * Stores application service objects under process-wide identifiers
+ *
+ * Registering an existing identifier replaces its object. Services remain in
+ * the static registry until they are individually removed, the registry is
+ * cleared, or the PHP process ends.
  */
 final class ServiceRegistry
 {
     /**
-     * @var array<string,object>
+     * @var array<string,object> Registered service objects keyed by identifier
      */
     private static array $services = [];
 
     /**
-     * Registers a service instance by identifier.
+     * Registers or replaces a service under an identifier
      *
-     * @param string $id
-     * @param object $service
+     * @param string $id Identifier used for subsequent lookups
+     * @param object $service Service instance to store
      */
     public static function set(string $id, object $service): void
     {
@@ -24,10 +28,11 @@ final class ServiceRegistry
     }
 
     /**
-     * Gets a service instance by identifier.
+     * Gets the service registered under an identifier
      *
-     * @param string $id
-     * @return object
+     * @param string $id Identifier to look up
+     * @return object Registered service instance
+     * @throws \RuntimeException If the identifier has no registered service
      */
     public static function get(string $id): object
     {
@@ -38,10 +43,10 @@ final class ServiceRegistry
     }
 
     /**
-     * Checks if a service is registered.
+     * Checks whether an identifier has a registered service
      *
-     * @param string $id
-     * @return bool
+     * @param string $id Identifier to look up
+     * @return bool True when a service is registered under the identifier
      */
     public static function has(string $id): bool
     {
@@ -49,10 +54,9 @@ final class ServiceRegistry
     }
 
     /**
-     * Clears one service or the whole registry.
+     * Removes one registered service or clears the entire registry
      *
-     * @param string|null $id
-     * @return void
+     * @param string|null $id Identifier to remove, or null to remove every service
      */
     public static function clear(?string $id = null): void
     {

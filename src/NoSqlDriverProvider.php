@@ -12,26 +12,34 @@ use Lucinda\NoSQL\Vendor\Memcached\DataSource as MemcachedDataSource;
 use Lucinda\NoSQL\Vendor\Redis\DataSource as RedisDataSource;
 
 /**
- * Provides NoSQL drivers to query based on XML configuration.
+ * Provides lazily connected NoSQL drivers from environment-specific XML
+ *
+ * Configuration is read from `nosql > {environment}`. A single unnamed server
+ * is addressed with the default empty name; multiple servers must have names.
+ * Drivers are created on first access, cached for reuse, and disconnected when
+ * this provider is destroyed when they use a server connection.
  */
 final class NoSqlDriverProvider
 {
     /**
-     * @var array<string,DataSource>
+     * @var array<string,DataSource> Configured data sources keyed by server name
      */
     private array $dataSources = [];
 
     /**
-     * @var array<string,Driver>
+     * @var array<string,Driver> Initialized drivers keyed by server name
      */
     private array $drivers = [];
 
     /**
-     * Bootstraps the process
-     * 
-     * @param \SimpleXMLElement $xml
-     * @param string            $environment
-     * @throws ConfigurationException
+     * Loads NoSQL data sources for the selected environment
+     *
+     * An environment without a `nosql` configuration is accepted and leaves
+     * the provider empty.
+     *
+     * @param \SimpleXMLElement $xml Application XML containing the `nosql` section
+     * @param string $environment Environment child to select beneath `nosql`
+     * @throws ConfigurationException If the environment has no server or contains an invalid server definition
      */
     public function __construct(\SimpleXMLElement $xml, string $environment)
     {
@@ -46,12 +54,15 @@ final class NoSqlDriverProvider
     }
 
     /**
-     * Gets driver by server name
-     * 
-     * @param string $serverName
-     * @return Driver
-     * @throws ConnectionException
-     * @throws ConfigurationException
+     * Gets or initializes the driver configured under a server name
+     *
+     * Server-backed drivers are connected before being cached. Local drivers,
+     * such as APCu, are returned without a connection step.
+     *
+     * @param string $serverName Configured server name, or an empty string for a single unnamed server
+     * @return Driver Cached or newly initialized NoSQL driver
+     * @throws ConnectionException If no data source exists under the requested name or the server cannot connect
+     * @throws ConfigurationException If the configured data source cannot create its driver
      */
     public function getDriver(string $serverName = ""): Driver
     {
@@ -69,11 +80,14 @@ final class NoSqlDriverProvider
     }
 
     /**
-     * Detects data sources from XML
-     * 
-     * @param \SimpleXMLElement $xml
-     * @return array<string,DataSource>
-     * @throws ConfigurationException
+     * Builds the data-source map from configured server elements
+     *
+     * A collection of server elements is keyed by each required `name`
+     * attribute. A single server uses the empty-string key.
+     *
+     * @param \SimpleXMLElement $xml Selected environment's `nosql` element
+     * @return array<string,DataSource> Data sources keyed by their lookup names
+     * @throws ConfigurationException If a named server has no name or a server definition is invalid
      */
     private function getDataSources(\SimpleXMLElement $xml): array
     {
@@ -84,7 +98,11 @@ final class NoSqlDriverProvider
                 if (!isset($element["name"])) {
                     throw new ConfigurationException("Attribute 'name' is mandatory for 'server' tag");
                 }
-                $output[(string) $element["name"]] = $this->getDataSource($element);
+                $name = (string) $element["name"];
+                if (isset($output[$name])) {
+                    throw new ConfigurationException("A 'server' tag with the same 'name' attribute already exists");
+                }
+                $output[$name] = $this->getDataSource($element);
             }
         } else {
             $output[""] = $this->getDataSource($xml["server"]);
@@ -93,11 +111,13 @@ final class NoSqlDriverProvider
     }
 
     /**
-     * Gets data sources detected
-     * 
-     * @param \SimpleXMLElement $databaseInfo
-     * @return DataSource
-     * @throws ConfigurationException
+     * Creates the vendor-specific data source declared by a server element
+     *
+     * Supported driver identifiers are `memcached`, `redis`, and `apcu`.
+     *
+     * @param \SimpleXMLElement $databaseInfo Configured `server` element
+     * @return DataSource Data source matching the declared driver
+     * @throws ConfigurationException If the driver is missing, unsupported, or configured incorrectly
      */
     private function getDataSource(\SimpleXMLElement $databaseInfo): DataSource
     {
@@ -114,7 +134,10 @@ final class NoSqlDriverProvider
     }
 
     /**
-     * Closes connection to target servers
+     * Disconnects every initialized server-backed driver
+     *
+     * Cleanup exceptions are suppressed so object destruction cannot interrupt
+     * application shutdown. Local non-server drivers require no cleanup.
      */
     public function __destruct()
     {

@@ -7,21 +7,46 @@ use Lucinda\MVC\Response;
 use Lucinda\STDOUT\Request;
 
 /**
- * Binds Lucinda\Headers\Cacheable to Lucinda\STDOUT\Request and Lucinda\MVC\Response
+ * Provides a request-aware base for computing HTTP cache validators
+ *
+ * Construction gives subclasses access to the current request and response,
+ * then asks them to populate the Last-Modified timestamp and ETag exposed
+ * through the Cacheable contract.
+ *
+ * @see Cacheable
  */
 abstract class AbstractCacheable implements Cacheable
 {
+    /**
+     * Current HTTP request whose resource is being described
+     */
     protected Request $request;
+
+    /**
+     * Response associated with the requested resource
+     */
     protected Response $response;
+
+    /**
+     * Entity tag computed by the subclass, or an empty string when unavailable
+     */
     protected string $etag = "";
+
+    /**
+     * Resource modification time computed by the subclass, as a Unix timestamp
+     */
     protected int $lastModifiedTime = 0;
 
     /**
+     * Captures the HTTP exchange and computes both cache validators
      *
-     * @param Request  $request
-     * @param Response $response
+     * setTime() is called before setEtag(), allowing an ETag implementation to
+     * incorporate the resolved modification time if needed.
+     *
+     * @param Request $request Current request for the cacheable resource
+     * @param Response $response Response whose representation is being validated
      */
-    public function __construct(Request $request, Response $response)
+    final public function __construct(Request $request, Response $response)
     {
         $this->request = $request;
         $this->response = $response;
@@ -31,14 +56,18 @@ abstract class AbstractCacheable implements Cacheable
     }
 
     /**
-     * Sets value of last modified time of requested resource
+     * Computes and stores the requested resource's modification time
+     *
+     * Implementations assign the resulting Unix timestamp to
+     * $lastModifiedTime. Leaving its default value disables a meaningful
+     * Last-Modified comparison.
      */
     abstract protected function setTime(): void;
 
     /**
-     * {@inheritDoc}
+     * Gets the computed modification time for the requested resource
      *
-     * @see Cacheable::getTime()
+     * @return int Unix timestamp populated by setTime()
      */
     public function getTime(): int
     {
@@ -46,14 +75,17 @@ abstract class AbstractCacheable implements Cacheable
     }
 
     /**
-     * Sets value of etag matching requested resource
+     * Computes and stores the entity tag for the requested resource
+     *
+     * Implementations assign the validator to $etag. Leaving its default value
+     * disables a meaningful ETag comparison.
      */
     abstract protected function setEtag(): void;
 
     /**
-     * {@inheritDoc}
+     * Gets the computed entity tag for the requested resource
      *
-     * @see Cacheable::getEtag()
+     * @return string Entity tag populated by setEtag()
      */
     public function getEtag(): string
     {

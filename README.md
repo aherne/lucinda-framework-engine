@@ -1,97 +1,266 @@
-# Lucinda Framework Engine API
+# Lucinda Framework Engine
 
-This API stores internal components of [Lucinda Framework 3.0](http://www.lucinda-framework.com) open for update but not open for change by developers. Most of the classes inside are dedicated at APIs binding, so only the following are of any interest to developers:
+Lucinda Framework Engine contains the adapters and small runtime services that connect the Lucinda MVC, security, logging, headers, SQL, NoSQL, and OAuth2 packages in a complete application.
 
-- [Lucinda\Framework\AbstractCacheable](#abstractcacheable)
-- [Lucinda\Framework\AbstractLoginThrottler](#abstractloginthrottler)
-- [Lucinda\Framework\AbstractReporter](#abstractreporter)
-- [Lucinda\Framework\Json](#json)
-- [Lucinda\Framework\RestController](#restcontroller)
+Its goals are to:
 
-API is fully PSR-4 compliant, only requiring PHP7.1+ interpreter and SimpleXML extension. It has 100% Unit Test coverage, using [UnitTest API](https://github.com/aherne/unit-testing) instead of PHPUnit for greater flexibility.
+- normalize MVC requests for the security workflow;
+- adapt OAuth2 client drivers to the provider-neutral security contracts;
+- create SQL connections and NoSQL drivers lazily from environment-specific XML;
+- connect HTTP cache validation and STDERR reporting to application implementations;
+- provide small shared utilities without making the underlying packages depend on one another.
 
-## AbstractCacheable
+Install it with Composer:
 
-This abstract class is a [\Lucinda\Headers\Cacheable](https://github.com/aherne/headers-api/blob/master/src/Cacheable.php) that binds to [STDOUT MVC API](https://github.com/aherne/php-servlets-api) in order to implement recipe for a class able to generate an ETag/LastModified header value for response to any cacheable requested resource.
+```bash
+composer require lucinda/framework-engine
+```
 
-<sub>That value will be used in cache-driven communication between your project and client's browser and thus make it possible for your site to answer only with 304 Not Modified header instead of full response in case latter hasn't changed.</sub>
+It requires PHP 8.5 or newer and SimpleXML. Individual integrations may also require the PHP extension used by their selected SQL or NoSQL driver.
 
-Class defines following prototype methods developers must implement when extending:
+## Request and security integration
 
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| setTime | void | void | Sets ETag representation of response to requested resource into **$etag** field |
-| setEtag | void | void | Sets LastModified representation of response to requested resource into **$last_modified_time** field |
+`RequestBinder` copies the resolved route, HTTP method, parameters, context path, client address, and optional bearer token from `Lucinda\STDOUT\Request` into `Lucinda\WebSecurity\Request`:
 
-By virtue of binding to STDOUT MVC API, classes implementing above will have access to following protected fields:
+```php
+use Lucinda\Framework\RequestBinder;
+use Lucinda\STDOUT\Request;
 
-| Field | Type | Description |
-| --- | --- | --- |
-| $request | [\Lucinda\STDOUT\Request](https://github.com/aherne/php-servlets-api/#class-request) | Request received from client. |
-| $response | [\Lucinda\MVC\Response](https://github.com/aherne/mvc/#class-response) | Response to send back to caller. |
+$mvcRequest = new Request();
+$securityRequest = (new RequestBinder($mvcRequest, $resolvedRoute))->getResult();
+```
 
-## AbstractLoginThrottler
+Only an `Authorization` header beginning with `Bearer `, matched case-insensitively, supplies an access token. The prefix is removed and surrounding token whitespace is trimmed. Other authorization schemes result in an empty token.
 
-This abstract class is a [\Lucinda\WebSecurity\Authentication\Form\LoginThrottler](https://github.com/aherne/php-security-api/blob/master/src/Authentication/Form/LoginThrottler.php) that penalizes each failed login by ``` pow(2, failedAttempts-1) ``` seconds in order to fight against dictionary attacks.
+`LoggingRequestInformation` performs a similar adaptation for `Lucinda\Logging\RequestInformation`. It prefers the current web request and records its route, user agent, and client address. When no valid web request exists, it falls back to the current console route:
 
-<sub>Throughout the period of penalty, login will fail automatically without checking database. The more consecutive failed attempts, the greater the penalty. Once login passes, all penalties are unset.</sub>
+```php
+use Lucinda\Framework\LoggingRequestInformation;
 
-Class defines following prototype methods developers must implement when extending:
+$requestInformation = (new LoggingRequestInformation())->getRequestInformation();
+```
 
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| persist | void | void | Tracks login attempts to a storage medium (sql or nosql database) |
+The client address comes directly from the MVC request. Applications deployed behind proxies must apply their trusted-proxy policy before relying on it for security decisions.
 
-Classes implementing above will have access to following protected fields:
+## OAuth2 adapters
 
-| Field | Type | Description |
-| --- | --- | --- |
-| $attempts | integer | How many attempts were made from current IP for same username. |
-| $penaltyExpiration | integer\|NULL | UNIX time at which penalty will expire, if any |
+`OAuth2\ServiceBinder` converts OAuth2 client drivers into the services expected by Lucinda Web Security:
 
-## AbstractReporter
+```php
+use Lucinda\Framework\OAuth2\ServiceBinder;
 
-This abstract class is a [\Lucinda\STDERR\Reporter](https://github.com/aherne/errors-api/#abstract-class-reporter) that binds to [Logging API](https://github.com/aherne/php-logging-api/) in order to report errors to logs based on their severity level, identified by value of attribute *error_type* of [**exception**](https://github.com/aherne/errors-api/tree/v2.0.0#exceptions) tag @ *stderr.xml* that matches \Exception handled:
+$services = (new ServiceBinder($oauth2ClientDrivers))->getServices();
 
-| Value | Effect |
+$security = new Lucinda\WebSecurity\Wrapper(
+    xml: $xml,
+    request: $securityRequest,
+    oauth2Drivers: $services,
+    oauth2State: $oauth2State
+);
+```
+
+Services are keyed by the provider segment of the standard client-driver class name. For example, `Lucinda\OAuth2\Vendor\Google\Driver` becomes `Google`. Registering two drivers that resolve to the same provider name throws `LogicException` instead of silently replacing the first service.
+
+`ServiceConverter` delegates authorization endpoint creation, authorization-code exchange, and user-information retrieval to the client driver. `UserInfoConverter` exposes the resulting identifier, display name, and email through the security DAO contract. Validation of provider responses remains the responsibility of the OAuth2 client package.
+
+## SQL and NoSQL providers
+
+Both providers read the complete application XML document and select the requested environment. Configuration is optional: when the relevant section or environment is absent, the provider remains empty and lookup throws the package-specific lookup exception.
+
+### SQL
+
+```xml
+<sql>
+    <production>
+        <server
+            driver="mysql"
+            host="database.internal"
+            port="3306"
+            username="application"
+            password="secret"
+            schema="application"
+            charset="utf8mb4"
+        />
+    </production>
+</sql>
+```
+
+```php
+use Lucinda\Framework\SqlConnectionProvider;
+
+$provider = new SqlConnectionProvider($xml, "production");
+$connection = $provider->getConnection();
+```
+
+Connections are opened on first access, cached by name, and disconnected during provider destruction. A single server is addressed with the default empty name. Multiple servers require unique, non-empty `name` attributes:
+
+```xml
+<sql>
+    <production>
+        <server name="primary" driver="mysql" host="primary.internal" username="application" />
+        <server name="replica" driver="mysql" host="replica.internal" username="application" />
+    </production>
+</sql>
+```
+
+```php
+$primary = $provider->getConnection("primary");
+$replica = $provider->getConnection("replica");
+```
+
+Duplicate names are rejected during provider construction.
+
+### NoSQL
+
+Supported drivers are `apcu`, `memcached`, and `redis`:
+
+```xml
+<nosql>
+    <production>
+        <server name="" driver="apcu" />
+        <server name="shared" driver="redis" host="cache.internal" />
+    </production>
+</nosql>
+```
+
+```php
+use Lucinda\Framework\NoSqlDriverProvider;
+
+$provider = new NoSqlDriverProvider($xml, "production");
+$localCache = $provider->getDriver();
+$sharedCache = $provider->getDriver("shared");
+```
+
+Drivers are created on first access and cached. Server-backed drivers connect lazily and disconnect during provider destruction. APCu is process-local and does not use a server connection, so an explicitly empty name is valid when it represents the default local cache. Duplicate names are rejected.
+
+## HTTP cache validation
+
+Applications declare an `AbstractCacheable` implementation on their `headers` element:
+
+```xml
+<headers cacheable="App\Http\ArticleCacheable" />
+```
+
+The implementation calculates its Last-Modified timestamp and ETag from the request and response supplied by the engine:
+
+```php
+use Lucinda\Framework\AbstractCacheable;
+
+final class ArticleCacheable extends AbstractCacheable
+{
+    protected function setTime(): void
+    {
+        $this->lastModifiedTime = 1700000000;
+    }
+
+    protected function setEtag(): void
+    {
+        $this->etag = sha1(
+            $this->request->getURI()->getPage()."#".$this->lastModifiedTime
+        );
+    }
+}
+```
+
+The base constructor is final. Implementations initialize cache values only through `setTime()` and `setEtag()`; `setTime()` always runs first. `CacheableFinder` validates that the configured class extends `AbstractCacheable` and returns its initialized `Lucinda\Headers\Cacheable` instance.
+
+## Error reporting
+
+`AbstractReporter` maps STDERR error types to logging severity:
+
+| Error type | Logger method |
 | --- | --- |
-| none | Exception is not an error so it will not be reported. |
-| client | Exception is an error caused by client (eg: a 404), so it will not be logged except if developers decide otherwise. |
-| server | Exception is an error caused by database server, so it will be logged with *emergency* priority. |
-| syntax | Exception is a code bug made by developers, so it will be logged with *alert* priority. |
-| logical | Exception is a conceptual bug discovered at runtime, so it will be logged with *critical* priority. |
-|   | Exception is a generic error, so it will be logged with *error* priority. |
+| `SERVER` | `emergency()` |
+| `SYNTAX` | `alert()` |
+| `LOGICAL` | `critical()` |
+| `CLIENT` or unclassified | `error()` |
+| `NONE` | Not logged |
 
-Class defines following prototype method developers must implement when extending:
+Applications provide the logger and may decide that selected error types should not be logged:
 
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| getLogger | void | [\Lucinda\Logging\Logger](https://github.com/aherne/php-logging-api/#logging) | Generates and returns a logger instance from matching **reporter** tag @ *stderr.xml* |
+```php
+use Lucinda\Framework\AbstractReporter;
+use Lucinda\Logging\Logger;
+use Lucinda\STDERR\ErrorType;
 
-## Json
+final class FileReporter extends AbstractReporter
+{
+    protected function isLoggable(ErrorType $errorType): bool
+    {
+        return $errorType !== ErrorType::CLIENT;
+    }
 
-This class is an OOP wrapper over PHP's native functions, encapsulating json generation and execution, throwing \Lucinda\Framework\Json\Exception in case process fails. Class defines following methods, all relevant to developers:
+    protected function getLogger(): Logger
+    {
+        return new App\Logging\FileLogger($this->xml);
+    }
+}
+```
 
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| encode | mixed | string | Encodes a primitive/array/object to json format. |
-| decode | string | array | Decodes a json into array. |
+`NONE` represents handled exceptional control flow rather than a reportable failure. The logging decision is made before constructing the logger.
 
-## RestController
+## Utilities
 
-This abstract class is a [\Lucinda\MVC\Controller](https://github.com/aherne/php-servlets-api/#abstract-class-controller) to be extended if your project is a RESTful web service API. Classes extending it must implement a method for each HTTP method respective route *supports*:
+### JSON
 
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| GET | void | void | Logic to execute when respective route is accessed via GET method. |
-| POST | void | void | Logic to execute when respective route is accessed via POST method. |
-| PUT | void | void | Logic to execute when respective route is accessed via PUT method. |
-| DELETE | void | void | Logic to execute when respective route is accessed via DELETE method. |
-| HEAD | void | void | Logic to execute when respective route is accessed via HEAD method. |
-| CONNECT | void | void | Logic to execute when respective route is accessed via CONNECT method. |
-| OPTIONS | void | void | Logic to execute when respective route is accessed via OPTIONS method. |
-| TRACE | void | void | Logic to execute when respective route is accessed via TRACE method. |
+`Json` wraps native JSON processing with exception-based failures:
 
-If a route is accessed using a method not covered in its matching controller, a [\Lucinda\STDOUT\MethodNotAllowedException](https://github.com/aherne/php-servlets-api/blob/master/src/MethodNotAllowedException.php) is thrown!
+```php
+use Lucinda\Framework\Json;
 
-<sub>Unlike other frameworks, Lucinda considers controller "actions" to be an anti-pattern, a recipe for bloated illogical controllers. Only in this particular case are "actions" making a logical sense: a controller that behaves differently depending on HTTP method it's called with.</sub>
+$json = new Json();
+$encoded = $json->encode(["message" => "Bună ziua"]);
+$decoded = $json->decode($encoded);
+```
+
+Encoding preserves Unicode. Decoding returns associative arrays and preserves integer literals outside PHP's integer range as strings. Malformed documents and unencodable values throw `JsonException`.
+
+### Service registry
+
+`ServiceRegistry` stores process-wide service objects by identifier:
+
+```php
+use Lucinda\Framework\ServiceRegistry;
+
+ServiceRegistry::set("mailer", $mailer);
+$mailer = ServiceRegistry::get("mailer");
+
+ServiceRegistry::clear("mailer");
+ServiceRegistry::clear();
+```
+
+Setting an existing identifier replaces its value. Looking up an unknown identifier throws `RuntimeException`. Long-running workers should clear request-scoped services explicitly.
+
+## Failure boundaries
+
+| Component | Failure behavior |
+| --- | --- |
+| `CacheableFinder` | Throws `Lucinda\MVC\ConfigurationException` for a missing or incompatible cacheable class. |
+| `SqlConnectionProvider` | Throws SQL configuration, lookup, or connection exceptions. |
+| `NoSqlDriverProvider` | Throws NoSQL configuration or connection exceptions. |
+| OAuth2 adapters | Propagate client-driver failures; duplicate providers throw `LogicException`. |
+| `Json` | Throws native `JsonException`. |
+| `ServiceRegistry` | Throws `RuntimeException` for an unknown identifier. |
+
+Do not convert infrastructure or adapter failures into successful requests. Handle them at the corresponding application boundary.
+
+## Development
+
+Install dependencies and run the test suite:
+
+```bash
+composer install
+php test.php
+```
+
+From Windows, run PHP through WSL:
+
+```powershell
+wsl -d Ubuntu --cd /home/aherne/framework/framework-engine php test.php
+```
+
+Tests use local fixtures and test doubles; they do not require live SQL, Redis, Memcached, or OAuth2 services.
+
+## License
+
+MIT.

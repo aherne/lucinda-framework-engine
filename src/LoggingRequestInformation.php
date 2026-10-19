@@ -7,14 +7,24 @@ use Lucinda\Logging\RequestInformation;
 use Lucinda\STDOUT\Request as WebRequest;
 
 /**
- * Binds Lucinda\(Console_)STDOUT\Request request to Lucinda\Logging\RequestInformation
+ * Builds logging metadata from the active web or console request
+ *
+ * Web request data is preferred and includes the route, user agent, and client
+ * IP address. If web request construction fails, the class falls back to the
+ * current console route. The resulting transport object is created once during
+ * construction.
+ *
+ * @see RequestInformation
  */
 final class LoggingRequestInformation
 {
+    /**
+     * Normalized request metadata assembled during construction
+     */
     private RequestInformation $requestInfo;
 
     /**
-     * Bootstraps page
+     * Detects the current execution context and builds its logging metadata
      */
     public function __construct()
     {
@@ -22,9 +32,10 @@ final class LoggingRequestInformation
     }
 
     /**
-     * Performs binding
+     * Populates logging metadata from a web request or console fallback
      *
-     * @return void
+     * Any exception raised while constructing or reading the web request causes
+     * the console request route to be used instead.
      */
     private function setRequestInformation()
     {
@@ -32,7 +43,7 @@ final class LoggingRequestInformation
         try {
             $request = new WebRequest();
             $this->requestInfo->setUri($request->getURI()->getPage());
-            $this->requestInfo->setUserAgent($request->headers("User-Agent"));
+            $this->requestInfo->setUserAgent((string) $request->headers("User-Agent"));
             $this->requestInfo->setIpAddress($request->getClient()->getIP());
         } catch (\Exception) {
             $request = new ConsoleRequest();
@@ -41,9 +52,9 @@ final class LoggingRequestInformation
     }
 
     /**
-     * Gets request information
+     * Gets the normalized request metadata built during construction
      *
-     * @return RequestInformation
+     * @return RequestInformation Logging context for the detected request type
      */
     public function getRequestInformation(): RequestInformation
     {

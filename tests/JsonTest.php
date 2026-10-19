@@ -5,24 +5,52 @@ namespace Test\Lucinda\Framework;
 use Lucinda\Framework\Json;
 use Lucinda\UnitTest\Result;
 
-class JsonTest
+final class JsonTest
 {
-    private $object;
+    private Json $json;
 
     public function __construct()
     {
-        $this->object = new Json();
+        $this->json = new Json();
     }
 
     public function encode()
     {
-        $result = $this->object->encode(["asd"=>"fgh"]);
-        return new Result($result);
-    }
+        $encoded = $this->json->encode(["message" => "Bună ziua"]);
 
+        try {
+            $this->json->encode(INF);
+            $invalidValueRejected = false;
+        } catch (\JsonException) {
+            $invalidValueRejected = true;
+        }
+
+        return [
+            new Result($encoded === '{"message":"Bună ziua"}', "unicode is preserved"),
+            new Result($invalidValueRejected, "invalid value is rejected")
+        ];
+    }
 
     public function decode()
     {
-        return new Result($this->object->decode($this->object->encode(["asd"=>"fgh"]))==["asd"=>"fgh"]);
+        $decoded = $this->json->decode(
+            '{"name":"framework","id":9223372036854775808}'
+        );
+
+        try {
+            $this->json->decode('{"invalid":}');
+            $malformedDocumentRejected = false;
+        } catch (\JsonException) {
+            $malformedDocumentRejected = true;
+        }
+
+        return [
+            new Result($decoded["name"] === "framework", "objects become arrays"),
+            new Result(
+                $decoded["id"] === "9223372036854775808",
+                "large integer precision"
+            ),
+            new Result($malformedDocumentRejected, "malformed document is rejected")
+        ];
     }
 }

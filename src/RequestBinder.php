@@ -6,17 +6,26 @@ use Lucinda\STDOUT\Request;
 use Lucinda\WebSecurity\Request as WebSecurityRequest;
 
 /**
- * Binds Lucinda\STDOUT\Request to Lucinda\WebSecurity\Request
+ * Adapts an MVC HTTP request for the web-security workflow
+ *
+ * The adapter copies the resolved route, method, parameters, context path, and
+ * client IP into a provider-neutral security request. It also extracts a Bearer
+ * token from the Authorization header when present.
+ *
+ * @see WebSecurityRequest
  */
 final class RequestBinder
 {
+    /**
+     * Security request populated during construction
+     */
     private WebSecurityRequest $result;
 
     /**
-     * Kick-starts binding process based on arguments
+     * Builds a security request from the current MVC request
      *
-     * @param Request $request
-     * @param string  $validPage
+     * @param Request $request Current HTTP request to normalize
+     * @param string $validPage Resolved application route used by security configuration
      */
     public function __construct(Request $request, string $validPage)
     {
@@ -25,11 +34,14 @@ final class RequestBinder
     }
 
     /**
-     * Gets access token based on Authorization request header received from client. Eg:
-     * Authorization Bearer asdadasdasdasdasdasdasd
+     * Extracts a Bearer token from the Authorization request header
      *
-     * @param  Request $request
-     * @return string
+     * The scheme match is case-insensitive and surrounding whitespace is
+     * removed from the token. Other schemes and missing headers produce an
+     * empty string.
+     *
+     * @param Request $request HTTP request containing the authorization header
+     * @return string Token without the `Bearer` prefix, or an empty string when absent
      */
     private function getAccessToken(Request $request): string
     {
@@ -42,11 +54,11 @@ final class RequestBinder
     }
 
     /**
-     * Performs binding process between \Lucinda\STDOUT\Request and \Lucinda\WebSecurity\Request
+     * Copies normalized HTTP request values into a security request
      *
-     * @param Request $request
-     * @param string  $validPage
-     * @param string  $accessToken
+     * @param Request $request Source MVC request
+     * @param string $validPage Resolved route used for security matching
+     * @param string $accessToken Extracted bearer token, or an empty string
      */
     private function setResult(Request $request, string $validPage, string $accessToken): void
     {
@@ -61,9 +73,9 @@ final class RequestBinder
     }
 
     /**
-     * Gets binding result
+     * Gets the security request built during construction
      *
-     * @return WebSecurityRequest
+     * @return WebSecurityRequest Normalized request ready for the security workflow
      */
     public function getResult(): WebSecurityRequest
     {

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fixtures>
+    <headers fixture="headers-valid" cacheable="Test\Lucinda\Framework\mocks\Cacheable" />
+    <headers fixture="headers-missing-cacheable" />
+    <headers fixture="headers-invalid-cacheable" cacheable="stdClass" />
+
+    <application fixture="sql-single">
+        <sql>
+            <local>
+                <server driver="mysql" host="127.0.0.1" username="tester" />
+            </local>
+        </sql>
+    </application>
+    <application fixture="sql-duplicate">
+        <sql>
+            <local>
+                <server name="primary" driver="mysql" host="127.0.0.1" username="tester" />
+                <server name="primary" driver="mysql" host="127.0.0.2" username="tester" />
+            </local>
+        </sql>
+    </application>
+    <application fixture="sql-missing-name">
+        <sql>
+            <local>
+                <server driver="mysql" host="127.0.0.1" username="tester" />
+                <server name="replica" driver="mysql" host="127.0.0.2" username="tester" />
+            </local>
+        </sql>
+    </application>
+
+    <application fixture="nosql-single">
+        <nosql>
+            <local>
+                <server driver="apcu" />
+            </local>
+        </nosql>
+    </application>
+    <application fixture="nosql-multiple">
+        <nosql>
+            <local>
+                <server name="" driver="apcu" />
+                <server name="secondary" driver="apcu" />
+            </local>
+        </nosql>
+    </application>
+    <application fixture="nosql-duplicate">
+        <nosql>
+            <local>
+                <server name="cache" driver="apcu" />
+                <server name="cache" driver="apcu" />
+            </local>
+        </nosql>
+    </application>
+    <application fixture="nosql-missing-name">
+        <nosql>
+            <local>
+                <server driver="apcu" />
+                <server name="cache" driver="apcu" />
+            </local>
+        </nosql>
+    </application>
+    <application fixture="nosql-unsupported">
+        <nosql>
+            <local>
+                <server driver="unknown" />
+            </local>
+        </nosql>
+    </application>
+    <application fixture="empty-application" />
+</fixtures>

@@ -5,44 +5,59 @@ namespace Test\Lucinda\Framework;
 use Lucinda\Framework\ServiceRegistry;
 use Lucinda\UnitTest\Result;
 
-class ServiceRegistryTest
+final class ServiceRegistryTest
 {
-    private const SERVICE_ID = "test.service";
-
     public function set()
     {
         ServiceRegistry::clear();
-        $object = new \stdClass();
-        ServiceRegistry::set(self::SERVICE_ID, $object);
-        return new Result(true, "service registered");
+        $service = new \stdClass();
+        ServiceRegistry::set("service", $service);
+
+        return new Result(ServiceRegistry::get("service") === $service);
     }
 
     public function get()
     {
         ServiceRegistry::clear();
-        $object = new \stdClass();
-        ServiceRegistry::set(self::SERVICE_ID, $object);
-        return new Result(ServiceRegistry::get(self::SERVICE_ID) === $object);
+        $service = new \stdClass();
+        ServiceRegistry::set("service", $service);
+
+        try {
+            ServiceRegistry::get("missing");
+            $missingRejected = false;
+        } catch (\RuntimeException) {
+            $missingRejected = true;
+        }
+
+        return [
+            new Result(ServiceRegistry::get("service") === $service, "registered service"),
+            new Result($missingRejected, "missing service")
+        ];
     }
 
     public function has()
     {
         ServiceRegistry::clear();
-        $object = new \stdClass();
-        ServiceRegistry::set(self::SERVICE_ID, $object);
-        return new Result(ServiceRegistry::has(self::SERVICE_ID));
+        ServiceRegistry::set("service", new \stdClass());
+
+        return [
+            new Result(ServiceRegistry::has("service"), "registered identifier"),
+            new Result(!ServiceRegistry::has("missing"), "missing identifier")
+        ];
     }
 
     public function clear()
     {
         ServiceRegistry::clear();
-        $object = new \stdClass();
-        ServiceRegistry::set(self::SERVICE_ID, $object);
-        ServiceRegistry::clear(self::SERVICE_ID);
-        $missing = !ServiceRegistry::has(self::SERVICE_ID);
-        ServiceRegistry::set(self::SERVICE_ID, $object);
+        ServiceRegistry::set("first", new \stdClass());
+        ServiceRegistry::set("second", new \stdClass());
+        ServiceRegistry::clear("first");
+        $singleRemoval = !ServiceRegistry::has("first") && ServiceRegistry::has("second");
         ServiceRegistry::clear();
-        $allCleared = !ServiceRegistry::has(self::SERVICE_ID);
-        return new Result($missing && $allCleared);
+
+        return [
+            new Result($singleRemoval, "single service"),
+            new Result(!ServiceRegistry::has("second"), "all services")
+        ];
     }
 }
