@@ -3,7 +3,7 @@
 namespace Lucinda\Framework;
 
 use Lucinda\Headers\Cacheable;
-use Lucinda\MVC\Response;
+use Lucinda\MVC\Response\Http as Response;
 use Lucinda\STDOUT\Request;
 
 /**
