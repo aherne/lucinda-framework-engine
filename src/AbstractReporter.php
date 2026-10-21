@@ -4,7 +4,7 @@ namespace Lucinda\Framework;
 
 use Lucinda\Logging\Logger;
 use Lucinda\STDERR\ErrorType;
-use Lucinda\STDERR\Reporter;
+use Lucinda\STDERR\ErrorReporter;
 
 /**
  * Bridges STDERR request failures to a Lucinda logger
@@ -13,10 +13,10 @@ use Lucinda\STDERR\Reporter;
  * non-error routes are ignored, while server, syntax, logical, and uncategorized
  * failures are sent to the logger supplied by the application.
  *
- * @see Reporter
+ * @see ErrorReporter
  * @see Logger
  */
-abstract class AbstractReporter extends Reporter
+abstract class AbstractReporter implements ErrorReporter
 {
     /**
      * Reports the current STDERR exception at the severity matching its error type
@@ -24,29 +24,20 @@ abstract class AbstractReporter extends Reporter
      * ErrorType::SERVER maps to emergency, SYNTAX to alert, LOGICAL to critical,
      * and any remaining failure type to error. NONE and CLIENT are not logged.
      */
-    public function run(): void
-    {
-        $errorType = $this->request->getRoute()->getErrorType();
-        if ($errorType === ErrorType::NONE || !$this->isLoggable($errorType)) {
+    public function report(ErrorType $errorType, \Throwable $error, ?\Throwable $previous = null): void {
+        if (!$this->isLoggable($errorType)) {
             return;
         }
 
         $logger = $this->getLogger();
-        $exception = $this->request->getException();
-        switch ($this->request->getRoute()->getErrorType()) {
-            case ErrorType::SERVER:
-                $logger->emergency($exception);
-                break;
-            case ErrorType::SYNTAX:
-                $logger->alert($exception);
-                break;
-            case ErrorType::LOGICAL:
-                $logger->critical($exception);
-                break;
-            default:
-                $logger->error($exception);
-                break;
-        }
+
+        match ($errorType) {
+            ErrorType::NONE => null,
+            ErrorType::SERVER => $logger->emergency($error),
+            ErrorType::SYNTAX => $logger->alert($error),
+            ErrorType::LOGICAL => $logger->critical($error),
+            ErrorType::CLIENT => $logger->error($error),
+        };
     }
 
     /**
@@ -55,10 +46,7 @@ abstract class AbstractReporter extends Reporter
      * @param ErrorType $errorType
      * @return bool
      */
-    protected function isLoggable(ErrorType $errorType): bool
-    {
-        return true;
-    }
+    abstract protected function isLoggable(ErrorType $errorType): bool;
 
     /**
      * Gets the application logger used to persist the current failure
