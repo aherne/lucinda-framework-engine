@@ -29,7 +29,7 @@ abstract class AbstractReporter implements ErrorReporter
             return;
         }
 
-        $logger = $this->getLogger();
+        $logger = $this->getLogger($errorType);
 
         match ($errorType) {
             ErrorType::NONE => null,
@@ -37,6 +37,7 @@ abstract class AbstractReporter implements ErrorReporter
             ErrorType::SYNTAX => $logger->alert($error),
             ErrorType::LOGICAL => $logger->critical($error),
             ErrorType::CLIENT => $logger->error($error),
+            ErrorType::INTERNAL => $logger->emergency($error)
         };
     }
 
@@ -51,7 +52,8 @@ abstract class AbstractReporter implements ErrorReporter
     /**
      * Gets the application logger used to persist the current failure
      *
+     * @param ErrorType $errorType
      * @return Logger Configured logger implementation for the desired output medium
      */
-    abstract protected function getLogger(): Logger;
+    abstract protected function getLogger(ErrorType $errorType): Logger;
 }
