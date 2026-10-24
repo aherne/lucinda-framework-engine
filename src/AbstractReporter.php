@@ -39,6 +39,10 @@ abstract class AbstractReporter implements ErrorReporter
             ErrorType::CLIENT => $logger->error($error),
             ErrorType::INTERNAL => $logger->emergency($error)
         };
+
+        if ($errorType === ErrorType::INTERNAL && $previous!==null) {
+            $logger->emergency($previous);
+        }
     }
 
     /**
