@@ -4,7 +4,6 @@ namespace Lucinda\Framework;
 
 use Lucinda\Headers\Cacheable;
 use Lucinda\MVC\ConfigurationException;
-use Lucinda\MVC\Response\Http as Response;
 use Lucinda\STDOUT\Request;
 
 /**
@@ -28,10 +27,10 @@ final class CacheableFinder
      *
      * @param \SimpleXMLElement $xml XML element containing the `cacheable` attribute
      * @param Request $request Current request passed to the implementation
-     * @param Response $response Current response passed to the implementation
+     * @param string $response Current response passed to the implementation
      * @throws ConfigurationException If the attribute is missing or does not name an AbstractCacheable subclass
      */
-    public function __construct(\SimpleXMLElement $xml, Request $request, Response $response)
+    public function __construct(\SimpleXMLElement $xml, Request $request, string $response)
     {
         $this->setResult($xml, $request, $response);
     }
@@ -41,10 +40,10 @@ final class CacheableFinder
      *
      * @param \SimpleXMLElement $xml XML element containing the `cacheable` attribute
      * @param Request $request Current request passed to the implementation
-     * @param Response $response Current response passed to the implementation
+     * @param string $response Current response passed to the implementation
      * @throws ConfigurationException If the attribute is missing or does not name an AbstractCacheable subclass
      */
-    private function setResult(\SimpleXMLElement $xml, Request $request, Response $response): void
+    private function setResult(\SimpleXMLElement $xml, Request $request, string $response): void
     {
         $className = (string) $xml["cacheable"];
         if (!$className) {
