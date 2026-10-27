@@ -3,7 +3,6 @@
 namespace Lucinda\Framework;
 
 use Lucinda\Headers\Cacheable;
-use Lucinda\MVC\Response\Http as Response;
 use Lucinda\STDOUT\Request;
 
 /**
@@ -25,7 +24,7 @@ abstract class AbstractCacheable implements Cacheable
     /**
      * Response associated with the requested resource
      */
-    protected Response $response;
+    protected string $response;
 
     /**
      * Entity tag computed by the subclass, or an empty string when unavailable
@@ -44,9 +43,9 @@ abstract class AbstractCacheable implements Cacheable
      * incorporate the resolved modification time if needed.
      *
      * @param Request $request Current request for the cacheable resource
-     * @param Response $response Response whose representation is being validated
+     * @param string $response Response whose representation is being validated
      */
-    final public function __construct(Request $request, Response $response)
+    final public function __construct(Request $request, string $response)
     {
         $this->request = $request;
         $this->response = $response;
