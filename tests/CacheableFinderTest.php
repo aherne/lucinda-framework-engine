@@ -4,7 +4,6 @@ namespace Test\Lucinda\Framework;
 
 use Lucinda\Framework\CacheableFinder;
 use Lucinda\MVC\ConfigurationException;
-use Lucinda\MVC\Response\Http;
 use Lucinda\UnitTest\Result;
 use Test\Lucinda\Framework\mocks\Cacheable;
 use Test\Lucinda\Framework\Support\Fixture;
@@ -14,7 +13,7 @@ final class CacheableFinderTest
     public function getResult()
     {
         $request = Fixture::webRequest();
-        $response = new Http();
+        $response = "asdfg";
         $cacheable = (new CacheableFinder(
             Fixture::node("headers-valid"),
             $request,
@@ -34,7 +33,7 @@ final class CacheableFinderTest
     public function invalidConfiguration()
     {
         $request = Fixture::webRequest();
-        $response = new Http();
+        $response = "asdfg";
         $results = [];
 
         foreach (["headers-missing-cacheable", "headers-invalid-cacheable"] as $fixture) {
