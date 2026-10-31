@@ -13,11 +13,11 @@ final class NoSqlDriverProviderTest
 {
     public function getDriver()
     {
-        $provider = new NoSqlDriverProvider(Fixture::node("nosql-single"), "local");
+        $provider = new NoSqlDriverProvider(Fixture::node("nosql-single"));
         $first = $provider->getDriver();
         $second = $provider->getDriver();
 
-        $multiple = new NoSqlDriverProvider(Fixture::node("nosql-multiple"), "local");
+        $multiple = new NoSqlDriverProvider(Fixture::node("nosql-multiple"));
 
         return [
             new Result($first instanceof Driver, "APCu driver"),
@@ -36,14 +36,14 @@ final class NoSqlDriverProviderTest
 
         foreach (["nosql-duplicate", "nosql-missing-name", "nosql-unsupported"] as $fixture) {
             try {
-                new NoSqlDriverProvider(Fixture::node($fixture), "local");
+                new NoSqlDriverProvider(Fixture::node($fixture));
                 $results[] = new Result(false, $fixture." was accepted");
             } catch (ConfigurationException) {
                 $results[] = new Result(true, $fixture);
             }
         }
 
-        $provider = new NoSqlDriverProvider(Fixture::node("empty-application"), "local");
+        $provider = new NoSqlDriverProvider(Fixture::node("empty-application"));
         try {
             $provider->getDriver();
             $results[] = new Result(false, "missing data source was accepted");

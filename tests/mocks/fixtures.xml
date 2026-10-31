@@ -6,64 +6,48 @@
 
     <application fixture="sql-single">
         <sql>
-            <local>
-                <server driver="mysql" host="127.0.0.1" username="tester" />
-            </local>
+            <server driver="mysql" host="127.0.0.1" username="tester" />
         </sql>
     </application>
     <application fixture="sql-duplicate">
         <sql>
-            <local>
-                <server name="primary" driver="mysql" host="127.0.0.1" username="tester" />
-                <server name="primary" driver="mysql" host="127.0.0.2" username="tester" />
-            </local>
+            <server name="primary" driver="mysql" host="127.0.0.1" username="tester" />
+            <server name="primary" driver="mysql" host="127.0.0.2" username="tester" />
         </sql>
     </application>
     <application fixture="sql-missing-name">
         <sql>
-            <local>
-                <server driver="mysql" host="127.0.0.1" username="tester" />
-                <server name="replica" driver="mysql" host="127.0.0.2" username="tester" />
-            </local>
+            <server driver="mysql" host="127.0.0.1" username="tester" />
+            <server name="replica" driver="mysql" host="127.0.0.2" username="tester" />
         </sql>
     </application>
 
     <application fixture="nosql-single">
         <nosql>
-            <local>
-                <server driver="apcu" />
-            </local>
+            <server driver="apcu" />
         </nosql>
     </application>
     <application fixture="nosql-multiple">
         <nosql>
-            <local>
-                <server name="" driver="apcu" />
-                <server name="secondary" driver="apcu" />
-            </local>
+            <server name="" driver="apcu" />
+            <server name="secondary" driver="apcu" />
         </nosql>
     </application>
     <application fixture="nosql-duplicate">
         <nosql>
-            <local>
-                <server name="cache" driver="apcu" />
-                <server name="cache" driver="apcu" />
-            </local>
+            <server name="cache" driver="apcu" />
+            <server name="cache" driver="apcu" />
         </nosql>
     </application>
     <application fixture="nosql-missing-name">
         <nosql>
-            <local>
-                <server driver="apcu" />
-                <server name="cache" driver="apcu" />
-            </local>
+            <server driver="apcu" />
+            <server name="cache" driver="apcu" />
         </nosql>
     </application>
     <application fixture="nosql-unsupported">
         <nosql>
-            <local>
-                <server driver="unknown" />
-            </local>
+            <server driver="unknown" />
         </nosql>
     </application>
     <application fixture="empty-application" />

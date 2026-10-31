@@ -1,0 +1,32 @@
+In framework-engine, change AbstractReporter from:
+abstract class AbstractReporter extends Reporter
+to:
+abstract class AbstractReporter implements \Lucinda\STDERR\ErrorReporter
+Its entry point becomes:
+public function report(
+    \Throwable $error,
+    ?\Throwable $previous = null
+): void
+It should no longer depend on:
+- Lucinda\STDERR\Request
+- reporter XML;
+- a resolved STDERR route;
+- run().
+There is one behavioral decision to make: the old implementation chose logger severity using the route’s ErrorType. That information is no longer 
+available when report() is first called—the front controller deliberately reports before parsing error configuration at 
+[FrontController.php (line 108)](//wsl.localhost/Ubuntu/home/aherne/framework/framework-skeleton/vendor/lucinda/errors-mvc/src/FrontController.php:108).
+I recommend that the Engine reporter:
+- default to Logger::error($error);
+- expose a protected hook for applications wanting severity classification;
+- treat $previous as contextual information for failures occurring inside the error-handling process;
+- avoid depending on rendering-route classification.
+Your new skeleton class at [src/STDERR/ErrorReporter.php (line 7)](//wsl.localhost/Ubuntu/home/aherne/framework/framework-skeleton/src/STDERR/ErrorReporter.php:7) 
+already implements the correct interface shape. Once Engine provides the proper bridge, it could either extend that Engine abstraction or be 
+replaced with a configured concrete Engine reporter.
+The reference search confirms that the obsolete Reporter is no longer used by errors-mvc itself; only the stale Engine AbstractReporter still imports it.
+So the safe order is:
+1. Rewrite Engine AbstractReporter.
+2. Add reporter integration tests.
+3. Delete errors-mvc/src/Reporter.php.
+4. Add : void to ErrorReporter::report().
+5. Update documentation and release both packages together.

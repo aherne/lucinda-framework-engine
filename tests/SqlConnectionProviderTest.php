@@ -12,7 +12,7 @@ final class SqlConnectionProviderTest
 {
     public function getConnection()
     {
-        $provider = new SqlConnectionProvider(Fixture::node("empty-application"), "local");
+        $provider = new SqlConnectionProvider(Fixture::node("empty-application"));
 
         try {
             $provider->getConnection();
@@ -30,7 +30,7 @@ final class SqlConnectionProviderTest
         $results = [];
 
         try {
-            new SqlConnectionProvider(Fixture::node("sql-single"), "local");
+            new SqlConnectionProvider(Fixture::node("sql-single"));
             $results[] = new Result(true, "single default server");
         } catch (\Throwable) {
             $results[] = new Result(false, "single default server");
@@ -38,7 +38,7 @@ final class SqlConnectionProviderTest
 
         foreach (["sql-duplicate", "sql-missing-name"] as $fixture) {
             try {
-                new SqlConnectionProvider(Fixture::node($fixture), "local");
+                new SqlConnectionProvider(Fixture::node($fixture));
                 $results[] = new Result(false, $fixture." was accepted");
             } catch (ConfigurationException) {
                 $results[] = new Result(true, $fixture);
