@@ -34,12 +34,11 @@ final class SqlConnectionProvider
      * provider empty.
      *
      * @param \SimpleXMLElement $xml Application XML containing the `sql` section
-     * @param string $environment Environment child to select beneath `sql`
      * @throws ConfigurationException If the environment has no server or contains an invalid server definition
      */
-    public function __construct(\SimpleXMLElement $xml, string $environment)
+    public function __construct(\SimpleXMLElement $xml)
     {
-        $xml = $xml->sql->{$environment};
+        $xml = $xml->sql;
         if (empty($xml)) {
             return;
         }

@@ -38,12 +38,11 @@ final class NoSqlDriverProvider
      * the provider empty.
      *
      * @param \SimpleXMLElement $xml Application XML containing the `nosql` section
-     * @param string $environment Environment child to select beneath `nosql`
      * @throws ConfigurationException If the environment has no server or contains an invalid server definition
      */
-    public function __construct(\SimpleXMLElement $xml, string $environment)
+    public function __construct(\SimpleXMLElement $xml)
     {
-        $xml = $xml->nosql->{$environment};
+        $xml = $xml->nosql;
         if (empty($xml)) {
             return;
         }
