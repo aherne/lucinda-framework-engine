@@ -42,6 +42,30 @@ $requestInformation = (new LoggingRequestInformation())->getRequestInformation()
 
 The client address comes directly from the MVC request. Applications deployed behind proxies must apply their trusted-proxy policy before relying on it for security decisions.
 
+## Session adapter
+
+`Lucinda\Framework\Session` implements `Lucinda\WebSecurity\Session` by delegating
+to the existing MVC session. It does not configure or start a session:
+
+```php
+// $mvcSession is the configured MVC session supplied by the application.
+if (!$mvcSession->isStarted() && !$mvcSession->start()) {
+    throw new RuntimeException("Unable to start the session");
+}
+$security = new Lucinda\WebSecurity\Wrapper(
+    xml: $xml,
+    request: $securityRequest,
+    session: new Lucinda\Framework\Session($mvcSession)
+);
+```
+
+MVC owns cookie settings, save handlers and startup. Security owns authentication
+state and idle expiry, and requests ID rotation through the adapter. Rotation
+invalidates the old session ID while retaining data. Clearing empties all session
+data without closing the session. Missing adapters and inactive sessions fail
+explicitly when session persistence is configured. Other security consumers can
+implement the same contract using their own session facilities.
+
 ## OAuth2 adapters
 
 `OAuth2\ServiceBinder` converts OAuth2 client drivers into the services expected by Lucinda Web Security:
@@ -55,7 +79,8 @@ $security = new Lucinda\WebSecurity\Wrapper(
     xml: $xml,
     request: $securityRequest,
     oauth2Drivers: $services,
-    oauth2State: $oauth2State
+    oauth2State: $oauth2State,
+    session: new Lucinda\Framework\Session($mvcSession)
 );
 ```
 
