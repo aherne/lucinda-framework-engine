@@ -8,6 +8,7 @@ use Lucinda\NoSQL\ConnectionException;
 use Lucinda\NoSQL\Vendor\APCu\Driver;
 use Lucinda\UnitTest\Result;
 use Test\Lucinda\Framework\Support\Fixture;
+use Test\Lucinda\Framework\Support\AtomicTestSession;
 
 final class NoSqlDriverProviderTest
 {
@@ -53,4 +54,16 @@ final class NoSqlDriverProviderTest
 
         return $results;
     }
+    /**
+     * Checks lazy atomic adaptation without requiring APCu in the parent CLI
+     *
+     * @return list<Result> Provider integration assertions
+     */
+    public function getAtomicDriver(): array
+    {
+        $session = new AtomicTestSession('apcu');
+        return $session->run('provider');
+    }
+        
+
 }
