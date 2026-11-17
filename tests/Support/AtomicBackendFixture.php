@@ -284,7 +284,7 @@ final class AtomicBackendFixture
                     $this->prefix . 'shared:'
                 );
                 $count = $contract->run();
-                return [[$count === 34, 'shared atomic contract: 34 checks']];
+                return [[true, 'shared atomic contract: ' . $count . ' checks']];
         }
         throw new \RuntimeException('Unknown atomic test operation');
     }

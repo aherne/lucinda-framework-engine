@@ -284,7 +284,17 @@ From Windows, run PHP through WSL:
 wsl -d Ubuntu --cd /home/aherne/framework/framework-engine php test.php
 ```
 
-Tests use local fixtures and test doubles; they do not require live SQL, Redis, Memcached, or OAuth2 services.
+Most tests use local fixtures and test doubles. Atomic NoSQL tests require
+the PHP redis, memcached and apcu extensions, plus the redis-server and
+memcached executables. They start private servers on temporary loopback ports
+and verify the server process before accessing data. APCu runs in a child PHP
+runtime with apc.enable_cli enabled, so the parent CLI configuration needs no
+change. No application cache endpoint or database is used.
+
+The atomic tests are compatible with the normal php test.php runner and run
+the shared contract for Redis, Memcached and APCu. The Valkey driver is checked
+against a private Redis-protocol endpoint. Server processes are terminated
+when their test sessions close.
 
 ## License
 

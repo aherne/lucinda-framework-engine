@@ -2,6 +2,7 @@
 
 namespace Lucinda\Framework;
 
+use Lucinda\MVC\Facet;
 use Lucinda\SQL\ConfigurationException;
 use Lucinda\SQL\Connection;
 use Lucinda\SQL\DataSource;
@@ -15,7 +16,7 @@ use Lucinda\SQL\Exception;
  * Connections are opened on first access, cached for reuse, and disconnected
  * when this provider is destroyed.
  */
-final class SqlConnectionProvider
+final class SqlConnectionProvider implements Facet
 {
     /**
      * @var array<string,DataSource> Configured data sources keyed by server name

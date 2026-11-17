@@ -6,6 +6,7 @@ use Lucinda\Framework\NoSQL\APCuAtomicDriver;
 use Lucinda\Framework\NoSQL\AtomicDriver;
 use Lucinda\Framework\NoSQL\MemcachedAtomicDriver;
 use Lucinda\Framework\NoSQL\RedisAtomicDriver;
+use Lucinda\MVC\Facet;
 use Lucinda\NoSQL\ConfigurationException;
 use Lucinda\NoSQL\ConnectionException;
 use Lucinda\NoSQL\DataSource;
@@ -27,7 +28,7 @@ use Lucinda\NoSQL\Vendor\Redis\Driver as RedisDriver;
  * Drivers are created on first access, cached for reuse, and disconnected when
  * this provider is destroyed when they use a server connection.
  */
-final class NoSqlDriverProvider
+final class NoSqlDriverProvider implements Facet
 {
     /**
      * @var array<string,DataSource> Data sources keyed by server lookup name
