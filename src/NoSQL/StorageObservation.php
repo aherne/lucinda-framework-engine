@@ -10,7 +10,7 @@ namespace Lucinda\Framework\NoSQL;
  *
  * @internal
  */
-final readonly class StorageObservation
+final class StorageObservation
 {
     /** Physical key inside the adapter's namespace */
     private string $key;

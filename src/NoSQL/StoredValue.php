@@ -10,7 +10,7 @@ namespace Lucinda\Framework\NoSQL;
  *
  * @internal
  */
-final readonly class StoredValue
+final class StoredValue
 {
     /** Unique revision changed by every accepted mutation */
     private string $version;

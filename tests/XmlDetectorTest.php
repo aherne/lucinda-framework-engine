@@ -10,7 +10,7 @@ class XmlDetectorTest
 
     public function getXML()
     {
-        $xmlDetector = new XmlDetector(__DIR__."/mocks/fixtures");
+        $xmlDetector = new XmlDetector(dirname(__DIR__)."/test-support/mocks/fixtures");
         return new Result($xmlDetector->getXML() instanceof SimpleXMLElement);
     }
         

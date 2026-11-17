@@ -45,7 +45,9 @@ final class AtomicTestSession
             PHP_BINARY,
             '-d',
             'apc.enable_cli=1',
-            __DIR__ . '/atomic-worker.php',
+            '-r',
+            'require "vendor/autoload.php"; '
+                . '\\Test\\Lucinda\\Framework\\Support\\AtomicTestSession::work($argv[1]);',
             $this->backend,
         ], [
             0 => ['pipe', 'r'],
@@ -57,6 +59,29 @@ final class AtomicTestSession
         }
         stream_set_timeout($this->pipes[1], 10);
         stream_set_blocking($this->pipes[2], false);
+    }
+
+    /**
+     * Serves assertions inside the isolated child PHP runtime
+     *
+     * @param string $backend Backend selected by the parent test session
+     */
+    public static function work(string $backend): void
+    {
+        $fixture = null;
+        while (($line = fgets(STDIN)) !== false) {
+            try {
+                $request = json_decode($line, true, 512, JSON_THROW_ON_ERROR);
+                if ($fixture === null) {
+                    $fixture = new AtomicBackendFixture($backend);
+                }
+                $response = ['checks' => $fixture->run($request['operation'])];
+            } catch (\Throwable $error) {
+                $response = ['error' => $error->getMessage()];
+            }
+            echo json_encode($response, JSON_THROW_ON_ERROR) . "\n";
+            fflush(STDOUT);
+        }
     }
 
     /**
