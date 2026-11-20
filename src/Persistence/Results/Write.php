@@ -2,6 +2,8 @@
 
 namespace Lucinda\Framework\Persistence\Results;
 
+use Lucinda\SQL\StatementResults;
+
 /**
  * Describes the outcome of one completed database write
  *
@@ -10,26 +12,19 @@ namespace Lucinda\Framework\Persistence\Results;
  *
  * @internal
  */
-final class Scalar
+final class Write
 {
-    /** Number of records changed by this completed operation */
-    private int $affected;
-
-    /** Generated record identifier, meaningful for an inserted record */
-    private int $insertID;
+    private StatementResults $statementResults;
 
     /**
      * Captures the write metadata supplied by the database
      *
-     * @param int $affected Number of records changed by this operation
-     * @param int $insertID Generated record identifier, when applicable
+     * @param StatementResults $statementResults;
      */
     public function __construct(
-        int $affected,
-        int $insertID
+        StatementResults $statementResults
     ) {
-        $this->affected = $affected;
-        $this->insertID = $insertID;
+        $this->statementResults = $statementResults;
     }
 
     /**
@@ -39,7 +34,7 @@ final class Scalar
      */
     public function getAffectedRows(): int
     {
-        return $this->affected;
+        return $this->statementResults->getAffectedRows();
     }
 
     /**
@@ -49,6 +44,6 @@ final class Scalar
      */
     public function getInsertId(): int
     {
-        return $this->insertID;
+        return $this->statementResults->getInsertId();
     }
 }

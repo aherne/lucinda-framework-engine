@@ -3,35 +3,24 @@
 namespace Lucinda\Framework\Persistence\Builders;
 
 use Lucinda\Framework\Persistence\Entities\Entity;
+use Lucinda\Framework\Persistence\Queries\ValidationException;
 
 /**
- * Owns the selected row shared with a concrete entity builder
+ * Builds a concrete persistence entity from one validated row
  *
- * Subclasses convert this projection through its typed column accessors.
- * This base class neither executes queries nor interprets entity fields.
+ * Implementations read typed columns and construct their own entity type.
+ * The caller supplies each row so one builder can process an entire result set.
  *
  * @internal
  */
-abstract class Builder
+interface Builder
 {
-    /** Projection owned by this builder */
-    protected Row $row;
-
     /**
-     * Captures the database row to convert
+     * Converts one row into its concrete logical persistence record
      *
      * @param Row $row Selected record with validated column access
-     */
-    public function __construct(Row $row)
-    {
-        $this->row = $row;
-    }
-
-    /**
-     * Converts the owned row into its concrete logical persistence record
-     *
      * @return Entity Record type refined by each concrete builder
-     * @throws \UnexpectedValueException If selected fields are malformed
+     * @throws ValidationException If selected fields are missing or malformed
      */
-    abstract public function build(): Entity;
+    public function build(Row $row): Entity;
 }

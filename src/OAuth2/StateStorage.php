@@ -22,6 +22,8 @@ interface StateStorage
      * @param int $validUntil Absolute expiration timestamp in Unix seconds
      * @param string $browserProofHash Hexadecimal SHA-256 hash of the browser proof
      * @throws \Exception If insertion or database access fails
+     *
+     * @return void
      */
     public function save(string $state, string $vendorName, int $validUntil, string $browserProofHash): void;
 
@@ -47,6 +49,8 @@ interface StateStorage
      * callbacks to visit every expired attempt.
      *
      * @throws \Exception If deletion or database access fails
+     *
+     * @return void
      */
     public function clearExpired(): void;
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Lucinda\Framework\NoSQL;
+namespace Test\Lucinda\Framework\NoSQL\AtomicDriver;
 
 use Test\Lucinda\Framework\Support\AtomicAdapterTest;
 use Test\Lucinda\Framework\Support\AtomicTestSession;

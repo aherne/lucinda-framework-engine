@@ -37,20 +37,15 @@ final class StoredValueBuilder
     {
         try {
             $data = json_decode($this->source, true, 512, JSON_THROW_ON_ERROR);
-            if (
-                !is_array($data) || ($data['format'] ?? null) !== 1
-                || !is_string($data['version'] ?? null)
-                || !is_bool($data['deleted'] ?? null)
-                || !is_string($data['payload'] ?? null)
-                || (!is_int($data['expires'] ?? null)
-                    && !is_float($data['expires'] ?? null))
-            ) {
+            if (!is_array($data) || $this->isDataInvalid($data)) {
                 throw new \InvalidArgumentException('Invalid record fields');
             }
+            
             $bytes = base64_decode($data['payload'], true);
             if ($bytes === false) {
                 throw new \InvalidArgumentException('Invalid payload bytes');
             }
+
             $value = @unserialize($bytes, [
                 'allowed_classes' => false,
                 'max_depth' => 128,
@@ -58,6 +53,7 @@ final class StoredValueBuilder
             if ($value === false && $bytes !== 'b:0;') {
                 throw new \InvalidArgumentException('Invalid payload value');
             }
+
             $record = new StoredValue(
                 $data['version'],
                 (float) $data['expires'],
@@ -65,6 +61,7 @@ final class StoredValueBuilder
                 $data['deleted']
             );
             $record->validate();
+
             return $record;
         } catch (\JsonException | \InvalidArgumentException $error) {
             throw new OperationFailedException(
@@ -73,5 +70,23 @@ final class StoredValueBuilder
                 $error
             );
         }
+    }
+
+    /**
+     * Detects missing or unsupported metadata before payload decoding
+     * 
+     * @param array $data
+     * @return bool True when encoded record metadata is invalid.
+     */
+    private function isDataInvalid(array $data): bool
+    {
+        return (
+            ($data['format'] ?? null) !== 1
+            || !is_string($data['version'] ?? null)
+            || !is_bool($data['deleted'] ?? null)
+            || !is_string($data['payload'] ?? null)
+            || (!is_int($data['expires'] ?? null)
+                && !is_float($data['expires'] ?? null))
+        );
     }
 }

@@ -55,6 +55,8 @@ final class State implements OAuth2StateBlueprint
      * @throws \InvalidArgumentException If the attempt is already expired
      * @throws \RuntimeException If response headers were sent or the cookie cannot be written
      * @throws \Throwable If randomness or persistence fails
+     *
+     * @return void
      */
     public function save(string $state, string $vendorName, int $validUntil): void
     {
@@ -125,6 +127,8 @@ final class State implements OAuth2StateBlueprint
      * @param string $browserProof Random proof to send, or an empty string when deleting
      * @param int $expirationTime Absolute cookie expiration timestamp in Unix seconds
      * @throws \RuntimeException If PHP cannot write the cookie header
+     *
+     * @return void
      */
     private function setBrowserProofCookie(string $cookieName, string $browserProof, int $expirationTime): void
     {

@@ -2,10 +2,10 @@
 
 namespace Test\Lucinda\Framework\Support;
 
-use Lucinda\Framework\NoSQL\APCuAtomicDriver;
 use Lucinda\Framework\NoSQL\AtomicDriver;
-use Lucinda\Framework\NoSQL\MemcachedAtomicDriver;
-use Lucinda\Framework\NoSQL\RedisAtomicDriver;
+use Lucinda\Framework\NoSQL\AtomicDriver\APCuAtomicDriver;
+use Lucinda\Framework\NoSQL\AtomicDriver\MemcachedAtomicDriver;
+use Lucinda\Framework\NoSQL\AtomicDriver\RedisAtomicDriver;
 use Lucinda\Framework\NoSqlDriverProvider;
 use Lucinda\NoSQL\KeyNotFoundException;
 use Lucinda\NoSQL\OperationFailedException;
@@ -173,6 +173,9 @@ final class AtomicBackendFixture
     public function run(string $operation): array
     {
         $this->requirePrivateServer();
+        if (str_starts_with($operation, 'persistence:')) {
+            return (new PersistenceNoSqlFixture($this->driver))->run(substr($operation, strlen('persistence:')));
+        }
         $key = $this->prefix . $operation;
         $driver = $this->driver;
         switch ($operation) {

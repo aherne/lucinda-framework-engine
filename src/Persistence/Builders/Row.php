@@ -2,146 +2,139 @@
 
 namespace Lucinda\Framework\Persistence\Builders;
 
+use Lucinda\Framework\Persistence\Queries\ParametersValidator;
+use Lucinda\Framework\Persistence\Queries\ValidationException;
+use Lucinda\SQL\DataType;
+
 /**
- * Validates and reads typed columns from one database projection
+ * Reads typed row from one projection through the injected validator.
  *
- * Required columns must be present and must match their declared type.
- * This object has no storage access and never invents missing column values.
+ * SQL NULL is preserved for every accessor. Missing columns and malformed
+ * non-null values are reported as unexpected stored data.
  *
  * @internal
  */
 final class Row
 {
-    /** @var array<string, mixed> Selected database columns */
-    private array $columns;
+    /** @var array<string, mixed> Selected values indexed by column name */
+    private array $row;
+    private ParametersValidator $validator;
 
     /**
-     * Captures the columns returned for one database record
-     *
-     * @param array<string, mixed> $columns Selected values indexed by column
+     * @param array<string, mixed> $row Selected projection
+     * @param ParametersValidator $validator Column validation and normalization
      */
-    public function __construct(array $columns)
+    public function __construct(array $row, ParametersValidator $validator)
     {
-        $this->columns = $columns;
+        $this->row = $row;
+        $this->validator = $validator;
     }
 
     /**
-     * Reads a required string column
+     * Reads a selected column using its expected SQL type.
      *
-     * @param string $key Selected column name
-     * @return string Validated string value
-     * @throws \UnexpectedValueException If the value is missing or not a string
+     * @throws ValidationException If the column is missing or malformed
      */
-    public function getString(string $key): string
+    private function get(string $key, DataType $dataType): mixed
     {
-        $this->requireColumn($key);
-        if (!is_string($this->columns[$key])) {
-            throw new \UnexpectedValueException(
-                'Expected string column: ' . $key
+        if (!array_key_exists($key, $this->row)) {
+            throw new ValidationException(
+                '',
+                '',
+                $key
             );
         }
-        return $this->columns[$key];
+
+        $value = $this->row[$key];
+        if ($value === null) {
+            return null;
+        }
+        try {
+            return $this->validator->validate($value, $dataType);
+        } catch (ValidationException $e) {
+            throw new ValidationException(
+                $e->getExpectedValueType(),
+                $e->getActualValueType(),
+                $key
+            );
+        }
     }
 
     /**
-     * Reads a required integer column
+     * Normalizes a string-compatible value without changing SQL NULL.
      *
-     * @param string $key Selected column name
-     * @return int Validated integer value
-     * @throws \UnexpectedValueException If the value is not an integer
+     * @param string $key Selected column or named parameter identifier.
+     * @return ?string
+     * @throws \Lucinda\Framework\Persistence\Queries\ValidationException If the value cannot satisfy the expected type.
      */
-    public function getInteger(string $key): int
+    public function getString(string $key): ?string
     {
-        $this->requireColumn($key);
-        $value = $this->columns[$key];
+        return $this->get($key, DataType::STRING);
+    }
+
+    /**
+     * Normalizes an integer or integer string without changing SQL NULL.
+     *
+     * @param string $key Selected column or named parameter identifier.
+     * @return ?int
+     * @throws \Lucinda\Framework\Persistence\Queries\ValidationException If the value cannot satisfy the expected type.
+     */
+    public function getInteger(string $key): ?int
+    {
+        return $this->get($key, DataType::INTEGER);
+    }
+
+    /**
+     * Normalizes the explicitly supported boolean representations.
+     *
+     * @param string $key Selected column or named parameter identifier.
+     * @return ?bool
+     * @throws \Lucinda\Framework\Persistence\Queries\ValidationException If the value cannot satisfy the expected type.
+     */
+    public function getBoolean(string $key): ?bool
+    {
+        return $this->get($key, DataType::BOOLEAN);
+    }
+    /**
+     * Returns binary bytes or an open stream without consuming the content.
+     *
+     * @param string $key Selected column or named parameter identifier.
+     * @return resource|string|null Binary content in its existing representation.
+     * @throws \Lucinda\Framework\Persistence\Queries\ValidationException If the value cannot satisfy the expected type.
+     */
+    public function getStreamed(string $key): mixed
+    {
         if (
-            (!is_int($value) && !is_string($value))
-            || filter_var($value, FILTER_VALIDATE_INT) === false
+            array_key_exists($key, $this->row)
+            && is_string($this->row[$key])
         ) {
-            throw new \UnexpectedValueException(
-                'Expected integer column: ' . $key
-            );
+            return $this->row[$key];
         }
-        return (int) $value;
+
+        return $this->get($key, DataType::STREAMED);
     }
 
     /**
-     * Reads a numeric boolean column
+     * Converts a numeric column to a floating-point value, preserving SQL NULL.
      *
-     * @param string $key Selected column name
-     * @return bool True for one and false for zero
-     * @throws \UnexpectedValueException If the value is neither zero nor one
+     * @param string $key Selected column or named parameter identifier.
+     * @return ?float
+     * @throws \Lucinda\Framework\Persistence\Queries\ValidationException If the value cannot satisfy the expected type.
      */
-    public function getBoolean(string $key): bool
+    public function getFloat(string $key): ?float
     {
-        $value = $this->getInteger($key);
-        if ($value !== 0 && $value !== 1) {
-            throw new \UnexpectedValueException(
-                'Expected boolean column: ' . $key
-            );
-        }
-        return $value === 1;
-    }
-
-    /**
-     * Reads an explicitly nullable string column
-     *
-     * @param string $key Selected column name
-     * @return string|null String value or SQL NULL
-     * @throws \UnexpectedValueException If the column is missing or malformed
-     */
-    public function getNullableString(string $key): ?string
-    {
-        $this->requireColumn($key);
-        if ($this->columns[$key] === null) {
+        $value = $this->get($key, DataType::STRING);
+        if ($value === null) {
             return null;
         }
-        return $this->getString($key);
-    }
-
-    /**
-     * Reads an explicitly nullable integer column
-     *
-     * @param string $key Selected column name
-     * @return int|null Integer value or SQL NULL
-     * @throws \UnexpectedValueException If the column is missing or malformed
-     */
-    public function getNullableInteger(string $key): ?int
-    {
-        $this->requireColumn($key);
-        if ($this->columns[$key] === null) {
-            return null;
-        }
-        return $this->getInteger($key);
-    }
-
-    /**
-     * Reads a scalar returned by a database expression
-     *
-     * @param string $key Selected expression alias
-     * @return string String representation of an integer or string value
-     * @throws \UnexpectedValueException If the value is null or nonscalar
-     */
-    public function getScalar(string $key): string
-    {
-        $this->requireColumn($key);
-        $value = $this->columns[$key];
-        if (!is_string($value) && !is_int($value)) {
-            throw new \UnexpectedValueException('Expected scalar: ' . $key);
-        }
-        return (string) $value;
-    }
-
-    /**
-     * Requires an explicitly selected column
-     *
-     * @param string $key Expected column name
-     * @throws \UnexpectedValueException If the projection omits the column
-     */
-    private function requireColumn(string $key): void
-    {
-        if (!array_key_exists($key, $this->columns)) {
-            throw new \UnexpectedValueException('Missing column: ' . $key);
+        if (is_numeric($value)) {
+            return (float) $value;
+        } else {
+            throw new ValidationException(
+                'float',
+                get_debug_type($value),
+                $key
+            );
         }
     }
 }

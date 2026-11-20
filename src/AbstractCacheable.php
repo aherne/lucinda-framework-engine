@@ -60,6 +60,8 @@ abstract class AbstractCacheable implements Cacheable
      * Implementations assign the resulting Unix timestamp to
      * $lastModifiedTime. Leaving its default value disables a meaningful
      * Last-Modified comparison.
+     *
+     * @return void
      */
     abstract protected function setTime(): void;
 
@@ -78,6 +80,8 @@ abstract class AbstractCacheable implements Cacheable
      *
      * Implementations assign the validator to $etag. Leaving its default value
      * disables a meaningful ETag comparison.
+     *
+     * @return void
      */
     abstract protected function setEtag(): void;
 

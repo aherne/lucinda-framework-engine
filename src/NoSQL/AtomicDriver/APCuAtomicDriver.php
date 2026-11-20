@@ -1,9 +1,10 @@
 <?php
 
-namespace Lucinda\Framework\NoSQL;
+namespace Lucinda\Framework\NoSQL\AtomicDriver;
 
 use Lucinda\NoSQL\OperationFailedException;
 use Lucinda\NoSQL\Vendor\APCu\Driver;
+use Lucinda\Framework\NoSQL\StorageObservation;
 
 /**
  * Publishes immutable APCu values through atomic integer revision changes

@@ -2,10 +2,10 @@
 
 namespace Lucinda\Framework;
 
-use Lucinda\Framework\NoSQL\APCuAtomicDriver;
 use Lucinda\Framework\NoSQL\AtomicDriver;
-use Lucinda\Framework\NoSQL\MemcachedAtomicDriver;
-use Lucinda\Framework\NoSQL\RedisAtomicDriver;
+use Lucinda\Framework\NoSQL\AtomicDriver\APCuAtomicDriver;
+use Lucinda\Framework\NoSQL\AtomicDriver\MemcachedAtomicDriver;
+use Lucinda\Framework\NoSQL\AtomicDriver\RedisAtomicDriver;
 use Lucinda\MVC\Facet;
 use Lucinda\NoSQL\ConfigurationException;
 use Lucinda\NoSQL\ConnectionException;

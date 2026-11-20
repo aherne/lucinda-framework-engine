@@ -9,9 +9,9 @@ use Lucinda\STDERR\ErrorReporter;
 /**
  * Bridges STDERR request failures to a Lucinda logger
  *
- * The STDERR error classification determines the logging severity. Client and
- * non-error routes are ignored, while server, syntax, logical, and uncategorized
- * failures are sent to the logger supplied by the application.
+ * Subclasses decide which classifications are loggable and supply their logger.
+ * Accepted failures are dispatched at the severity selected below; an INTERNAL
+ * failure can additionally report its preceding exception.
  *
  * @see ErrorReporter
  * @see Logger
@@ -22,7 +22,13 @@ abstract class AbstractReporter implements ErrorReporter
      * Reports the current STDERR exception at the severity matching its error type
      *
      * ErrorType::SERVER maps to emergency, SYNTAX to alert, LOGICAL to critical,
-     * and any remaining failure type to error. NONE and CLIENT are not logged.
+     * CLIENT maps to error and INTERNAL maps to emergency. NONE emits no entry.
+     * An INTERNAL failure also logs its preceding exception when one is supplied.
+     *
+     * @param Lucinda\STDERR\ErrorType $errorType Value supplied by the caller.
+     * @param Throwable $error Value supplied by the caller.
+     * @param ?Throwable $previous Value supplied by the caller.
+     * @return void
      */
     public function report(ErrorType $errorType, \Throwable $error, ?\Throwable $previous = null): void {
         if (!$this->isLoggable($errorType)) {

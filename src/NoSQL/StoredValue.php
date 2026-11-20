@@ -89,6 +89,8 @@ final class StoredValue
      * Validates metadata and every nested payload value
      *
      * @throws \InvalidArgumentException If metadata or payload is unsupported
+     *
+     * @return void
      */
     public function validate(): void
     {
@@ -107,6 +109,8 @@ final class StoredValue
      * @param mixed $value Value reached within this payload
      * @param int $depth Current nesting depth
      * @throws \InvalidArgumentException If the value cannot be stored safely
+     *
+     * @return void
      */
     private function validateValue(mixed $value, int $depth): void
     {

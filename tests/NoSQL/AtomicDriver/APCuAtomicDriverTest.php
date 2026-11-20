@@ -1,13 +1,13 @@
 <?php
 
-namespace Test\Lucinda\Framework\NoSQL;
+namespace Test\Lucinda\Framework\NoSQL\AtomicDriver;
 
 use Test\Lucinda\Framework\Support\AtomicAdapterTest;
 
 /**
- * Exercises the Memcached adapter against a private real backend
+ * Exercises the APCu adapter against a private real backend
  */
-final class MemcachedAtomicDriverTest extends AtomicAdapterTest
+final class APCuAtomicDriverTest extends AtomicAdapterTest
 {
     /**
      * Selects the backend owned by this test class
@@ -16,6 +16,6 @@ final class MemcachedAtomicDriverTest extends AtomicAdapterTest
      */
     protected function getBackend(): string
     {
-        return 'memcached';
+        return 'apcu';
     }
 }

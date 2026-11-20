@@ -33,6 +33,7 @@
         "lucinda/headers": "~3.0",
         "lucinda/nosql-data-access": "~5.0",
         "lucinda/sql-data-access": "~5.0",
+        "lucinda/migrations": "^3.0",
         "lucinda/queries": "^4.0"
     },
     "require-dev": {

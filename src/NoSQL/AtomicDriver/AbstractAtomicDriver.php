@@ -1,10 +1,15 @@
 <?php
 
-namespace Lucinda\Framework\NoSQL;
+namespace Lucinda\Framework\NoSQL\AtomicDriver;
 
 use Lucinda\NoSQL\Driver;
 use Lucinda\NoSQL\KeyNotFoundException;
 use Lucinda\NoSQL\OperationFailedException;
+use Lucinda\Framework\NoSQL\AtomicDriver as AtomicDriverInterface;
+use Lucinda\Framework\NoSQL\VersionedValue;
+use Lucinda\Framework\NoSQL\StorageObservation;
+use Lucinda\Framework\NoSQL\StoredValueBuilder;
+use Lucinda\Framework\NoSQL\StoredValue;
 
 /**
  * Coordinates logical versions and inherited operations for atomic adapters
@@ -13,7 +18,7 @@ use Lucinda\NoSQL\OperationFailedException;
  * This instance owns its wrapped driver's lifetime, reserved key namespace
  * and weak association between public snapshots and native observations.
  */
-abstract class AbstractAtomicDriver implements AtomicDriver
+abstract class AbstractAtomicDriver implements AtomicDriverInterface
 {
     /** Wrapped library driver retained while its native connection is used */
     private Driver $driver;
@@ -214,6 +219,8 @@ abstract class AbstractAtomicDriver implements AtomicDriver
      * @param int $expiration Lifetime in seconds, zero for no expiration
      * @throws \InvalidArgumentException If the value or lifetime is invalid
      * @throws OperationFailedException If storage fails or contention persists
+     *
+     * @return void
      */
     final public function set(
         string $key,
@@ -329,6 +336,8 @@ abstract class AbstractAtomicDriver implements AtomicDriver
      * @param string $key Logical storage identity
      * @throws KeyNotFoundException If the key is absent or expired
      * @throws OperationFailedException If storage fails or contention persists
+     *
+     * @return void
      */
     final public function delete(string $key): void
     {
@@ -351,6 +360,8 @@ abstract class AbstractAtomicDriver implements AtomicDriver
      * Framework persistence and its tests never use it for targeted cleanup.
      *
      * @throws OperationFailedException If the wrapped driver's flush fails
+     *
+     * @return void
      */
     final public function flush(): void
     {

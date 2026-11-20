@@ -19,9 +19,7 @@ abstract class Query
 {
     /** Generated statement retained for this operation */
     protected Select|Insert|Update|Delete $statement;
-
-    /** @var array<string, int|string|float|bool|null> Bound values by name */
-    protected array $parameters = [];
+    protected ?Parameters $parameters = null;
 
     /**
      * Renders the generated statement for preparation
@@ -35,13 +33,13 @@ abstract class Query
     }
 
     /**
-     * Gets the values bound when this operation executes
+     * Gets the values and explicit SQL types bound when this operation executes
      *
-     * @return array<string, int|string|float|bool|null> Named parameter values
+     * @return array<string, array{value: mixed, type: \Lucinda\SQL\DataType}> Named bindings
      */
     public function getParameters(): array
     {
-        return $this->parameters;
+        return $this->parameters!==null?$this->parameters->getStorage():[];
     }
 
     /**

@@ -42,6 +42,8 @@ final class CacheableFinder
      * @param Request $request Current request passed to the implementation
      * @param string $response Current response passed to the implementation
      * @throws ConfigurationException If the attribute is missing or does not name an AbstractCacheable subclass
+     *
+     * @return void
      */
     private function setResult(\SimpleXMLElement $xml, Request $request, string $response): void
     {

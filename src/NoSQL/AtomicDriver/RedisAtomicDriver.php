@@ -1,9 +1,10 @@
 <?php
 
-namespace Lucinda\Framework\NoSQL;
+namespace Lucinda\Framework\NoSQL\AtomicDriver;
 
 use Lucinda\NoSQL\OperationFailedException;
 use Lucinda\NoSQL\Vendor\Redis\Driver;
+use Lucinda\Framework\NoSQL\StorageObservation;
 
 /**
  * Adapts Redis and compatible Valkey drivers to versioned atomic operations
@@ -69,19 +70,7 @@ final class RedisAtomicDriver extends AbstractAtomicDriver
         string $value,
         int $expiration
     ): bool {
-        $source = <<<'LUA'
-local current = redis.call('GET', KEYS[1])
-if ARGV[1] == 'missing' then
-    if current then return 0 end
-elseif current ~= ARGV[2] then
-    return 0
-end
-redis.call('SET', KEYS[1], ARGV[3])
-if tonumber(ARGV[4]) > 0 then
-    redis.call('EXPIRE', KEYS[1], ARGV[4])
-end
-return 1
-LUA;
+        $source = $this->getExpression();
         $token = $expected->getToken();
         try {
             $result = $this->client->eval($source, [
@@ -98,5 +87,27 @@ LUA;
             throw new OperationFailedException('Redis replacement failed');
         }
         return $result === 1;
+    }
+
+    /**
+     * Returns the backend expression executed for this operation.
+     *
+     * @return string
+     */
+    private function getExpression(): string
+    {
+        return <<<'LUA'
+local current = redis.call('GET', KEYS[1])
+if ARGV[1] == 'missing' then
+    if current then return 0 end
+elseif current ~= ARGV[2] then
+    return 0
+end
+redis.call('SET', KEYS[1], ARGV[3])
+if tonumber(ARGV[4]) > 0 then
+    redis.call('EXPIRE', KEYS[1], ARGV[4])
+end
+return 1
+LUA;
     }
 }

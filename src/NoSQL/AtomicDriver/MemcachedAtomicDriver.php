@@ -1,9 +1,10 @@
 <?php
 
-namespace Lucinda\Framework\NoSQL;
+namespace Lucinda\Framework\NoSQL\AtomicDriver;
 
 use Lucinda\NoSQL\OperationFailedException;
 use Lucinda\NoSQL\Vendor\Memcached\Driver;
+use Lucinda\Framework\NoSQL\StorageObservation;
 
 /**
  * Adapts a Memcached connection to atomic add and compare-and-swap writes
