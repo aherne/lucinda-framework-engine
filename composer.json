@@ -25,7 +25,7 @@
         "php": "^8.5",
         "ext-simplexml": "*",  
         "lucinda/logging": "~5.0",
-        "lucinda/oauth2-client": "~4.0",
+        "lucinda/oauth2-client": "~5.0",
         "lucinda/security": "~5.0",
         "lucinda/mvc": "~5.0",
         "lucinda/console-mvc": "~3.0",
