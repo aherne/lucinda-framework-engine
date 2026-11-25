@@ -2,6 +2,17 @@
 
 Lucinda Framework Engine contains the adapters and small runtime services that connect the Lucinda MVC, security, logging, headers, SQL, NoSQL, and OAuth2 packages in a complete application.
 
+- [Request and security integration](#request-and-security-integration)
+- [Session adapter](#session-adapter)
+- [OAuth2 adapters](#oauth2-adapters)
+- [SQL and NoSQL providers](#sql-and-nosql-providers)
+- [HTTP cache validation](#http-cache-validation)
+- [Error reporting](#error-reporting)
+- [Utilities](#utilities)
+- [Failure boundaries](#failure-boundaries)
+- [Development](#development)
+- [License](#license)
+
 Its goals are to:
 
 - normalize MVC requests for the security workflow;
@@ -290,6 +301,13 @@ memcached executables. They start private servers on temporary loopback ports
 and verify the server process before accessing data. APCu runs in a child PHP
 runtime with apc.enable_cli enabled, so the parent CLI configuration needs no
 change. No application cache endpoint or database is used.
+
+SQL tests require the PHP pdo_mysql extension and a MySQL server installation.
+The fixture finds `mysqld` through `PATH`, with `/usr/sbin/mysqld` as a Linux
+fallback. On macOS, ensure the MySQL bin directory is on `PATH` (for example,
+`/opt/homebrew/bin` for Homebrew on Apple Silicon). It initializes a private
+temporary schema and starts its own server using a Unix socket with networking
+disabled. The server and its files are removed when the PHP process exits.
 
 The atomic tests are compatible with the normal php test.php runner and run
 the shared contract for Redis, Memcached and APCu. The Valkey driver is checked

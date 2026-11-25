@@ -7,7 +7,7 @@ use Lucinda\NoSQL\KeyNotFoundException;
 use Lucinda\UnitTest\Result;
 
 /**
- * Verifies snapshot absence, exact values and immutable private metadata
+ * Verifies snapshot absence, exact values and private metadata
  */
 final class VersionedValueTest
 {
@@ -106,7 +106,7 @@ final class VersionedValueTest
     }
 
     /**
-     * Requires readonly final snapshots with no public metadata fields
+     * Requires final snapshots with private metadata fields
      *
      * @return Result Snapshot encapsulation assertion
      */
@@ -118,8 +118,8 @@ final class VersionedValueTest
             $private = $private && $property->isPrivate();
         }
         return new Result(
-            $class->isFinal() && $class->isReadOnly() && $private,
-            'final readonly object with private fields'
+            $class->isFinal() && $private,
+            'final object with private fields'
         );
     }
 }

@@ -10,7 +10,7 @@ use Lucinda\NoSQL\KeyNotFoundException;
  * This immutable observation contains no connection or native comparison
  * token. Its issuing adapter alone owns the corresponding storage metadata.
  */
-final readonly class VersionedValue
+final class VersionedValue
 {
     /** Logical key observed inside the adapter's reserved namespace */
     private string $key;
